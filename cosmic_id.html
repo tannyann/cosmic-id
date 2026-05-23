@@ -1,0 +1,1960 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>COSMIC ID — 個人統合占断</title>
+<style>
+:root {
+  --bg-deep: #0a0816;
+  --bg-card: rgba(30, 25, 60, 0.55);
+  --gold: #d4af37;
+  --gold-bright: #f5d76e;
+  --cream: #f0e6d2;
+  --text-muted: #a89cc6;
+  --accent-purple: #8b5fbf;
+  --accent-rose: #d4799a;
+  --border: rgba(212, 175, 55, 0.22);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Hiragino Mincho ProN', 'Yu Mincho', 'Noto Serif JP', serif;
+  background:
+    radial-gradient(ellipse at 20% 10%, #1a1338 0%, transparent 60%),
+    radial-gradient(ellipse at 80% 90%, #2a1845 0%, transparent 60%),
+    var(--bg-deep);
+  background-attachment: fixed;
+  color: var(--cream);
+  min-height: 100vh;
+  line-height: 1.75;
+  position: relative;
+  overflow-x: hidden;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    radial-gradient(1.5px 1.5px at 12% 23%, white, transparent),
+    radial-gradient(1px 1px at 38% 67%, white, transparent),
+    radial-gradient(1px 1px at 55% 41%, white, transparent),
+    radial-gradient(2px 2px at 78% 18%, var(--gold-bright), transparent),
+    radial-gradient(1px 1px at 88% 72%, white, transparent),
+    radial-gradient(1.5px 1.5px at 28% 88%, var(--cream), transparent),
+    radial-gradient(1px 1px at 64% 92%, white, transparent),
+    radial-gradient(1px 1px at 7% 55%, var(--gold), transparent),
+    radial-gradient(1.5px 1.5px at 92% 35%, white, transparent),
+    radial-gradient(1px 1px at 45% 12%, white, transparent);
+  opacity: 0.7;
+  pointer-events: none;
+  z-index: 0;
+  animation: twinkle 8s ease-in-out infinite alternate;
+}
+
+@keyframes twinkle {
+  from { opacity: 0.5; }
+  to { opacity: 0.85; }
+}
+
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 60px 24px 80px;
+  position: relative;
+  z-index: 1;
+}
+
+header {
+  text-align: center;
+  margin-bottom: 50px;
+}
+
+h1 {
+  font-size: 44px;
+  font-weight: 300;
+  letter-spacing: 0.25em;
+  color: var(--gold-bright);
+  margin-bottom: 14px;
+  text-shadow: 0 0 30px rgba(245, 215, 110, 0.3);
+}
+
+h1 .deco {
+  color: var(--gold);
+  font-size: 0.55em;
+  margin: 0 18px;
+  vertical-align: middle;
+}
+
+.subtitle {
+  color: var(--text-muted);
+  letter-spacing: 0.2em;
+  font-size: 13px;
+}
+
+.form-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 36px;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  margin-bottom: 40px;
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.4),
+              0 0 80px rgba(139, 95, 191, 0.08);
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr auto;
+  gap: 20px;
+  align-items: end;
+}
+
+@media (max-width: 720px) {
+  .form-row { grid-template-columns: 1fr; }
+  h1 { font-size: 32px; }
+}
+
+label {
+  display: block;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+  text-transform: uppercase;
+}
+
+input[type=text], input[type=date] {
+  width: 100%;
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid var(--border);
+  color: var(--cream);
+  padding: 13px 16px;
+  font-size: 16px;
+  border-radius: 7px;
+  font-family: inherit;
+  transition: all 0.3s;
+}
+
+input:focus {
+  outline: none;
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.15);
+}
+
+button {
+  background: linear-gradient(135deg, var(--gold) 0%, var(--gold-bright) 100%);
+  color: #1a1338;
+  border: none;
+  padding: 14px 32px;
+  font-size: 13px;
+  letter-spacing: 0.2em;
+  font-weight: 700;
+  cursor: pointer;
+  border-radius: 7px;
+  font-family: inherit;
+  transition: all 0.25s;
+  text-transform: uppercase;
+}
+
+button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 24px rgba(212, 175, 55, 0.4);
+}
+
+button:active { transform: translateY(0); }
+
+.results { display: none; opacity: 0; transition: opacity 0.6s; }
+.results.active { display: block; opacity: 1; }
+
+.hero-card {
+  text-align: center;
+  background: linear-gradient(135deg,
+    rgba(139, 95, 191, 0.25),
+    rgba(212, 121, 154, 0.18));
+  border: 1px solid var(--gold);
+  border-radius: 14px;
+  padding: 44px 30px;
+  margin-bottom: 40px;
+  box-shadow: 0 0 60px rgba(212, 175, 55, 0.1);
+}
+
+.hero-name {
+  font-size: 34px;
+  color: var(--gold-bright);
+  margin-bottom: 12px;
+  letter-spacing: 0.1em;
+  font-weight: 300;
+}
+
+.hero-meta {
+  color: var(--cream);
+  letter-spacing: 0.08em;
+  font-size: 14px;
+  opacity: 0.9;
+}
+
+.hero-meta strong {
+  color: var(--gold-bright);
+  font-weight: 400;
+}
+
+.section-title {
+  font-size: 17px;
+  letter-spacing: 0.25em;
+  color: var(--gold);
+  margin: 50px 0 22px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.section-title::before {
+  content: '◇';
+  color: var(--gold-bright);
+  font-size: 0.85em;
+}
+
+.section-en {
+  font-size: 11px;
+  color: var(--text-muted);
+  letter-spacing: 0.3em;
+  margin-left: auto;
+  font-weight: 300;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 18px;
+}
+
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 11px;
+  padding: 24px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  transition: all 0.3s;
+  position: relative;
+  overflow: hidden;
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(212, 175, 55, 0.5);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+}
+
+.card:hover::before { opacity: 1; }
+
+.card-system {
+  font-size: 10px;
+  letter-spacing: 0.25em;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+.card-value {
+  font-size: 30px;
+  color: var(--gold-bright);
+  margin-bottom: 6px;
+  letter-spacing: 0.04em;
+  font-weight: 300;
+  line-height: 1.2;
+}
+
+.card-label {
+  font-size: 13px;
+  color: var(--accent-purple);
+  margin-bottom: 12px;
+  letter-spacing: 0.08em;
+}
+
+.card-desc {
+  font-size: 13.5px;
+  color: var(--cream);
+  opacity: 0.88;
+  line-height: 1.8;
+}
+
+.biorhythm-chart {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 11px;
+  padding: 26px;
+  backdrop-filter: blur(10px);
+}
+
+.biorhythm-chart .card-system { margin-bottom: 18px; }
+
+.bio-bar {
+  display: grid;
+  grid-template-columns: 70px 1fr 50px;
+  align-items: center;
+  gap: 16px;
+  margin: 14px 0;
+}
+
+.bio-label {
+  font-size: 12px;
+  letter-spacing: 0.15em;
+  color: var(--cream);
+}
+
+.bio-track {
+  height: 8px;
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: 4px;
+  position: relative;
+  overflow: hidden;
+}
+
+.bio-center {
+  position: absolute;
+  left: 50%;
+  top: -2px; bottom: -2px;
+  width: 1px;
+  background: rgba(212, 175, 55, 0.3);
+}
+
+.bio-fill {
+  position: absolute;
+  height: 100%;
+  border-radius: 4px;
+  background: linear-gradient(90deg, var(--accent-purple), var(--gold-bright));
+  transition: width 1.2s ease;
+}
+
+.bio-fill.neg {
+  background: linear-gradient(90deg, var(--accent-rose), var(--accent-purple));
+}
+
+.bio-value {
+  text-align: right;
+  font-size: 13px;
+  color: var(--gold-bright);
+  font-family: 'SF Mono', Menlo, monospace;
+}
+
+.moon-card {
+  display: grid;
+  grid-template-columns: 100px 1fr;
+  gap: 28px;
+  align-items: center;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 11px;
+  padding: 26px;
+  margin-top: 18px;
+  backdrop-filter: blur(10px);
+}
+
+.moon {
+  width: 100px;
+  height: 100px;
+}
+
+.moon svg { width: 100%; height: 100%; display: block; }
+
+footer {
+  margin-top: 70px;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  line-height: 2;
+}
+
+.note {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 8px;
+  font-style: italic;
+  opacity: 0.7;
+}
+
+/* ===== 文章サマリー ===== */
+.summary-card {
+  background: linear-gradient(135deg,
+    rgba(212, 175, 55, 0.08),
+    rgba(139, 95, 191, 0.14));
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--gold);
+  border-radius: 11px;
+  padding: 36px 40px;
+  margin-bottom: 40px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.summary-label {
+  font-size: 11px;
+  color: var(--gold);
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  margin-bottom: 18px;
+}
+
+.summary-lead {
+  font-size: 19px;
+  color: var(--gold-bright);
+  margin-bottom: 18px;
+  letter-spacing: 0.04em;
+  line-height: 1.75;
+  font-weight: 300;
+}
+
+.summary-card p {
+  font-size: 14.5px;
+  line-height: 2.1;
+  margin-bottom: 14px;
+  color: var(--cream);
+  opacity: 0.95;
+}
+
+.summary-card p:last-child { margin-bottom: 0; }
+
+.summary-card strong {
+  color: var(--gold-bright);
+  font-weight: 400;
+}
+
+/* ===== カードのクリック可能化 ===== */
+.card {
+  cursor: pointer;
+  position: relative;
+}
+
+.card-more {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px dashed rgba(212, 175, 55, 0.2);
+  font-size: 10px;
+  color: var(--gold);
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  text-align: right;
+  transition: color 0.2s;
+}
+
+.card:hover .card-more { color: var(--gold-bright); }
+
+.card-more::after {
+  content: ' →';
+  margin-left: 4px;
+}
+
+/* ===== プレミアムトグル(デモ) ===== */
+.premium-toggle {
+  text-align: right;
+  margin-bottom: 16px;
+  font-size: 11px;
+  color: var(--text-muted);
+  letter-spacing: 0.15em;
+}
+
+.premium-toggle label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  padding: 8px 14px;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  transition: all 0.25s;
+}
+
+.premium-toggle label:hover {
+  border-color: var(--gold);
+  color: var(--gold-bright);
+}
+
+.premium-toggle input {
+  accent-color: var(--gold);
+  cursor: pointer;
+}
+
+/* ===== モーダル ===== */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 8, 22, 0.88);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s;
+}
+
+.modal-backdrop.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.modal {
+  background: linear-gradient(180deg, rgba(30, 25, 60, 0.96), rgba(20, 15, 40, 0.96));
+  border: 1px solid var(--gold);
+  border-radius: 14px;
+  max-width: 680px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 44px 40px 40px;
+  position: relative;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6),
+              0 0 100px rgba(212, 175, 55, 0.08);
+  transform: translateY(20px) scale(0.98);
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.modal-backdrop.open .modal {
+  transform: translateY(0) scale(1);
+}
+
+.modal::-webkit-scrollbar { width: 8px; }
+.modal::-webkit-scrollbar-track { background: rgba(0,0,0,0.3); }
+.modal::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+.modal-close {
+  position: absolute;
+  top: 16px; right: 16px;
+  background: transparent;
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+  width: 34px; height: 34px;
+  padding: 0;
+  border-radius: 50%;
+  font-size: 16px;
+  letter-spacing: 0;
+  font-weight: 300;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-close:hover {
+  color: var(--gold);
+  border-color: var(--gold);
+  transform: none;
+  box-shadow: none;
+}
+
+.modal-system {
+  font-size: 11px;
+  letter-spacing: 0.3em;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+
+.modal-value {
+  font-size: 38px;
+  color: var(--gold-bright);
+  letter-spacing: 0.05em;
+  font-weight: 300;
+  margin-bottom: 8px;
+  line-height: 1.2;
+}
+
+.modal-label {
+  font-size: 14px;
+  color: var(--accent-purple);
+  letter-spacing: 0.12em;
+  margin-bottom: 28px;
+}
+
+.modal-section { margin-top: 30px; }
+
+.modal-section-title {
+  font-size: 12px;
+  letter-spacing: 0.3em;
+  color: var(--gold);
+  text-transform: uppercase;
+  padding-bottom: 12px;
+  margin-bottom: 18px;
+  border-bottom: 1px solid var(--border);
+}
+
+.modal-intro {
+  font-size: 14.5px;
+  line-height: 2;
+  color: var(--cream);
+  opacity: 0.95;
+  margin-bottom: 20px;
+}
+
+.detail-list { margin-top: 16px; }
+
+.detail-item {
+  margin-bottom: 22px;
+  padding-left: 18px;
+  border-left: 2px solid rgba(139, 95, 191, 0.5);
+}
+
+.detail-item:last-child { margin-bottom: 0; }
+
+.detail-title {
+  font-size: 12px;
+  color: var(--gold);
+  letter-spacing: 0.18em;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+}
+
+.detail-text {
+  font-size: 14px;
+  line-height: 1.95;
+  color: var(--cream);
+  opacity: 0.92;
+}
+
+/* ===== プレミアムセクション ===== */
+.premium-section {
+  margin-top: 36px;
+  position: relative;
+  padding: 26px;
+  background: linear-gradient(135deg,
+    rgba(212, 175, 55, 0.06),
+    rgba(139, 95, 191, 0.1));
+  border: 1px solid var(--gold);
+  border-radius: 11px;
+  overflow: hidden;
+}
+
+.premium-badge {
+  font-size: 11px;
+  letter-spacing: 0.25em;
+  color: var(--gold-bright);
+  text-transform: uppercase;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.lock-svg {
+  width: 13px;
+  height: 13px;
+  fill: var(--gold-bright);
+  vertical-align: middle;
+}
+
+.premium-content {
+  position: relative;
+  min-height: 260px;
+}
+
+.premium-items {
+  filter: blur(5px);
+  user-select: none;
+  pointer-events: none;
+  transition: filter 0.5s;
+}
+
+.premium-section.unlocked .premium-items {
+  filter: none;
+  user-select: auto;
+  pointer-events: auto;
+}
+
+.premium-overlay {
+  position: absolute;
+  inset: -10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  background: radial-gradient(circle at center,
+    rgba(10, 8, 22, 0.6),
+    rgba(10, 8, 22, 0.95) 70%);
+  border-radius: 6px;
+  padding: 20px;
+}
+
+.premium-section.unlocked .premium-overlay { display: none; }
+
+.premium-icon {
+  width: 44px;
+  height: 44px;
+  margin-bottom: 14px;
+  opacity: 0.9;
+}
+
+.premium-pitch {
+  font-size: 20px;
+  color: var(--gold-bright);
+  margin-bottom: 10px;
+  letter-spacing: 0.1em;
+  font-weight: 300;
+}
+
+.premium-sub {
+  font-size: 13px;
+  color: var(--cream);
+  opacity: 0.85;
+  margin-bottom: 22px;
+  max-width: 420px;
+  line-height: 1.85;
+}
+
+.cta-button {
+  background: linear-gradient(135deg, var(--gold), var(--gold-bright));
+  color: #1a1338;
+  border: none;
+  padding: 13px 32px;
+  font-size: 12px;
+  letter-spacing: 0.25em;
+  font-weight: 700;
+  text-transform: uppercase;
+  border-radius: 7px;
+  cursor: pointer;
+  transition: all 0.25s;
+}
+
+.cta-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(212, 175, 55, 0.45);
+}
+
+.cta-price {
+  margin-top: 14px;
+  font-size: 11px;
+  color: var(--text-muted);
+  letter-spacing: 0.18em;
+}
+
+@media (max-width: 700px) {
+  .summary-card { padding: 26px 22px; }
+  .summary-lead { font-size: 17px; }
+  .modal { padding: 32px 22px 26px; }
+  .modal-value { font-size: 30px; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1><span class="deco">✦</span>COSMIC ID<span class="deco">✦</span></h1>
+    <p class="subtitle">あなたの中に書かれた、十九の物語</p>
+  </header>
+
+  <div class="form-card">
+    <form id="form">
+      <div class="form-row">
+        <div>
+          <label>お名前</label>
+          <input type="text" id="name" placeholder="例:山田 太郎" required>
+        </div>
+        <div>
+          <label>生年月日</label>
+          <input type="date" id="birthdate" required>
+        </div>
+        <button type="submit">読み解く</button>
+      </div>
+    </form>
+  </div>
+
+  <div class="premium-toggle">
+    <label title="プレミアム購入後の体験をプレビューします">
+      <input type="checkbox" id="demo-premium"> プレミアム体験(デモ)
+    </label>
+  </div>
+
+  <div class="results" id="results"></div>
+
+  <!-- ===== モーダル ===== -->
+  <div class="modal-backdrop" id="modal">
+    <div class="modal">
+      <button class="modal-close" id="modal-close" aria-label="閉じる">×</button>
+      <div id="modal-body"></div>
+    </div>
+  </div>
+
+  <footer>
+    COSMIC ID — Personal Cosmology Prototype<br>
+    すべての解釈は一つの可能性。あなたの物語はあなたが書く。
+  </footer>
+</div>
+
+<script>
+'use strict';
+
+// ============ 数秘術 ============
+function reduceDigit(n, keepMaster) {
+  while (n > 9) {
+    if (keepMaster && (n === 11 || n === 22 || n === 33)) return n;
+    n = String(n).split('').reduce((s, c) => s + +c, 0);
+  }
+  return n;
+}
+
+function lifePath(y, m, d) {
+  let sum = String(y).split('').reduce((s, c) => s + +c, 0)
+          + String(m).split('').reduce((s, c) => s + +c, 0)
+          + String(d).split('').reduce((s, c) => s + +c, 0);
+  return reduceDigit(sum, true);
+}
+
+const lifePathMeanings = {
+  1: { label: '指導者・開拓者', desc: '独立心と先駆性を持つ魂。新しい道を切り拓くために来た。' },
+  2: { label: '調和者・協力者', desc: '繊細な感受性で人と人を結ぶ。受容と直感の人。' },
+  3: { label: '表現者・芸術家', desc: '創造性と喜びを世界に広げる。言葉と色彩の使い手。' },
+  4: { label: '建設者・職人', desc: '堅実に基盤を築く魂。秩序と忍耐で形を成す。' },
+  5: { label: '自由人・冒険者', desc: '変化と経験を糧にする。風のように制約を嫌う。' },
+  6: { label: '愛の人・調停者', desc: '家族や共同体への深い愛情。美しさと責任を担う。' },
+  7: { label: '探求者・神秘家', desc: '内側に深く潜る魂。真理を求める静かな観察者。' },
+  8: { label: '実現者・経営者', desc: '物質と精神の両方を司る力。豊かさを形にする。' },
+  9: { label: '人道家・完成者', desc: '広く愛し、手放すことを知る魂。一つの旅の完成形。' },
+  11: { label: 'マスター11 — 啓示者', desc: '高い直感で光を運ぶ魂。緊張と霊性の間に生きる。' },
+  22: { label: 'マスター22 — 創造者', desc: '夢を現実の建築物にする力。最も実践的な神秘家。' },
+  33: { label: 'マスター33 — 愛の教師', desc: '無条件の愛を体現する稀有な魂。' }
+};
+
+function personalYear(m, d, currentYear) {
+  const sum = reduceDigit(m, false) + reduceDigit(d, false) + reduceDigit(currentYear, false);
+  return reduceDigit(sum, false);
+}
+
+const personalYearMeanings = {
+  1: '種まきの年。新しいサイクルの始まり。',
+  2: '育成の年。協力と忍耐が鍵。',
+  3: '表現の年。喜びと社交を楽しむ。',
+  4: '構築の年。地道に基盤を固める。',
+  5: '変化の年。動きと自由を求める。',
+  6: '責任の年。家族や愛が中心になる。',
+  7: '内省の年。静けさと学びの時。',
+  8: '収穫の年。物質的成功が形になる。',
+  9: '完結の年。手放しと総括の季節。'
+};
+
+// ============ 西洋占星術 ============
+function sunSign(month, day) {
+  const signs = [
+    { name: '山羊座', symbol: '♑', element: '地', from: [12, 22], to: [1, 19], desc: '堅実、責任感、達成への意志。' },
+    { name: '水瓶座', symbol: '♒', element: '風', from: [1, 20], to: [2, 18], desc: '革新、独立、人類愛。' },
+    { name: '魚座',   symbol: '♓', element: '水', from: [2, 19], to: [3, 20], desc: '感受性、夢、共感の海。' },
+    { name: '牡羊座', symbol: '♈', element: '火', from: [3, 21], to: [4, 19], desc: '行動力、先駆性、純粋な情熱。' },
+    { name: '牡牛座', symbol: '♉', element: '地', from: [4, 20], to: [5, 20], desc: '安定、感性、五感の喜び。' },
+    { name: '双子座', symbol: '♊', element: '風', from: [5, 21], to: [6, 21], desc: '好奇心、知性、コミュニケーション。' },
+    { name: '蟹座',   symbol: '♋', element: '水', from: [6, 22], to: [7, 22], desc: '情緒、家庭、守る愛。' },
+    { name: '獅子座', symbol: '♌', element: '火', from: [7, 23], to: [8, 22], desc: '自己表現、創造性、王者の風格。' },
+    { name: '乙女座', symbol: '♍', element: '地', from: [8, 23], to: [9, 22], desc: '分析、奉仕、完成度への愛。' },
+    { name: '天秤座', symbol: '♎', element: '風', from: [9, 23], to: [10, 23], desc: '調和、美意識、関係性。' },
+    { name: '蠍座',   symbol: '♏', element: '水', from: [10, 24], to: [11, 22], desc: '深層、変容、絶対的な情熱。' },
+    { name: '射手座', symbol: '♐', element: '火', from: [11, 23], to: [12, 21], desc: '探求、自由、哲学的視野。' }
+  ];
+  for (const s of signs) {
+    const [fm, fd] = s.from, [tm, td] = s.to;
+    if (fm === tm) {
+      if (month === fm && day >= fd && day <= td) return s;
+    } else if ((month === fm && day >= fd) || (month === tm && day <= td)) {
+      return s;
+    }
+  }
+  return signs[0];
+}
+
+// ============ 十二支 ============
+function chineseZodiac(year) {
+  const animals = [
+    { name: '子(ねずみ)', char: '鼠', desc: '機敏で賢い。チャンスを見逃さない。' },
+    { name: '丑(うし)',   char: '牛', desc: '忍耐強く堅実。一歩ずつ確実に。' },
+    { name: '寅(とら)',   char: '虎', desc: '勇敢で情熱的。風のように動く。' },
+    { name: '卯(うさぎ)', char: '兎', desc: '優雅で繊細。和を尊ぶ。' },
+    { name: '辰(たつ)',   char: '龍', desc: '理想と気高さ。スケールの大きい魂。' },
+    { name: '巳(へび)',   char: '蛇', desc: '直感と神秘。深く静かに見抜く。' },
+    { name: '午(うま)',   char: '馬', desc: '自由と疾走。情熱を駆けさせる。' },
+    { name: '未(ひつじ)', char: '羊', desc: '優しさと芸術性。温かい共感者。' },
+    { name: '申(さる)',   char: '猿', desc: '知性と機転。好奇心の達人。' },
+    { name: '酉(とり)',   char: '鶏', desc: '誇り高く几帳面。声を持つ存在。' },
+    { name: '戌(いぬ)',   char: '犬', desc: '忠誠と正義。信頼の番人。' },
+    { name: '亥(いのしし)', char: '猪', desc: '率直で勇敢。まっすぐに突き進む。' }
+  ];
+  return animals[((year - 4) % 12 + 12) % 12];
+}
+
+// ============ 六十干支 (年柱) ============
+function sixtyJikkan(year) {
+  const stems    = ['甲','乙','丙','丁','戊','己','庚','辛','壬','癸'];
+  const branches = ['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'];
+  const elements = ['木','火','土','金','水'];
+  const yinyang  = ['陽','陰'];
+  const idx = ((year - 4) % 60 + 60) % 60;
+  return {
+    name: stems[idx % 10] + branches[idx % 12],
+    element: elements[Math.floor((idx % 10) / 2)],
+    yinyang: yinyang[(idx % 10) % 2]
+  };
+}
+
+// ============ 九星気学 (本命星) ============
+function kyuseiHonmei(year, month, day) {
+  let y = year;
+  if (month === 1 || (month === 2 && day < 4)) y = year - 1;
+  const digitSum = reduceDigit(String(y).split('').reduce((s, c) => s + +c, 0), false);
+  let star = 11 - digitSum;
+  if (star > 9) star -= 9;
+  if (star < 1) star += 9;
+  const stars = [
+    null,
+    { name: '一白水星', element: '水', desc: '柔軟で内省的。流れに沿って深く根を張る。' },
+    { name: '二黒土星', element: '土', desc: '献身と勤勉。大地のように育む。' },
+    { name: '三碧木星', element: '木', desc: '若芽の勢い。発信と行動の星。' },
+    { name: '四緑木星', element: '木', desc: '風のように穏やか。縁を運ぶ。' },
+    { name: '五黄土星', element: '土', desc: '中央の星。強い磁力で人を引き寄せる。' },
+    { name: '六白金星', element: '金', desc: '天と権威。誇り高く完璧を志す。' },
+    { name: '七赤金星', element: '金', desc: '喜びと社交。場を華やかにする。' },
+    { name: '八白土星', element: '土', desc: '山の星。変化と相続、不動の意志。' },
+    { name: '九紫火星', element: '火', desc: '光と美意識。直感的に輝きを放つ。' }
+  ];
+  return stars[star];
+}
+
+// ============ 動物占い (簡易版) ============
+function animalUranai(year, month, day) {
+  const animals = [
+    '黒ひょう','ペガサス','猿','子守熊','虎','たぬき',
+    'コアラ','ゾウ','チータ','ライオン','狼','ひつじ'
+  ];
+  const ref = new Date(Date.UTC(1925, 3, 23));
+  const birth = new Date(Date.UTC(year, month - 1, day));
+  const days = Math.floor((birth - ref) / 86400000);
+  const num = ((days % 60) + 60) % 60 + 1;
+  const idx = (num - 1) % 12;
+  return { num, name: animals[idx] };
+}
+
+const animalDesc = {
+  '黒ひょう': '美意識と新しさへの嗅覚。クールな格好良さ。',
+  'ペガサス': '自由奔放な天才肌。発想に翼がある。',
+  '猿':       'サービス精神と好奇心。場を読む達人。',
+  '子守熊':   '思考型でこだわり強め。研究者気質。',
+  '虎':       '堂々とした包容力。ゆったり構える王者。',
+  'たぬき':   '人当たりが良く、柔らかい知恵者。',
+  'コアラ':   '癒し系で観察力が鋭い。マイペース。',
+  'ゾウ':     '努力家でパワフル。継続する力。',
+  'チータ':   '瞬発力と単独行動。直線的に駆け抜ける。',
+  'ライオン': '誇りと品格。注目を浴びる星のもとに生まれる。',
+  '狼':       '一匹で深く考える。独自の世界を持つ。',
+  'ひつじ':   '人情味と協調性。仲間と動くと光る。'
+};
+
+// ============ マヤ暦 KIN ============
+function mayaKin(year, month, day) {
+  const ref = new Date(Date.UTC(2013, 6, 26));
+  const birth = new Date(Date.UTC(year, month - 1, day));
+  const days = Math.floor((birth - ref) / 86400000);
+  const kin = (((days + 33 - 1) % 260) + 260) % 260 + 1;
+  const seals = [
+    '赤い龍','白い風','青い夜','黄色い種','赤い蛇',
+    '白い世界の橋渡し','青い手','黄色い星','赤い月','白い犬',
+    '青い猿','黄色い人','赤い空歩く人','白い魔法使い','青い鷲',
+    '黄色い戦士','赤い地球','白い鏡','青い嵐','黄色い太陽'
+  ];
+  const tones = [
+    '磁気の','月の','電気の','自己存在の','倍音の','律動の',
+    '共振の','銀河の','太陽の','惑星の','スペクトルの','水晶の','宇宙の'
+  ];
+  return {
+    kin,
+    seal: seals[(kin - 1) % 20],
+    tone: tones[(kin - 1) % 13]
+  };
+}
+
+// ============ タロット バースカード ============
+const tarotMeanings = {
+  '魔術師':       '意志と創造の人。可能性を形にする。',
+  '女教皇':       '直感と神秘。語らないことで多くを伝える。',
+  '女帝':         '豊かさと愛。育む力の象徴。',
+  '皇帝':         '構造と権威。安定を築く意志。',
+  '教皇':         '伝統と教え。橋渡しをする人。',
+  '恋人':         '選択と結合。心の方向を決める旅。',
+  '戦車':         '前進と意志。困難を制御して進む。',
+  '力':           '静かな勇気。柔らかさで強さを示す。',
+  '隠者':         '内なる光。一人で真理を求める。',
+  '運命の輪':     '転機の人。サイクルの中に生きる。',
+  '正義':         'バランスと真実。公正な判断者。',
+  '吊るされた男': '視点の転換。逆さまから見えるもの。',
+  '死神':         '終わりと再生。深く変容する魂。',
+  '節制':         '調和と統合。両極を混ぜ合わせる。',
+  '悪魔':         '欲望と影。原始の力との対峙。',
+  '塔':           '破壊と啓示。古い殻を打ち砕く。',
+  '星':           '希望と導き。静かに光を放つ存在。',
+  '月':           '幻と直感。夢の領域を旅する。',
+  '太陽':         '喜びと顕現。光そのもの。',
+  '審判':         '目覚めと召命。新しい段階への呼びかけ。',
+  '世界':         '完成と統合。一つの旅を全うする魂。',
+  '愚者':         '無垢な始まり。何ものにも縛られない自由。'
+};
+const tarotByNum = [
+  '愚者','魔術師','女教皇','女帝','皇帝','教皇','恋人','戦車','力','隠者',
+  '運命の輪','正義','吊るされた男','死神','節制','悪魔','塔','星','月','太陽','審判','世界'
+];
+
+function tarotBirthCard(y, m, d) {
+  let sum = y + m + d;
+  while (sum > 22) sum = String(sum).split('').reduce((s, c) => s + +c, 0);
+  return { num: sum, name: tarotByNum[sum] };
+}
+
+// ============ ケルト樹木占い ============
+function celticTree(month, day) {
+  const trees = [
+    { name: '樺(バーチ)',         range: [[12, 24], [1, 20]], desc: '始まり・浄化・粘り強さ。' },
+    { name: '七竈(ロワン)',       range: [[1, 21], [2, 17]],  desc: 'インスピレーションと守護。' },
+    { name: '梣(アッシュ)',       range: [[2, 18], [3, 17]],  desc: '感受性・夢想・つながり。' },
+    { name: '榛(アルダー)',       range: [[3, 18], [4, 14]],  desc: '勇気と先駆性。' },
+    { name: '柳(ウィロー)',       range: [[4, 15], [5, 12]],  desc: '月のような直感。' },
+    { name: '山査子(ホーソーン)', range: [[5, 13], [6, 9]],   desc: '内なる炎を秘める。' },
+    { name: '樫(オーク)',         range: [[6, 10], [7, 7]],   desc: '強さと指導力。' },
+    { name: '柊(ホリー)',         range: [[7, 8], [8, 4]],    desc: '威厳と保護。' },
+    { name: '榛(ヘーゼル)',       range: [[8, 5], [9, 1]],    desc: '知識と洞察。' },
+    { name: '葡萄(ヴァイン)',     range: [[9, 2], [9, 29]],   desc: '感性とバランス感覚。' },
+    { name: '蔦(アイヴィー)',     range: [[9, 30], [10, 27]], desc: '忍耐と再生。' },
+    { name: '葦(リード)',         range: [[10, 28], [11, 24]], desc: '神秘と隠れた力。' },
+    { name: '錦木(エルダー)',     range: [[11, 25], [12, 23]], desc: '完成と知恵。' }
+  ];
+  for (const t of trees) {
+    const [[fm, fd], [tm, td]] = t.range;
+    if (fm === tm) {
+      if (month === fm && day >= fd && day <= td) return t;
+    } else if ((month === fm && day >= fd) || (month === tm && day <= td)) {
+      return t;
+    }
+  }
+  return trees[0];
+}
+
+// ============ 誕生石 ============
+const birthstones = {
+  1:  { name: 'ガーネット',     meaning: '友情・真実・献身' },
+  2:  { name: 'アメジスト',     meaning: '誠実・心の平和' },
+  3:  { name: 'アクアマリン',   meaning: '勇気・聡明・幸福' },
+  4:  { name: 'ダイヤモンド',   meaning: '純粋・不変の愛' },
+  5:  { name: 'エメラルド',     meaning: '幸運・幸福' },
+  6:  { name: 'パール',         meaning: '健康・長寿・富' },
+  7:  { name: 'ルビー',         meaning: '情熱・勝利・威厳' },
+  8:  { name: 'ペリドット',     meaning: '夫婦の幸福・心の平和' },
+  9:  { name: 'サファイア',     meaning: '誠実・慈愛' },
+  10: { name: 'オパール',       meaning: '希望・幸福・無邪気' },
+  11: { name: 'トパーズ',       meaning: '友情・希望' },
+  12: { name: 'ターコイズ',     meaning: '成功・繁栄' }
+};
+
+const birthflowers = {
+  1: 'カーネーション',  2: 'スミレ',         3: 'スイセン',
+  4: 'スイートピー',    5: 'スズラン',       6: 'バラ',
+  7: 'ユリ',            8: 'グラジオラス',   9: 'リンドウ',
+  10: 'コスモス',       11: '菊',            12: 'ポインセチア'
+};
+
+// ============ バイオリズム ============
+function biorhythm(y, m, d) {
+  const birth = new Date(y, m - 1, d);
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const days = Math.floor((today - birth) / 86400000);
+  return {
+    days,
+    physical:     Math.sin(2 * Math.PI * days / 23),
+    emotional:    Math.sin(2 * Math.PI * days / 28),
+    intellectual: Math.sin(2 * Math.PI * days / 33),
+    intuitive:    Math.sin(2 * Math.PI * days / 38)
+  };
+}
+
+// ============ 今日の月相 ============
+function moonPhaseToday() {
+  const ref = new Date(Date.UTC(2000, 0, 6, 18, 14));
+  const now = new Date();
+  const days = (now - ref) / 86400000;
+  const cycle = 29.530588;
+  const phase = (((days % cycle) + cycle) % cycle) / cycle;
+  let name;
+  if (phase < 0.03 || phase > 0.97)      name = '新月';
+  else if (phase < 0.22)                  name = '三日月(若月)';
+  else if (phase < 0.28)                  name = '上弦の月';
+  else if (phase < 0.47)                  name = '十三夜・満ちゆく月';
+  else if (phase < 0.53)                  name = '満月';
+  else if (phase < 0.72)                  name = '十六夜・欠けゆく月';
+  else if (phase < 0.78)                  name = '下弦の月';
+  else                                    name = '有明月';
+  return { phase, name };
+}
+
+// ============ 人生の節目 ============
+function lifeStage(y, m, d) {
+  const birth = new Date(y, m - 1, d);
+  const today = new Date();
+  const years = (today - birth) / (365.25 * 86400000);
+  const milestones = [
+    { age: 7,    name: '第一周期の完了',          desc: '基礎が形作られる時期。' },
+    { age: 12,   name: '第一木星回帰',            desc: '世界観の最初の拡張。' },
+    { age: 18,   name: '月のノードの入口',        desc: '魂の方向が動き始める。' },
+    { age: 24,   name: '第二木星回帰',            desc: '初めての自立的拡大。' },
+    { age: 28.5, name: '第一サターンリターン',    desc: '自分の人生を建て直す転機。' },
+    { age: 36,   name: '第三木星回帰',            desc: '社会的役割の安定化。' },
+    { age: 42,   name: 'ウラヌス・オポジション',  desc: 'ミッドライフの覚醒。' },
+    { age: 48,   name: '第四木星回帰',            desc: '熟練と発信の時期。' },
+    { age: 57,   name: '第二サターンリターン',    desc: '長年の収穫と再構築。' },
+    { age: 60,   name: '還暦',                    desc: '一巡しての新生。' },
+    { age: 72,   name: '第六木星回帰',            desc: '長老期の入口。' },
+    { age: 84,   name: 'ウラヌス・リターン',      desc: '一生の革命を見渡す。' }
+  ];
+  let next = null, prev = null;
+  for (const milestone of milestones) {
+    if (milestone.age >= years) { next = milestone; break; }
+    prev = milestone;
+  }
+  return { years, next, prev };
+}
+
+// ============ 名前の数秘 (Expression Number) ============
+function expressionNumber(name) {
+  let sum = 0;
+  for (const c of name) {
+    if (/\s/.test(c)) continue;
+    sum += c.codePointAt(0);
+  }
+  let n = sum % 9;
+  if (n === 0) n = 9;
+  return n;
+}
+
+const expressionMeanings = {
+  1: '名前のエネルギー:独自性と先駆性。',
+  2: '名前のエネルギー:協調と仲介の波動。',
+  3: '名前のエネルギー:表現と喜び。',
+  4: '名前のエネルギー:堅実と忍耐。',
+  5: '名前のエネルギー:変化と冒険。',
+  6: '名前のエネルギー:愛と責任。',
+  7: '名前のエネルギー:神秘と内省。',
+  8: '名前のエネルギー:力と実現。',
+  9: '名前のエネルギー:広い愛と完成。'
+};
+
+// ============ 今日のタロット (名前+今日) ============
+function dailyTarot(name) {
+  const today = new Date();
+  let h = today.getFullYear() * 10000 + (today.getMonth() + 1) * 100 + today.getDate();
+  for (const c of name) h = (h * 31 + c.codePointAt(0)) % 1000003;
+  const cards = Object.keys(tarotMeanings);
+  const card = cards[h % cards.length];
+  return { name: card, desc: tarotMeanings[card] };
+}
+
+// ============ 五行 (生まれ年の天干より) ============
+function gogyou(year) {
+  const els = ['木','火','土','金','水'];
+  const descs = {
+    '木': '伸びる力。新緑の朝のような前向きさ。',
+    '火': '燃える情熱。光と熱で周りを照らす。',
+    '土': '受けとめる力。中央にどっしりと座る。',
+    '金': '研ぎ澄ます力。冷たく美しい刃の知性。',
+    '水': '流れる力。深くしなやかに巡る。'
+  };
+  const idx = (((year - 4) % 10) + 10) % 10;
+  const el = els[Math.floor(idx / 2)];
+  return { element: el, desc: descs[el] };
+}
+
+// ============ 月の星座(簡易・誕生月相から推定) ============
+// 真の月星座は出生時刻が必要だが、生年月日のみから「月の傾向」を一つ示す
+function moonTrait(y, m, d) {
+  const birth = new Date(Date.UTC(y, m - 1, d));
+  const ref = new Date(Date.UTC(2000, 0, 6, 18, 14));
+  const days = (birth - ref) / 86400000;
+  const cycle = 29.530588;
+  const phase = (((days % cycle) + cycle) % cycle) / cycle;
+  const traits = [
+    { name: '新月期生まれ',     desc: '内側に芽吹くものを抱えて生まれた魂。直感的で本能的。' },
+    { name: '上弦期生まれ',     desc: '挑戦と行動の波で生まれた魂。前に出る力が強い。' },
+    { name: '満月期生まれ',     desc: '感情と意識が拮抗する魂。表現力と人を惹きつける力。' },
+    { name: '下弦期生まれ',     desc: '手放しと内省の波で生まれた魂。深さと知恵を持つ。' }
+  ];
+  let idx;
+  if (phase < 0.25) idx = 0;
+  else if (phase < 0.5) idx = 1;
+  else if (phase < 0.75) idx = 2;
+  else idx = 3;
+  return traits[idx];
+}
+
+// ============ サマリー文章の生成 ============
+function generateSummary(name, results) {
+  const { lp, sun, cz, ks, gy, an, ct, my, tb, py, currentYear, bio, mt, ls, mp } = results;
+  const lpInfo = lifePathMeanings[lp];
+  const bioAvg = (bio.physical + bio.emotional + bio.intellectual + bio.intuitive) / 4;
+  const bioState = bioAvg > 0.25
+    ? '<strong>上昇のフェーズ</strong>(行動と発信に向く)'
+    : bioAvg < -0.25
+      ? '<strong>内省のフェーズ</strong>(休息と整理に向く)'
+      : '<strong>バランスの取れたフェーズ</strong>';
+
+  return `
+    <div class="summary-label">あなたの物語</div>
+    <p class="summary-lead">
+      ${escapeHtml(name)}さんは、<strong>${lpInfo.label}</strong>の魂を持って生まれた人です。
+    </p>
+    <p>
+      西洋占星術では <strong>${sun.name}</strong>(${sun.element}のエレメント)を太陽に宿し、
+      東洋の暦では <strong>${cz.name}</strong>、九星では <strong>${ks.name}</strong> のもと、
+      <strong>${gy.element}</strong> の元素を芯に持っています。
+      動物占いでは <strong>${an.name}</strong>、ケルトの森ではあなたの守護樹は <strong>${ct.name}</strong>。
+      マヤの聖暦では <strong>KIN ${my.kin} ・ ${my.tone}${my.seal}</strong>、
+      タロットの原型は <strong>${tb.name}</strong> です。
+    </p>
+    <p>
+      ${currentYear}年の今、あなたは <strong>個人年 ${py}</strong> の波にいます。
+      バイオリズム的には ${bioState}。
+      ${mt.name}としての気質を背負いながら、今夜は <strong>${mp.name}</strong> があなたを照らします。
+      ${ls.next ? `次の人生の節目は <strong>${ls.next.age}歳の${ls.next.name}</strong>。あと <strong>${(ls.next.age - ls.years).toFixed(1)}年</strong> 先です。` : ''}
+    </p>
+    <p style="font-size:12px; color:var(--text-muted); margin-top:18px; letter-spacing:0.08em;">
+      ↓ 各カードをタップすると、より深い解釈が開きます
+    </p>
+  `;
+}
+
+// ============ 深掘りコンテンツ ============
+// 各システムの「もっと詳しく」モーダル内容。
+// free: 無料で見られる詳しい解釈(3〜4項目)
+// premium: プレミアムロックされる深層コンテンツ(3〜5項目)
+const LP_DETAILS = {
+  1: [
+    { t: '光の側面', d: '行動力と決断。誰よりも先に立ち、新しい道を切り拓く力。リーダーになるべくして来た魂。' },
+    { t: '影の側面', d: '孤立、傲慢、頑固。他者の声を聞かなくなったとき、独裁的な存在に傾く。' },
+    { t: '人生の目的', d: '自分の旗を立てること。誰かの後を歩くのではなく、自分の足跡を残すこと。' }
+  ],
+  2: [
+    { t: '光の側面', d: '共感力、調和、繊細な気配り。場の空気を読み、人と人を静かに結ぶ。' },
+    { t: '影の側面', d: '優柔不断、依存、過剰な自己犠牲。「いい人」を続けすぎて自分を見失う。' },
+    { t: '人生の目的', d: '橋渡しになること。一人では完成しない関係性の中で輝く。' }
+  ],
+  3: [
+    { t: '光の側面', d: '表現力、楽観、創造性。言葉や色彩、笑いで人を明るくする力。' },
+    { t: '影の側面', d: '気分屋、浅さ、軽薄さ。深さを避けて表層を泳ぐ癖。' },
+    { t: '人生の目的', d: '世界に喜びを足すこと。あなたが楽しむことそのものが、誰かの救いになる。' }
+  ],
+  4: [
+    { t: '光の側面', d: '勤勉、忍耐、信頼性。一つひとつ積み上げる職人気質の魂。' },
+    { t: '影の側面', d: '頑固、保守的、融通の利かなさ。変化を恐れて殻に閉じこもる。' },
+    { t: '人生の目的', d: '世界の土台を作ること。派手ではないが、なくてはならない柱になる。' }
+  ],
+  5: [
+    { t: '光の側面', d: '冒険心、柔軟性、多才。変化を糧にして自由に動く風の魂。' },
+    { t: '影の側面', d: '飽きっぽさ、衝動性、無責任。続けることへの恐れ。' },
+    { t: '人生の目的', d: '経験を集めること。一所に留まらず、世界の多様さを体に刻むこと。' }
+  ],
+  6: [
+    { t: '光の側面', d: '愛情、責任感、調停力。家族や共同体の中心にいる温かな存在。' },
+    { t: '影の側面', d: '過保護、お節介、犠牲者意識。愛が支配に変わってしまう瞬間。' },
+    { t: '人生の目的', d: '愛で世界を整えること。あなたの「気にかける」が世界を癒す。' }
+  ],
+  7: [
+    { t: '光の側面', d: '探求心、直感、分析力。深く潜って真理を引き上げる魂。' },
+    { t: '影の側面', d: '孤独、批判的、人間嫌悪。世界に対して心を閉ざしてしまう。' },
+    { t: '人生の目的', d: '知の橋渡し。一人で潜って得たものを、世に返すこと。' }
+  ],
+  8: [
+    { t: '光の側面', d: '実行力、統率力、現実化の才能。物質と精神の両方を司る力。' },
+    { t: '影の側面', d: '権力欲、強圧、お金への執着。力が暴力に変わる紙一重。' },
+    { t: '人生の目的', d: '豊かさを形にすること。富も人脈もエネルギーであり、回すために持つ。' }
+  ],
+  9: [
+    { t: '光の側面', d: '広い愛、人道精神、完成の知恵。全ての数字を統合した存在。' },
+    { t: '影の側面', d: '逃避、被害者意識、独善的な理想主義。届かない理想で疲弊する。' },
+    { t: '人生の目的', d: '一つのサイクルを完成させ、次に手渡すこと。過去を抱き、未来に解き放つ。' }
+  ],
+  11: [
+    { t: '光の側面', d: '高い直感と霊性。光のメッセンジャーとして人を導く。' },
+    { t: '影の側面', d: '神経過敏、緊張、自己否定。受信し過ぎて心が崩れる。' },
+    { t: '人生の目的', d: '見えないものを見える形にすること。橋渡しの中でも最も繊細な役。' }
+  ],
+  22: [
+    { t: '光の側面', d: 'マスター・ビルダー。夢を現実の建築物に変える稀有な力。' },
+    { t: '影の側面', d: '責任の重さに潰される、もしくは責任から逃げる。' },
+    { t: '人生の目的', d: '大きなビジョンを実現すること。一人ではなく、多くを巻き込んで。' }
+  ],
+  33: [
+    { t: '光の側面', d: 'マスター・ティーチャー。無条件の愛を体現する魂。' },
+    { t: '影の側面', d: '愛の名のもとの支配、もしくは愛の枯渇。' },
+    { t: '人生の目的', d: '愛を教えることそのもの。生き方が教科書になる存在。' }
+  ]
+};
+
+function premiumGeneric(systemLabel, valueLabel) {
+  return [
+    { t: '10年運気の波', d: `${valueLabel}としての${systemLabel}は、9年サイクルで運気の波を受けます。次のピーク年、注意年、種まきに最適な月までを詳細に。` },
+    { t: '相性診断', d: `あなたとエネルギーが共鳴するタイプ、刺激し合えるタイプ、注意すべきタイプを12象限で完全解説。` },
+    { t: '職業適性', d: `${valueLabel}が最も生きる職種、向かない職種、副業としての発揮の仕方まで。現代のキャリアマップに照らして読み解きます。` },
+    { t: '魂の課題', d: 'あなたが今生で乗り越えるべき、最も大切な課題と、その兆候の見抜き方。' },
+    { t: '同じ星を持つ著名人', d: '歴史上・現代の有名人で同じエネルギーを持つ100人のリスト。彼らの人生の選択から学ぶ。' }
+  ];
+}
+
+function buildDeep(cardKey, ctx) {
+  const { lp, py, en, sun, mt, cz, sj, ks, gy, an, ct, my, tb, dt, bs, bf, bio, mp, ls } = ctx;
+
+  switch (cardKey) {
+    case 'lifepath': return {
+      title: 'ライフパスナンバー',
+      value: lp,
+      label: lifePathMeanings[lp].label,
+      intro: `ライフパスナンバー${lp}は、あなたの人生の主旋律。生まれてくる前にあなたの魂が選んだ役柄を示します。${lifePathMeanings[lp].desc}`,
+      free: LP_DETAILS[lp] || [
+        { t: '光の側面', d: 'あなたの最大のギフトはここに眠っています。' },
+        { t: '影の側面', d: 'バランスを失ったとき、こちらが顔を出します。' },
+        { t: '人生の目的', d: 'この道を選んだ意味。' }
+      ],
+      premium: premiumGeneric('ライフパス', String(lp))
+    };
+
+    case 'personalYear': return {
+      title: '今年の個人年',
+      value: py,
+      label: `${ctx.currentYear}年のあなた`,
+      intro: `個人年は、9年周期で巡るあなた固有のリズム。今年は ${py} の年です。${personalYearMeanings[py]}この波に逆らわず、波に合った行動を選ぶと運気が滑らかになります。`,
+      free: [
+        { t: '今年の追い風', d: `${personalYearMeanings[py]}この方向への動きは祝福を受けやすい。` },
+        { t: '今年の落とし穴', d: `逆に「${personalYearMeanings[(py % 9) + 1]}」のような前の波に未練を残すと停滞します。` },
+        { t: '来年の予兆', d: `来年は個人年 ${(py % 9) + 1}。${personalYearMeanings[(py % 9) + 1] || '新しいサイクルへの転換期。'}今年の選択が来年の起点になります。` }
+      ],
+      premium: [
+        { t: '月別の運気カレンダー', d: '個人月・個人日まで分解した12ヶ月の波。最も動くべき月、待つべき月、決断の月を特定。' },
+        { t: '今年のキーワード', d: 'あなただけに与えられた今年のキーワード3つ。判断に迷ったときの羅針盤。' },
+        { t: '今年の出会い', d: '今年あなたの人生に現れる縁の種類、来る方角、見分け方。' },
+        { t: '注意すべき月', d: '健康・金運・対人で揺らぎやすい時期と、整える儀式。' }
+      ]
+    };
+
+    case 'expression': return {
+      title: 'お名前の数字',
+      value: en,
+      label: expressionMeanings[en].replace('名前のエネルギー:', ''),
+      intro: `あなたの名前は、声に出されるたびに ${en} のエネルギーを世界に放っています。これは生まれた瞬間の数(ライフパス)とは別の、「あなたが呼ばれる響き」の数字です。`,
+      free: [
+        { t: '名前が呼ぶ運命', d: `${en}の波動は、${expressionMeanings[en].split(':')[1]}という気質を周囲に伝えます。` },
+        { t: 'ライフパスとの関係', d: `ライフパス${lp}との組み合わせで、内側(本質)と外側(響き)のバランスが見えてきます。` },
+        { t: '改名のヒント', d: 'もし今の名前が苦しい時、ニックネームや屋号で別の数字を持つことで、別の波長を呼び込めます。' }
+      ],
+      premium: premiumGeneric('名前数', String(en))
+    };
+
+    case 'sun': return {
+      title: '太陽星座',
+      value: `${sun.symbol} ${sun.name}`,
+      label: `${sun.element}のエレメント`,
+      intro: `太陽星座は、あなたの「自我の核」を示します。${sun.name}を太陽に持つあなたは、${sun.desc}この星座は、12年の周期で同じ位置に戻り、あなたの誕生日にあなたを照らした太陽の場所そのものです。`,
+      free: [
+        { t: 'この星座の核心', d: `${sun.name}は、${sun.element}のエレメントに属し、独特の世界観を持ちます。${sun.desc}` },
+        { t: '輝く瞬間', d: `${sun.name}が最も輝くのは、自分のエレメントに合った環境にいるとき。${sun.element}の性質を生かせる場を選びましょう。` },
+        { t: '影との付き合い方', d: 'どの星座にも光と影があります。光を選び続けるための日々の習慣が、人生の質を変えます。' }
+      ],
+      premium: [
+        { t: '月星座・アセンダント', d: '太陽だけが星座ではありません。出生時刻と場所から、月と上昇宮を計算し、3つの星の交響曲を読み解きます。' },
+        { t: '12ハウス完全解析', d: 'あなたの星座が12のハウス(人生領域)にどう配置されているかを完全可視化。' },
+        { t: '主要トランジット', d: '今後3年間、外天体があなたのチャートに与える影響を月単位で予測。' },
+        { t: '相性チャート', d: 'パートナーや家族との星座シナストリーを5層で分析。' },
+        { t: '前世のチャート', d: '月のノードから読み解く、あなたの魂の過去のテーマと今生の宿題。' }
+      ]
+    };
+
+    case 'moonTrait': return {
+      title: '月の傾向',
+      value: mt.name,
+      label: '誕生時の月の位相から',
+      intro: `あなたが生まれた瞬間、空にかかっていた月の形が、あなたの感情のリズムの「クセ」を作っています。${mt.desc}`,
+      free: [
+        { t: '感情の癖', d: 'この月相に生まれた人特有の、感情の動き方のパターン。' },
+        { t: '月との付き合い方', d: '満月の夜、新月の夜、上弦・下弦の日、それぞれに何を行うと整うかが見えてきます。' },
+        { t: '夢日記の薦め', d: '月の傾向が強い人は、夢が大切なメッセージを運びます。朝の3分で記録する習慣を。' }
+      ],
+      premium: [
+        { t: '正確な月星座', d: '出生時刻と場所を入力すると、太陽星座とは全く違うもう一つの星座が現れます。これがあなたの本当の感情の言語。' },
+        { t: '月のフェーズ運勢', d: '今月から12ヶ月、月相ごとの開運アクション。' },
+        { t: '月のリチュアル', d: '毎月の新月・満月にあなたに合ったセレモニーの組み方。' }
+      ]
+    };
+
+    case 'zodiac': return {
+      title: '十二支',
+      value: cz.name,
+      label: `${cz.char}年生まれ`,
+      intro: `${cz.name}は、12年周期で巡る東洋の暦の中の、あなたが選んで生まれた動物です。${cz.desc}同じ干支の人は12歳ごとに節目を迎えます。`,
+      free: [
+        { t: '十二支の核心', d: cz.desc },
+        { t: '本卦の歳', d: '12年ごとに自分の干支の年が巡ります。これは「本卦の歳」と呼ばれ、人生の節目になりやすい年。' },
+        { t: '相性のヒント', d: '六合(最強相性)・三合(良縁)・冲(刺激)など、十二支の組み合わせには深い意味があります。' }
+      ],
+      premium: [
+        { t: '六合・三合・冲の関係図', d: 'あなたの干支と他の干支の完全な関係マップ。家族・恋人・上司との力学が見える。' },
+        { t: '時辰(生まれ時刻の干支)', d: '生年だけでなく、生まれた時刻もまた一つの干支を持ちます。これが内面の干支。' },
+        { t: '十二運星', d: 'あなたが今、人生の十二段階のどこにいるか。出産期、成長期、繁栄期、衰退期、再生期…。' }
+      ]
+    };
+
+    case 'sixty': return {
+      title: '年柱(六十干支)',
+      value: sj.name,
+      label: `${sj.yinyang}${sj.element}`,
+      intro: `六十干支は、十干と十二支の組み合わせで生まれる60種類の刻印。同じ年柱の人は60年に一度しか巡ってきません。あなたは ${sj.yinyang}${sj.element}の性質を年柱に持ちます。`,
+      free: [
+        { t: 'あなたの天干', d: `${sj.name[0]}の天干は、${sj.yinyang}の${sj.element}を表し、性格の土台を形成します。` },
+        { t: 'あなたの地支', d: `${sj.name[1]}の地支は、運命の流れを示し、12年周期で同じ位置に戻ります。` },
+        { t: '同じ年柱の特徴', d: '60年に一度しか巡らない刻印のため、世代を超えた共通点を持つ稀な仲間です。' }
+      ],
+      premium: [
+        { t: '四柱全ての干支', d: '年柱だけでなく、月柱・日柱・時柱の四本柱を全て計算。あなたの命式が完成します。' },
+        { t: '通変星と十二運', d: '四柱推命の核心。あなたの社会性、財運、家族運、健康運の全てが見える。' },
+        { t: '大運10年運気', d: '人生を10年ごとに区切った大運。あなたが今どの大運の中にいるか、次の大運は何か。' }
+      ]
+    };
+
+    case 'kyusei': return {
+      title: '本命星(九星気学)',
+      value: ks.name,
+      label: `${ks.element}の星`,
+      intro: `九星気学は、生まれた年から「本命星」を割り出す日本独自の占術。${ks.name}を本命星に持つあなたは、${ks.desc}この星は9年周期で運気の循環を作ります。`,
+      free: [
+        { t: '本命星の本質', d: ks.desc },
+        { t: '九年周期', d: '本命星の運気は9年で一巡。種まき・育成・収穫・整理の4季が循環します。' },
+        { t: '吉方位の基本', d: '九星気学では、本命星と月命星の組み合わせで吉方位が決まります。引越し・旅行・転職の方角で運気が変わります。' }
+      ],
+      premium: [
+        { t: '月命星と日命星', d: '本命星だけでなく、月命星と日命星まで計算。三つ星の組み合わせがあなたの完全な気学プロフィール。' },
+        { t: '今年・来年の吉方位', d: '毎年変わるあなた専用の吉方位カレンダー。最大吉方の月までピンポイントで。' },
+        { t: '同会・被同会の年', d: '人生の大きな転機が訪れる年と、その兆候の見方。' },
+        { t: '相性の星', d: '本命星同士の相性表を5層で展開。家族・恋人・職場で誰と組むと最高か。' }
+      ]
+    };
+
+    case 'gogyou': return {
+      title: '五行',
+      value: gy.element,
+      label: '生まれ年の元素',
+      intro: `五行は、世界を構成する5つの基本元素。あなたは生まれた年に ${gy.element} の元素を芯に持って来ました。${gy.desc}`,
+      free: [
+        { t: 'あなたの元素', d: gy.desc },
+        { t: '相生(助ける)関係', d: '木は火を生み、火は土を生み、土は金を生み、金は水を生み、水は木を生む。あなたを助ける元素を持つ人を見つけましょう。' },
+        { t: '相剋(抑える)関係', d: '木は土を剋し、土は水を剋し、水は火を剋し、火は金を剋し、金は木を剋す。あなたを抑える関係は、緊張と成長を生みます。' }
+      ],
+      premium: [
+        { t: 'あなたの五行バランス', d: '生年月日時から五行の比率を計算。何が多く、何が足りないかが見える。' },
+        { t: '不足元素の補い方', d: '色、食材、方位、宝石、習慣で足りない元素を補う実践リスト。' },
+        { t: '相性の五行マップ', d: '相手の五行と比べた完全相性チャート。あなたを支える人、消耗させる人が一目瞭然。' }
+      ]
+    };
+
+    case 'animal': return {
+      title: '動物占い',
+      value: an.name,
+      label: `個性番号 ${an.num}/60`,
+      intro: `動物占いは、生年月日から60の個性番号を割り出し、12の動物に分類する人気の占術。あなたは ${an.name}。${animalDesc[an.name] || ''}`,
+      free: [
+        { t: '基本キャラ', d: animalDesc[an.name] || '' },
+        { t: 'グループ分類', d: '12の動物は、月グループ(夢想型)・地球グループ(現実型)・太陽グループ(感性型)の3つに分かれます。' },
+        { t: '個性番号の意味', d: `あなたの個性番号は ${an.num}。60の中での位置は、より細かい性格を示します。` }
+      ],
+      premium: [
+        { t: '60分類の完全プロフィール', d: `個性番号 ${an.num} の詳細解説。同じ番号は60日に一度しか生まれません。` },
+        { t: 'リーダータイプ or 補佐タイプ', d: '同じ動物でも、リーダー型と補佐型に分かれます。あなたの本当の役回り。' },
+        { t: '12動物との相性表', d: '恋愛・仕事・友人それぞれの相性を全60×60組で完全マッピング。' },
+        { t: '隠れキャラ', d: '表のキャラの裏に隠れた、もう一つのあなた。ストレス時に出てくる動物。' }
+      ]
+    };
+
+    case 'celtic': return {
+      title: 'ケルト樹木占い',
+      value: ct.name,
+      label: '13本の木のうちの一本',
+      intro: `古代ケルトのドルイドたちは、1年を13ヶ月の月の暦に分け、それぞれの月を一本の木に対応させました。あなたの守護樹は ${ct.name}。${ct.desc}`,
+      free: [
+        { t: '守護樹の力', d: ct.desc },
+        { t: 'ドルイドの智慧', d: 'ケルトの森では、すべての木が違う霊性を持つとされました。あなたの木は、あなたの魂が森から借りてきた精霊です。' },
+        { t: '木との儀式', d: 'あなたの守護樹の前で深呼吸をする、葉を一枚拾って持つ、それだけで心の中の何かが整います。' }
+      ],
+      premium: [
+        { t: 'オガム文字', d: '各樹木に対応する古代ケルト文字。あなただけのシンボルとして、お守りに刻める。' },
+        { t: '守護動物・守護石', d: '樹木と組になって現れる、あなたの守護動物と石の組み合わせ。' },
+        { t: '季節のリチュアル', d: '春分・夏至・秋分・冬至、4つの祭日にあなたの木と行う儀式。' },
+        { t: '相性の樹', d: 'ケルトの森の中で、どの木と組むと最も豊かな実りが得られるか。' }
+      ]
+    };
+
+    case 'maya': return {
+      title: 'マヤ暦 KIN',
+      value: `KIN ${my.kin}`,
+      label: `${my.tone}${my.seal}`,
+      intro: `マヤの聖なる暦・ツォルキンは260日の循環で、260のKINがあります。あなたのKINは ${my.kin}、紋章は「${my.seal}」、銀河の音は「${my.tone}」。紋章はあなたの本質、音はあなたのリズム。`,
+      free: [
+        { t: '紋章の意味', d: `${my.seal}は、20種類ある紋章の一つ。あなたの本質を表すシンボルです。` },
+        { t: '銀河の音の意味', d: `${my.tone}は、13ある音のリズム。あなたの人生のテンポを示します。` },
+        { t: 'KIN番号の固有性', d: 'あなたと同じKINを持つ人は260日に一度しか生まれません。世界に約2,500万人の仲間がいます。' }
+      ],
+      premium: [
+        { t: 'ガイドKIN・反対KIN・類似KIN', d: 'あなたを導くKIN、鏡となるKIN、エネルギーを共鳴させるKINを完全特定。' },
+        { t: '13日間のウェイブスペル', d: 'あなたの人生の13日間サイクル。今どの位置にいるか、次の波は何か。' },
+        { t: '銀河のシグネチャー', d: 'あなたの完全な銀河の名前。KIN番号+紋章+音+城+チャクラまで。' },
+        { t: '今日のKINリーディング', d: '毎日のKINとあなたのKINの関係を読み解く、デイリーマヤカレンダー。' }
+      ]
+    };
+
+    case 'tarotBirth': return {
+      title: 'タロット バースカード',
+      value: tb.name,
+      label: `大アルカナ ${tb.num}`,
+      intro: `タロットの大アルカナ22枚のうち、生年月日から計算される一枚があなたの「魂のテーマカード」です。あなたは ${tb.name}。${tarotMeanings[tb.name]}`,
+      free: [
+        { t: 'このカードの核心', d: tarotMeanings[tb.name] },
+        { t: '数字の象徴', d: `${tb.num}という数字は、タロットにおいて独自の意味を持ちます。あなたの人生はこの数字が織りなす旅。` },
+        { t: '逆位置の警告', d: 'すべてのカードには影があります。あなたのカードが逆さに出るとき、何が起きているかを知る。' }
+      ],
+      premium: [
+        { t: '小アルカナのパーソナルカード', d: '大アルカナの背後で動く小アルカナのスート(剣・杯・棒・金貨)を計算。' },
+        { t: '今年のテーマカード', d: '毎年変わる「今年のあなたのカード」。今年は何を学び、何を手放すか。' },
+        { t: 'シャドウカード', d: 'バースカードの影に隠れている、もう一枚のあなた。意識下のテーマ。' },
+        { t: '7枚スプレッドのフルリーディング', d: '過去・現在・未来・障害・希望・無意識・結論の7枚で読む人生スプレッド。' }
+      ]
+    };
+
+    case 'tarotDaily': return {
+      title: '今日のカード',
+      value: dt.name,
+      label: '今日のあなたへ',
+      intro: `今日というこの日、あなたの名前と日付の組み合わせから引かれた一枚のカードは ${dt.name}。${dt.desc}`,
+      free: [
+        { t: '今日のメッセージ', d: dt.desc },
+        { t: 'このカードを引いた意味', d: 'カードは偶然引かれるのではなく、必要なときに必要なメッセージを運びます。' },
+        { t: '今日の過ごし方', d: 'このカードのエネルギーに沿った一日を意識すると、不思議と物事がスムーズに進みます。' }
+      ],
+      premium: [
+        { t: '一週間のカードリーディング', d: '今日から7日間のカード展開。日ごとのテーマと選び取るべき行動。' },
+        { t: '今月のメインカード', d: 'あなたの今月を象徴する一枚。月間のテーマを示します。' },
+        { t: 'ケルト十字スプレッド', d: '10枚のカードで人生の状況を多角的に分析する、最も古典的なリーディング。' }
+      ]
+    };
+
+    case 'birthstone': return {
+      title: '誕生石',
+      value: bs.name,
+      label: `${ctx.m}月の石`,
+      intro: `誕生石は、生まれ月に対応する宝石。あなたの石は ${bs.name}。${bs.meaning}が宿るとされ、古くから護符として身につけられてきました。`,
+      free: [
+        { t: '宝石の力', d: bs.meaning },
+        { t: '身につけるなら', d: '誕生石は、肌に近い場所に置くと最大の効果を発揮するとされます。指輪、ネックレス、ブレスレットなど。' },
+        { t: '浄化の方法', d: '宝石もエネルギーを蓄積します。月光浴、水晶クラスター、セージの煙で定期的に浄化を。' }
+      ],
+      premium: [
+        { t: 'あなたの守護石ベスト3', d: '生年月日と本命星から導かれる、誕生石以外の補助石3つ。組み合わせると相乗効果。' },
+        { t: '宝石の科学', d: '結晶構造、波長、エネルギー特性。スピリチュアルと科学の両面から読み解く。' },
+        { t: 'ジェムリチュアル', d: '宝石を使った瞑想、目的別のクリスタルグリッドの組み方。' }
+      ]
+    };
+
+    case 'birthflower': return {
+      title: '誕生花',
+      value: bf,
+      label: `${ctx.m}月の花`,
+      intro: `誕生花は、各月に咲く代表的な花。あなたの花は ${bf} です。花は古来より、人の魂の状態を映す鏡とされてきました。`,
+      free: [
+        { t: '花の象徴', d: '誕生月の象徴。あなたの周りに置くと心が整います。' },
+        { t: '花言葉の意味', d: 'すべての花には固有の言葉があり、誕生花の花言葉はあなたの人生のメッセージとして機能します。' },
+        { t: '花との過ごし方', d: '誕生花を一輪、机の上に。それだけで一日の気が整う日があります。' }
+      ],
+      premium: [
+        { t: '日付ごとの誕生花', d: '月ではなく、誕生日(日付)ごとに365日の誕生花が決まっています。あなただけの一輪。' },
+        { t: '花占いカレンダー', d: '毎月の開運フラワー。あなたに合った花を月ごとに使い分ける。' },
+        { t: 'フラワーレメディ', d: 'バッチフラワーレメディの中から、あなたの本命星と数秘に合う花のエッセンス38本リスト。' }
+      ]
+    };
+
+    case 'biorhythm': return {
+      title: 'バイオリズム',
+      value: `${bio.days.toLocaleString()}日目`,
+      label: '出生からの経過日数',
+      intro: `バイオリズムは、出生日からの経過日数で身体・感情・知性・直感の波を計算する20世紀生まれの占術。あなたは今、生まれてから ${bio.days.toLocaleString()} 日目です。`,
+      free: [
+        { t: '4つの波', d: `身体は23日周期、感情は28日周期、知性は33日周期、直感は38日周期。今のあなたの値は身体${(bio.physical*100).toFixed(0)}、感情${(bio.emotional*100).toFixed(0)}、知性${(bio.intellectual*100).toFixed(0)}、直感${(bio.intuitive*100).toFixed(0)}。` },
+        { t: 'クリティカル日', d: '波がゼロを横切る日は「クリティカル日」と呼ばれ、判断ミスや事故が起きやすいとされます。' },
+        { t: '波と行動', d: '上昇期は攻め、下降期は守り、頂点は披露、底は休養。波に合わせると消耗が減ります。' }
+      ],
+      premium: [
+        { t: '90日間予測カレンダー', d: '今日から90日間の4波予測。重要会議、面接、デート、引越しなどの最適日を提示。' },
+        { t: '二人のバイオリズム合算', d: 'パートナーや家族とのバイオリズムを重ねて、共に動く日と離れて休む日を見つける。' },
+        { t: 'クリティカル日アラート', d: 'あなたのクリティカル日が近づくと事前通知。最大の事故予防策。' }
+      ]
+    };
+
+    case 'moon': return {
+      title: '今夜の月',
+      value: mp.name,
+      label: `月相 ${(mp.phase * 100).toFixed(1)}%`,
+      intro: `今夜空にかかる月は ${mp.name}。月相は ${(mp.phase * 100).toFixed(1)}% です。月の満ち欠けは植物、海、女性の身体、そして心に影響します。あなたが今この瞬間感じる気分は、月のせいかもしれません。`,
+      free: [
+        { t: '月相の意味', d: '新月は始まり、上弦は挑戦、満月は完成、下弦は手放しのフェーズ。今夜の月はあなたに何を促していますか?' },
+        { t: '月と感情', d: '満月の前後3日、新月の前後3日は感情が動きやすい時期。何かを始める/終わらせる儀式に向いています。' },
+        { t: '月のリチュアル', d: '新月に願いを書く、満月に感謝を捧げる。古来から続くシンプルで強力な月の使い方。' }
+      ],
+      premium: [
+        { t: '12ヶ月の新月・満月カレンダー', d: '今後12ヶ月の新月・満月と、その時の星座、あなたへの影響を完全予測。' },
+        { t: '個人月相サイクル', d: 'あなたの誕生月相と今日の月相の関係。人生のターニングを示す。' },
+        { t: '月光浴セレモニー', d: '毎月の満月にあなた専用のリチュアル。願いの強化、不要なものの手放し。' }
+      ]
+    };
+
+    case 'lifeStagePrev': return {
+      title: '直近の節目',
+      value: ls.prev ? `${ls.prev.age}歳` : '—',
+      label: ls.prev ? ls.prev.name : '',
+      intro: ls.prev ? `あなたは ${ls.prev.age} 歳のときに「${ls.prev.name}」を通過しました。${ls.prev.desc}` : 'まだ最初の節目を迎えていません。',
+      free: ls.prev ? [
+        { t: 'この節目の意味', d: ls.prev.desc },
+        { t: 'この時に起きやすいこと', d: '人生の主要な節目では、人間関係・仕事・住まいのいずれかが大きく動くことが多いです。' },
+        { t: '振り返りの問い', d: `${ls.prev.age}歳の時、あなたに何が起きていたか?今思い出して書き出してみると、人生のパターンが見えてきます。` }
+      ] : [],
+      premium: [
+        { t: '過去の全節目分析', d: '生まれてから今日まで、あなたが通過した節目を完全リストアップ。当時何があったか、何が変わったか。' },
+        { t: '隠れた節目', d: '一般には知られていない、占星術上の重要トランジット。あなたの人生の隠れた転換点。' },
+        { t: '節目の連鎖パターン', d: 'あなたに繰り返し現れる節目のテーマ。次回の節目に向けた予習。' }
+      ]
+    };
+
+    case 'lifeStageNext': return {
+      title: '次の節目',
+      value: ls.next ? `${ls.next.age}歳` : '—',
+      label: ls.next ? ls.next.name : '',
+      intro: ls.next ? `あなたの次の人生の節目は ${ls.next.age} 歳、「${ls.next.name}」です。あと ${(ls.next.age - ls.years).toFixed(1)} 年で訪れます。${ls.next.desc}` : '今は大きな節目の合間にいます。',
+      free: ls.next ? [
+        { t: 'この節目の意味', d: ls.next.desc },
+        { t: '備えるべきこと', d: '大きな節目の数年前から、その兆候は静かに始まります。心の声に注意を向けましょう。' },
+        { t: 'チャンスのサイン', d: 'この節目の前後、新しい縁、新しい場所、新しい役割が必ず現れます。逃さない感受性を。' }
+      ] : [],
+      premium: [
+        { t: '未来10年の完全タイムライン', d: '今日から10年間、あなたに訪れる全ての節目とその意味、最適な備え方。' },
+        { t: '結婚・出産・転職の好機', d: '人生の大きな決断に最適なタイミングをトランジット分析で特定。' },
+        { t: '危険な時期と乗り越え方', d: '人生に必ず訪れる試練の時期。先に知っていれば備えられる。' }
+      ]
+    };
+  }
+  return null;
+}
+
+// ============ プレミアム状態 ============
+let isPremiumDemo = false;
+let currentContext = null;
+
+document.getElementById('demo-premium').addEventListener('change', e => {
+  isPremiumDemo = e.target.checked;
+  // 開いているモーダルがあれば再描画
+  const modal = document.getElementById('modal');
+  if (modal.classList.contains('open') && modal.dataset.cardKey) {
+    openModal(modal.dataset.cardKey);
+  }
+});
+
+// ============ モーダル制御 ============
+function openModal(cardKey) {
+  if (!currentContext) return;
+  const data = buildDeep(cardKey, currentContext);
+  if (!data) return;
+  const modal = document.getElementById('modal');
+  modal.dataset.cardKey = cardKey;
+  document.getElementById('modal-body').innerHTML = renderModalBody(data);
+  modal.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+  const modal = document.getElementById('modal');
+  modal.classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function renderModalBody(d) {
+  const lockSvg = `<svg class="lock-svg" viewBox="0 0 24 24"><path d="M12 1C8.7 1 6 3.7 6 7v4H5c-1.1 0-2 .9-2 2v8c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-8c0-1.1-.9-2-2-2h-1V7c0-3.3-2.7-6-6-6zm0 2c2.2 0 4 1.8 4 4v4H8V7c0-2.2 1.8-4 4-4z"/></svg>`;
+  const premiumOpen = isPremiumDemo ? ' unlocked' : '';
+
+  return `
+    <div class="modal-system">${d.title}</div>
+    <div class="modal-value">${d.value}</div>
+    <div class="modal-label">${d.label}</div>
+
+    <div class="modal-section">
+      <div class="modal-section-title">深く読み解く</div>
+      <p class="modal-intro">${d.intro}</p>
+      <div class="detail-list">
+        ${d.free.map(item => `
+          <div class="detail-item">
+            <div class="detail-title">${item.t}</div>
+            <div class="detail-text">${item.d}</div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+
+    <div class="premium-section${premiumOpen}">
+      <div class="premium-badge">${lockSvg} プレミアム解釈</div>
+      <div class="premium-content">
+        <div class="premium-items">
+          <div class="detail-list">
+            ${d.premium.map(item => `
+              <div class="detail-item">
+                <div class="detail-title">${item.t}</div>
+                <div class="detail-text">${item.d}</div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+        <div class="premium-overlay">
+          <svg class="premium-icon" viewBox="0 0 24 24" fill="${'var(--gold-bright)'}">
+            <path d="M12 1C8.7 1 6 3.7 6 7v4H5c-1.1 0-2 .9-2 2v8c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-8c0-1.1-.9-2-2-2h-1V7c0-3.3-2.7-6-6-6zm0 2c2.2 0 4 1.8 4 4v4H8V7c0-2.2 1.8-4 4-4zm0 11c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2z"/>
+          </svg>
+          <div class="premium-pitch">深層を解き放つ</div>
+          <p class="premium-sub">マスタークラスのリーディングは ${d.premium.length} つのセクションに広がります。10年運気、相性、職業適性、魂の課題、より精密な計算まで。</p>
+          <button class="cta-button" onclick="alert('ここから決済フローへ。デモなので右上の「プレミアム体験」をONにすると中身を見られます。')">プレミアムで解放</button>
+          <div class="cta-price">月額 ¥980 ・ 年間 ¥9,800(2ヶ月分お得)</div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+document.getElementById('modal-close').addEventListener('click', closeModal);
+document.getElementById('modal').addEventListener('click', e => {
+  if (e.target.id === 'modal') closeModal();
+});
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeModal();
+});
+
+// ============ Rendering ============
+document.getElementById('form').addEventListener('submit', e => {
+  e.preventDefault();
+  const name = document.getElementById('name').value.trim();
+  const bd = document.getElementById('birthdate').value;
+  if (!name || !bd) return;
+  const [y, m, d] = bd.split('-').map(Number);
+  render(name, y, m, d);
+});
+
+function render(name, y, m, d) {
+  const today = new Date();
+  const currentYear = today.getFullYear();
+
+  const lp = lifePath(y, m, d);
+  const py = personalYear(m, d, currentYear);
+  const sun = sunSign(m, d);
+  const cz = chineseZodiac(y);
+  const sj = sixtyJikkan(y);
+  const ks = kyuseiHonmei(y, m, d);
+  const an = animalUranai(y, m, d);
+  const my = mayaKin(y, m, d);
+  const tb = tarotBirthCard(y, m, d);
+  const ct = celticTree(m, d);
+  const bs = birthstones[m];
+  const bf = birthflowers[m];
+  const bio = biorhythm(y, m, d);
+  const mp = moonPhaseToday();
+  const ls = lifeStage(y, m, d);
+  const en = expressionNumber(name);
+  const dt = dailyTarot(name);
+  const gy = gogyou(y);
+  const mt = moonTrait(y, m, d);
+
+  // コンテキストをモーダル用に保存
+  currentContext = {
+    name, y, m, d, currentYear,
+    lp, py, en, sun, mt, cz, sj, ks, gy, an, my, tb, ct, dt, bs, bf, bio, mp, ls
+  };
+
+  const summaryHtml = generateSummary(name, currentContext);
+
+  const html = `
+    <div class="hero-card">
+      <div class="hero-name">${escapeHtml(name)}</div>
+      <div class="hero-meta">
+        ${y}年 ${m}月 ${d}日 生まれ ・ 現在 <strong>${ls.years.toFixed(2)}</strong> 歳<br>
+        ${ls.next ? `次の人生の節目:<strong>${ls.next.age}歳 — ${ls.next.name}</strong>` : ''}
+      </div>
+    </div>
+
+    <div class="summary-card">
+      ${summaryHtml}
+    </div>
+
+    <div class="section-title">数秘術<span class="section-en">Numerology</span></div>
+    <div class="grid">
+      ${card('lifepath', 'ライフパスナンバー', lp, lifePathMeanings[lp].label, lifePathMeanings[lp].desc)}
+      ${card('personalYear', '今年の個人年', py, `${currentYear}年のあなた`, personalYearMeanings[py])}
+      ${card('expression', 'お名前の数字', en, '名前から響く波動', expressionMeanings[en])}
+    </div>
+
+    <div class="section-title">西洋占星術<span class="section-en">Western Astrology</span></div>
+    <div class="grid">
+      ${card('sun', '太陽星座', `${sun.symbol} ${sun.name}`, `${sun.element}のエレメント`, sun.desc)}
+      ${card('moonTrait', '月の傾向', mt.name, '誕生時の月の位相から', mt.desc + '<div class="note">正確な月星座は出生時刻が必要です</div>')}
+    </div>
+
+    <div class="section-title">東洋の星と命<span class="section-en">Eastern</span></div>
+    <div class="grid">
+      ${card('zodiac', '十二支', cz.name, `${cz.char}年生まれ`, cz.desc)}
+      ${card('sixty', '年柱(六十干支)', sj.name, `${sj.yinyang}${sj.element}`, `60年に一度しか巡らない刻印。${sj.element}の性質を帯びる。`)}
+      ${card('kyusei', '本命星(九星気学)', ks.name, `${ks.element}の星`, ks.desc)}
+      ${card('gogyou', '五行', gy.element, '生まれ年の元素', gy.desc)}
+    </div>
+
+    <div class="section-title">キャラクター占い<span class="section-en">Characters</span></div>
+    <div class="grid">
+      ${card('animal', '動物占い', an.name, `個性番号 ${an.num}/60`, animalDesc[an.name] || '独自の個性を持つ存在。')}
+      ${card('celtic', 'ケルト樹木占い', ct.name, '13本の木のうちの一本', ct.desc)}
+    </div>
+
+    <div class="section-title">マヤ暦・タロット<span class="section-en">Sacred Symbols</span></div>
+    <div class="grid">
+      ${card('maya', 'マヤ暦 KIN', `KIN ${my.kin}`, `${my.tone}${my.seal}`, '260日の聖なる暦の中の、あなたの一日。紋章は本質、銀河の音はリズム。')}
+      ${card('tarotBirth', 'タロット バースカード', tb.name, `大アルカナ ${tb.num}`, tarotMeanings[tb.name])}
+      ${card('tarotDaily', '今日のカード', dt.name, `${today.getFullYear()}/${today.getMonth() + 1}/${today.getDate()} のあなたへ`, dt.desc)}
+    </div>
+
+    <div class="section-title">自然のシンボル<span class="section-en">Nature</span></div>
+    <div class="grid">
+      ${card('birthstone', '誕生石', bs.name, `${m}月の石`, bs.meaning)}
+      ${card('birthflower', '誕生花', bf, `${m}月の花`, '誕生月の象徴。あなたの周りに置くと心が整う。')}
+    </div>
+
+    <div class="section-title">今日の波<span class="section-en">Cycles</span></div>
+    <div class="grid">
+      <div class="card" data-key="biorhythm" style="grid-column: 1 / -1;">
+        <div class="card-system">バイオリズム — 出生から ${bio.days.toLocaleString()} 日目</div>
+        ${bioBar('身体', bio.physical)}
+        ${bioBar('感情', bio.emotional)}
+        ${bioBar('知性', bio.intellectual)}
+        ${bioBar('直感', bio.intuitive)}
+        <div class="card-more">深く読み解く</div>
+      </div>
+      <div class="card" data-key="moon" style="grid-column: 1 / -1;">
+        <div style="display: grid; grid-template-columns: 100px 1fr; gap: 28px; align-items: center;">
+          <div class="moon">${moonSvg(mp.phase)}</div>
+          <div>
+            <div class="card-system">今夜の月</div>
+            <div class="card-value">${mp.name}</div>
+            <div class="card-desc">月相 ${(mp.phase * 100).toFixed(1)}% ・ 月の満ち欠けはすべての生命に影響する。今夜の月はあなたに何を告げる?</div>
+          </div>
+        </div>
+        <div class="card-more">深く読み解く</div>
+      </div>
+    </div>
+
+    <div class="section-title">人生の地図<span class="section-en">Life Map</span></div>
+    <div class="grid">
+      ${ls.prev ? card('lifeStagePrev', '直近の節目', `${ls.prev.age}歳`, ls.prev.name, ls.prev.desc) : ''}
+      ${ls.next ? card('lifeStageNext', '次の節目', `${ls.next.age}歳`, ls.next.name, ls.next.desc) : ''}
+    </div>
+  `;
+
+  const r = document.getElementById('results');
+  r.innerHTML = html;
+  r.classList.add('active');
+
+  // カードのクリックイベント
+  r.querySelectorAll('.card[data-key]').forEach(el => {
+    el.addEventListener('click', () => openModal(el.dataset.key));
+  });
+
+  setTimeout(() => r.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+}
+
+function card(key, system, value, label, desc) {
+  return `
+    <div class="card" data-key="${key}">
+      <div class="card-system">${system}</div>
+      <div class="card-value">${value}</div>
+      <div class="card-label">${label}</div>
+      <div class="card-desc">${desc}</div>
+      <div class="card-more">深く読み解く</div>
+    </div>
+  `;
+}
+
+function bioBar(label, val) {
+  const pct = (val + 1) / 2 * 100;
+  const cls = val < 0 ? 'bio-fill neg' : 'bio-fill';
+  return `
+    <div class="bio-bar">
+      <div class="bio-label">${label}</div>
+      <div class="bio-track">
+        <div class="bio-center"></div>
+        <div class="${cls}" style="width:${pct}%"></div>
+      </div>
+      <div class="bio-value">${(val * 100).toFixed(0)}</div>
+    </div>
+  `;
+}
+
+function moonSvg(phase) {
+  const cx = 50, cy = 50, r = 46;
+  const dark = '#0a0816';
+  const light = '#f5d76e';
+  let leftHalf, rightHalf, ellipse;
+
+  if (phase < 0.5) {
+    leftHalf  = `<path d="M ${cx},${cy - r} A ${r},${r} 0 0,0 ${cx},${cy + r} Z" fill="${dark}"/>`;
+    rightHalf = `<path d="M ${cx},${cy - r} A ${r},${r} 0 0,1 ${cx},${cy + r} Z" fill="${light}"/>`;
+    const ellipseR = Math.abs(Math.cos(2 * Math.PI * phase)) * r;
+    const fill = phase < 0.25 ? dark : light;
+    ellipse = `<ellipse cx="${cx}" cy="${cy}" rx="${ellipseR}" ry="${r}" fill="${fill}"/>`;
+  } else {
+    leftHalf  = `<path d="M ${cx},${cy - r} A ${r},${r} 0 0,0 ${cx},${cy + r} Z" fill="${light}"/>`;
+    rightHalf = `<path d="M ${cx},${cy - r} A ${r},${r} 0 0,1 ${cx},${cy + r} Z" fill="${dark}"/>`;
+    const ellipseR = Math.abs(Math.cos(2 * Math.PI * phase)) * r;
+    const fill = phase > 0.75 ? dark : light;
+    ellipse = `<ellipse cx="${cx}" cy="${cy}" rx="${ellipseR}" ry="${r}" fill="${fill}"/>`;
+  }
+
+  return `<svg viewBox="0 0 100 100">
+    <defs>
+      <clipPath id="moonClip"><circle cx="${cx}" cy="${cy}" r="${r}"/></clipPath>
+    </defs>
+    <g clip-path="url(#moonClip)">
+      ${leftHalf}${rightHalf}${ellipse}
+    </g>
+    <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="rgba(212,175,55,0.35)" stroke-width="1"/>
+  </svg>`;
+}
+
+function escapeHtml(s) {
+  return s.replace(/[&<>"']/g, c => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+  }[c]));
+}
+
+document.getElementById('birthdate').max = new Date().toISOString().split('T')[0];
+</script>
+</body>
+</html>

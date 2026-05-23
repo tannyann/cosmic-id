@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="生年月日と名前から、数秘・占星・九星・動物占いなど複数の体系を横断して読み解く COSMIC ID。">
+  <meta name="theme-color" content="#06050f">
+  <meta property="og:title" content="COSMIC ID — 個人統合占断">
+  <meta property="og:description" content="あなたの中に書かれた、十九の物語。複数の占術をひとつに。">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary">
+  <title>COSMIC ID — 個人統合占断</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=Noto+Serif+JP:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./src/styles.css">
+</head>
+<body>
+  <div class="aurora" aria-hidden="true"></div>
+  <div class="grain" aria-hidden="true"></div>
+  <div class="vignette" aria-hidden="true"></div>
+  <div class="container">
+    <header class="site-header">
+      <div class="header-top">
+        <p class="eyebrow" id="header-eyebrow">Personal Cosmology</p>
+        <div class="lang-field">
+          <label for="lang-switcher" id="label-lang">言語</label>
+          <select id="lang-switcher" class="lang-switcher" aria-label="Language"></select>
+        </div>
+      </div>
+      <h1><span class="deco" aria-hidden="true">✦</span>COSMIC ID<span class="deco" aria-hidden="true">✦</span></h1>
+      <p class="subtitle" id="header-subtitle">あなたの中に書かれた、十九の物語</p>
+      <div class="header-ornament" aria-hidden="true"></div>
+    </header>
+
+    <div class="form-card">
+      <p class="form-free-badge" id="form-free-badge">基本はずっと無料</p>
+      <form id="form">
+        <div class="form-row">
+          <div class="field">
+            <label for="name" id="label-name">お名前</label>
+            <input type="text" id="name" placeholder="例:山田 太郎" autocomplete="name" required>
+          </div>
+          <div class="field">
+            <label for="birthdate" id="label-birth">生年月日</label>
+            <input type="date" id="birthdate" required>
+          </div>
+          <button type="submit" class="btn-primary" id="btn-submit">読み解く</button>
+        </div>
+      </form>
+    </div>
+
+    <div class="results" id="results"></div>
+
+    <!-- ===== モーダル ===== -->
+    <div class="modal-backdrop" id="modal" hidden>
+      <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-heading">
+        <button type="button" class="modal-close" id="modal-close" aria-label="閉じる">×</button>
+        <div id="modal-body"></div>
+      </div>
+    </div>
+
+    <!-- ===== シェアカード拡大 ===== -->
+    <div class="share-modal-backdrop" id="share-modal" hidden>
+      <div class="share-modal" role="dialog" aria-modal="true" aria-label="シェアカード">
+        <button type="button" class="modal-close" id="share-modal-close" aria-label="閉じる">×</button>
+        <img id="share-modal-img" class="share-modal-img" alt="シェアカードのプレビュー">
+        <div class="share-modal-actions">
+          <button type="button" class="share-btn share-btn-primary" data-share-modal="save">画像を保存</button>
+          <button type="button" class="share-btn" data-share-modal="x">X</button>
+          <button type="button" class="share-btn" data-share-modal="line">LINE</button>
+          <button type="button" class="share-btn" data-share-modal="copy">テキストをコピー</button>
+          <button type="button" class="share-btn" data-share-modal="native" id="share-modal-native">共有…</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+    <section id="premium-showcase" class="premium-showcase" aria-label="Premium — coming soon"></section>
+
+    <footer>
+      <span id="footer-line1">COSMIC ID — Personal Cosmology Prototype</span><br>
+      <span id="footer-line2">すべての解釈は一つの可能性。あなたの物語はあなたが書く。</span>
+    </footer>
+  </div>
+
+  <script type="module" src="./src/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,179 @@
+/**
+ * 多言語切替コア。
+ * content / ui / deeper はロケールバンドルから取得する。
+ */
+
+import ja from './locales/ja/index.js';
+import en from './locales/en/index.js';
+import { ui as zhUi } from './locales/zh/ui.js';
+import { ui as koUi } from './locales/ko/ui.js';
+import { ui as esUi } from './locales/es/ui.js';
+
+const STORAGE_KEY = 'cosmic-id-locale';
+
+/** @typedef {'ja'|'en'|'zh'|'ko'|'es'} LocaleCode */
+
+/** UI のみ翻訳・占術コンテンツは英語にフォールバック */
+const zh = { ...en, ui: zhUi, meta: { code: 'zh', label: zhUi.meta.label, htmlLang: 'zh-Hans' } };
+const ko = { ...en, ui: koUi, meta: { code: 'ko', label: koUi.meta.label, htmlLang: 'ko' } };
+const es = { ...en, ui: esUi, meta: { code: 'es', label: esUi.meta.label, htmlLang: 'es' } };
+
+ja.meta = { code: 'ja', label: ja.ui.meta.label, htmlLang: 'ja' };
+en.meta = { code: 'en', label: en.ui.meta.label, htmlLang: 'en' };
+
+/** @type {Record<LocaleCode, typeof ja>} */
+export const LOCALES = { ja, en, zh, ko, es };
+
+/** @type {LocaleCode[]} */
+export const LOCALE_CODES = ['ja', 'en', 'zh', 'ko', 'es'];
+
+const listeners = new Set();
+
+/** @returns {LocaleCode} */
+function detectLocale() {
+  const saved = typeof localStorage !== 'undefined' ? localStorage.getItem(STORAGE_KEY) : null;
+  if (saved && LOCALES[saved]) return /** @type {LocaleCode} */ (saved);
+
+  const nav = (typeof navigator !== 'undefined' && navigator.language) || 'ja';
+  if (nav.startsWith('ja')) return 'ja';
+  if (nav.startsWith('zh')) return 'zh';
+  if (nav.startsWith('ko')) return 'ko';
+  if (nav.startsWith('es')) return 'es';
+  return 'en';
+}
+
+let current = detectLocale();
+
+/** @returns {LocaleCode} */
+export function getLocale() {
+  return current;
+}
+
+/** @returns {typeof ja} */
+export function getBundle() {
+  return LOCALES[current];
+}
+
+/** 占術辞書（旧 content.js 相当） */
+export function getContent() {
+  return getBundle().content;
+}
+
+/** UI 文言 */
+export function getUI() {
+  return getBundle().ui;
+}
+
+/** deeper モジュール */
+export function getDeeper() {
+  return getBundle().deeper;
+}
+
+/** @param {LocaleCode} code */
+export function setLocale(code) {
+  if (!LOCALES[/** @type {string} */ (code)] || code === current) return;
+  current = /** @type {LocaleCode} */ (code);
+  if (typeof localStorage !== 'undefined') {
+    localStorage.setItem(STORAGE_KEY, code);
+  }
+  applyDocumentLocale();
+  applyStaticPageCopy();
+  refreshLanguageSwitcher();
+  listeners.forEach(fn => fn(code));
+}
+
+/** @param {(code: LocaleCode) => void} fn */
+export function onLocaleChange(fn) {
+  listeners.add(fn);
+  return () => listeners.delete(fn);
+}
+
+export function applyDocumentLocale() {
+  const b = getBundle();
+  document.documentElement.lang = b.meta.htmlLang;
+  document.title = b.ui.meta.title;
+
+  const desc = document.querySelector('meta[name="description"]');
+  if (desc) desc.setAttribute('content', b.ui.meta.description);
+  const ogTitle = document.querySelector('meta[property="og:title"]');
+  if (ogTitle) ogTitle.setAttribute('content', b.ui.meta.ogTitle);
+  const ogDesc = document.querySelector('meta[property="og:description"]');
+  if (ogDesc) ogDesc.setAttribute('content', b.ui.meta.ogDescription);
+}
+
+/** 静的 HTML のラベルを現在ロケールで更新 */
+export function applyStaticPageCopy() {
+  const u = getUI();
+  const setText = (id, text) => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = text;
+  };
+  const setAttr = (id, attr, val) => {
+    const el = document.getElementById(id);
+    if (el) el.setAttribute(attr, val);
+  };
+
+  setText('header-eyebrow', u.header.eyebrow);
+  setText('header-subtitle', u.header.subtitle);
+  setText('label-name', u.form.nameLabel);
+  setText('label-birth', u.form.birthLabel);
+  setText('form-free-badge', u.form.freeBadge);
+  setText('footer-line1', u.footer.line1);
+  setText('footer-line2', u.footer.line2);
+  setAttr('name', 'placeholder', u.form.namePlaceholder);
+  setText('btn-submit', u.form.submit);
+  setText('label-lang', u.lang.label);
+
+  const shareClose = document.getElementById('share-modal-close');
+  if (shareClose) shareClose.setAttribute('aria-label', u.modal.close);
+  const modalClose = document.getElementById('modal-close');
+  if (modalClose) modalClose.setAttribute('aria-label', u.modal.close);
+
+  const shareModal = document.getElementById('share-modal');
+  if (shareModal) shareModal.setAttribute('aria-label', u.share.panelTitle);
+  const shareModalImg = document.getElementById('share-modal-img');
+  if (shareModalImg) shareModalImg.alt = u.share.modalAlt;
+
+  document.querySelectorAll('[data-share-modal="save"]').forEach(el => { el.textContent = u.share.save; });
+  document.querySelectorAll('[data-share-modal="copy"]').forEach(el => { el.textContent = u.share.copy; });
+  const nativeBtn = document.getElementById('share-modal-native');
+  if (nativeBtn) nativeBtn.textContent = u.share.shareNative;
+
+  const langSwitcher = document.getElementById('lang-switcher');
+  if (langSwitcher) langSwitcher.setAttribute('aria-label', u.lang.label);
+
+  const premiumShowcase = document.getElementById('premium-showcase');
+  if (premiumShowcase) {
+    const cs = getContent().PREMIUM_COMING_SOON;
+    premiumShowcase.setAttribute('aria-label', cs?.headline || u.premiumShowcase.ariaLabel || 'Premium');
+  }
+}
+
+export function mountLanguageSwitcher() {
+  const host = document.getElementById('lang-switcher');
+  if (!host) return;
+  refreshLanguageSwitcher();
+  if (!host.dataset.bound) {
+    host.addEventListener('change', e => {
+      setLocale(/** @type {HTMLSelectElement} */ (e.target).value);
+    });
+    host.dataset.bound = '1';
+  }
+}
+
+export function refreshLanguageSwitcher() {
+  const host = document.getElementById('lang-switcher');
+  if (!host) return;
+  host.innerHTML = LOCALE_CODES.map(code => {
+    const loc = LOCALES[code];
+    const selected = code === current ? ' selected' : '';
+    return `<option value="${code}"${selected}>${loc.ui.meta.label}</option>`;
+  }).join('');
+  host.value = current;
+}
+
+export function initI18n() {
+  applyDocumentLocale();
+  applyStaticPageCopy();
+  mountLanguageSwitcher();
+}

@@ -1,0 +1,15 @@
+{
+  "name": "cosmic-id",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "個人統合占断プロトタイプ — 19体系の占い・スピリチュアル要素を生年月日・名前から横断的に解釈する",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "vite": "^5.4.10"
+  }
+}
