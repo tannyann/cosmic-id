@@ -4,7 +4,7 @@
  */
 
 import {
-  lifePath, personalYear, expressionNumber, sunSign, moonTrait,
+  lifePath, personalYear, expressionProfile, sunSign, moonTrait,
   chineseZodiac, sixtyJikkan, kyuseiHonmei, gogyou, animalUranai,
   mayaKin, tarotBirthCard, dailyTarot, celticTree,
   birthstone, birthflower, biorhythm, moonPhaseToday, lifeStage
@@ -22,10 +22,38 @@ let lastRender = null;
 
 export { escapeHtml };
 
-function expressionDesc(en, meanings) {
-  const raw = meanings[en];
+function expressionDesc(num, meanings) {
+  const raw = meanings[num];
   const colon = raw.indexOf(':');
   return colon >= 0 ? raw.slice(colon + 1).trim() : raw;
+}
+
+function buildExpressionCard(u, expr, nameRoman, meanings) {
+  const nativeDesc = expressionDesc(expr.native, meanings);
+  const romanTrimmed = nameRoman.trim();
+
+  if (expr.hasLatinLetters && expr.latin != null) {
+    const latinDesc = expressionDesc(expr.latin, meanings);
+    return card(
+      'expression',
+      u.cards.expression,
+      u.fmt.expressionValueDual(expr.native, expr.latin),
+      u.fmt.expressionLabelDual,
+      u.fmt.expressionDescDual(expr.native, expr.latin, nativeDesc, latinDesc)
+    );
+  }
+
+  const hint = romanTrimmed && expr.latin == null
+    ? u.fmt.expressionLatinInvalid
+    : u.fmt.expressionHintAddRoman;
+
+  return card(
+    'expression',
+    u.cards.expression,
+    expr.native,
+    u.fmt.expressionLabelNative,
+    u.fmt.expressionDescNative(nativeDesc, hint)
+  );
 }
 
 export function generateSummary(name, results) {
@@ -127,8 +155,8 @@ function sectionHeading(title, en) {
   return `<h2 class="section-title">${title}<span class="section-en">${en}</span></h2>`;
 }
 
-export function render(name, y, m, d) {
-  lastRender = { name, y, m, d };
+export function render(name, nameRoman, y, m, d) {
+  lastRender = { name, nameRoman: nameRoman ?? '', y, m, d };
   const u = getUI();
   const c = getContent();
   const {
@@ -142,7 +170,8 @@ export function render(name, y, m, d) {
 
   const lp  = lifePath(y, m, d);
   const py  = personalYear(m, d, currentYear);
-  const en  = expressionNumber(name);
+  const expr = expressionProfile(name, nameRoman ?? '');
+  const en = expr.native;
   const sun = sunSign(m, d);
   const mt  = moonTrait(y, m, d);
   const cz  = chineseZodiac(y);
@@ -162,8 +191,8 @@ export function render(name, y, m, d) {
   const ls  = lifeStage(y, m, d);
 
   currentContext = {
-    name, y, m, d, currentYear,
-    lp, py, en, sun, mt, cz, sj, ks, gy, an, my, tb, ct, dt, bs, bf, bio, mp, ls
+    name, nameRoman: (nameRoman ?? '').trim(), y, m, d, currentYear,
+    lp, py, en, expr, sun, mt, cz, sj, ks, gy, an, my, tb, ct, dt, bs, bf, bio, mp, ls
   };
 
   const summaryHtml = generateSummary(name, currentContext);
@@ -171,6 +200,7 @@ export function render(name, y, m, d) {
   const html = `
     <div class="hero-card">
       <div class="hero-name">${escapeHtml(name)}</div>
+      ${currentContext.nameRoman ? `<div class="hero-name-sub">${escapeHtml(currentContext.nameRoman)}</div>` : ''}
       <div class="hero-meta">
         ${u.fmt.bornOn(y, m, d)} ・ ${u.fmt.ageNow(ls.years.toFixed(2))}<br>
         ${ls.next ? u.fmt.nextMilestone(ls.next.age, ls.next.name) : ''}
@@ -183,7 +213,7 @@ export function render(name, y, m, d) {
     <div class="grid">
       ${card('lifepath', u.cards.lifepath, lp, LIFE_PATH_MEANINGS[lp].label, LIFE_PATH_MEANINGS[lp].desc)}
       ${card('personalYear', u.cards.personalYear, py, u.fmt.yearYou(currentYear), PERSONAL_YEAR_MEANINGS[py])}
-      ${card('expression', u.cards.expression, en, u.cards.expressionLabel, expressionDesc(en, EXPRESSION_MEANINGS))}
+      ${buildExpressionCard(u, expr, nameRoman ?? '', EXPRESSION_MEANINGS)}
     </div>
 
     ${sectionHeading(...u.sections.western)}
@@ -261,8 +291,8 @@ export function render(name, y, m, d) {
 
 export function rerenderIfNeeded() {
   if (lastRender) {
-    const { name, y, m, d } = lastRender;
-    render(name, y, m, d);
+    const { name, nameRoman, y, m, d } = lastRender;
+    render(name, nameRoman ?? '', y, m, d);
   }
   renderPremiumShowcase();
   const modal = document.getElementById('modal');
@@ -397,10 +427,11 @@ export function bindForm() {
   document.getElementById('form').addEventListener('submit', e => {
     e.preventDefault();
     const name = document.getElementById('name').value.trim();
+    const nameRoman = document.getElementById('name-roman').value.trim();
     const bd = document.getElementById('birthdate').value;
     if (!name || !bd) return;
     const [y, m, d] = bd.split('-').map(Number);
-    render(name, y, m, d);
+    render(name, nameRoman, y, m, d);
   });
 
   document.getElementById('birthdate').max = localDateInputMax();

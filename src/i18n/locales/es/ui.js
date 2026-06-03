@@ -18,6 +18,9 @@ export const ui = {
   form: {
     nameLabel: 'Tu nombre',
     namePlaceholder: 'ej. María García',
+    nameRomanLabel: 'Ortografía romana (opcional)',
+    nameRomanPlaceholder: 'ej. MARIA GARCIA',
+    nameRomanHint: 'Para numerología A–Z internacional, aparte del nombre mostrado.',
     birthLabel: 'Fecha de nacimiento',
     submit: 'Revelar',
     freeBadge: 'Gratis para siempre',

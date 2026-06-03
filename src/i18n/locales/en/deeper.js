@@ -93,7 +93,7 @@ export function premiumGeneric(systemLabel, valueLabel) {
 }
 
 export function buildDeep(cardKey, ctx) {
-  const { lp, py, en, sun, mt, cz, sj, ks, gy, an, ct, my, tb, dt, bs, bf, bio, mp, ls } = ctx;
+  const { lp, py, en, expr, nameRoman, sun, mt, cz, sj, ks, gy, an, ct, my, tb, dt, bs, bf, bio, mp, ls } = ctx;
 
   switch (cardKey) {
     case 'lifepath': return {
@@ -127,18 +127,48 @@ export function buildDeep(cardKey, ctx) {
       ]
     };
 
-    case 'expression': return {
-      title: 'Name Number',
-      value: en,
-      label: EXPRESSION_MEANINGS[en].replace('Name energy:', ''),
-      intro: `Your name releases the energy of ${en} into the world each time it is spoken. This is separate from the number of your birth moment (Life Path)—the number of "how you are called."`,
-      free: [
-        { t: 'What your name calls in', d: `The vibration of ${en} may carry a quality of ${EXPRESSION_MEANINGS[en].split(':')[1]} to those around you.` },
-        { t: 'Relationship to Life Path', d: `Combined with Life Path ${lp}, you may see the balance between inner essence and outer resonance.` },
-        { t: 'Hints for renaming', d: 'If your current name feels heavy, a nickname or business name with a different number may invite another wavelength.' }
-      ],
-      premium: premiumGeneric('Name Number', String(en))
-    };
+    case 'expression': {
+      const profile = expr ?? { native: en, latin: null, hasLatinLetters: false };
+      const { native, latin, hasLatinLetters } = profile;
+      const roman = nameRoman || '';
+      const dual = hasLatinLetters && latin != null;
+      const nativeTrait = EXPRESSION_MEANINGS[native].split(':')[1];
+      const latinTrait = dual ? EXPRESSION_MEANINGS[latin].split(':')[1] : '';
+
+      return {
+        title: 'Name Number',
+        value: dual ? `${native} · ${latin}` : native,
+        label: dual ? 'Display name / Roman letters' : EXPRESSION_MEANINGS[native].replace('Name energy:', ''),
+        intro: dual
+          ? `From your display name we read ${native}; from "${roman}" we read ${latin}. Both describe how you are called—separate from Life Path ${lp}. Different numbers are not a contest for which is "correct."`
+          : `Your name releases the energy of ${native} each time it is spoken—separate from Life Path ${lp}, the number of how you are called.`,
+        free: [
+          {
+            t: 'Display-script name number',
+            d: `From your display name: ${native}. This uses a simple Unicode glyph sum for non-Latin scripts—not classical Western numerology. It may suggest ${nativeTrait} as a lens, not a verdict.`
+          },
+          dual
+            ? {
+              t: 'Roman / Latin name number (Pythagorean)',
+              d: `"${roman}" maps to ${latin} on the usual A–Z chart. ${latinTrait}This is closer to what international numerology often calls the expression number.`
+            }
+            : {
+              t: 'A second axis in Roman letters',
+              d: roman && latin == null
+                ? 'No A–Z letters were found in the Roman field, so the international number was not calculated. Try a passport or romanized spelling.'
+                : 'Add an optional Roman or Latin spelling to also see the international A–Z name number alongside your display name.'
+            },
+          {
+            t: 'Relationship to Life Path',
+            d: dual
+              ? `Life Path ${lp}, display ${native}, and Roman ${latin} together may show birth essence, everyday calling, and international resonance.`
+              : `Life Path ${lp} with display ${native} may show the balance between inner essence and how you are called.`
+          },
+          { t: 'Hints for renaming', d: 'If your current name feels heavy, a nickname or business name with a different number may invite another wavelength.' }
+        ],
+        premium: premiumGeneric('Name Number', dual ? `${native}/${latin}` : String(native))
+      };
+    }
 
     case 'sun': return {
       title: 'Sun Sign',

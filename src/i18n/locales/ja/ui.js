@@ -14,6 +14,9 @@ export const ui = {
   form: {
     nameLabel: 'お名前',
     namePlaceholder: '例:山田 太郎',
+    nameRomanLabel: 'ローマ字（任意）',
+    nameRomanPlaceholder: '例: YAMADA TARO',
+    nameRomanHint: '国際式の数秘（A–Z）用。漢字・かなのお名前とは別の読み方として並べて表示します。',
     birthLabel: '生年月日',
     submit: '読み解く',
     freeBadge: '基本はずっと無料',
@@ -106,7 +109,18 @@ export const ui = {
     bioUp: '<strong>上昇のフェーズ</strong>(行動と発信に向く)',
     bioDown: '<strong>内省のフェーズ</strong>(休息と整理に向く)',
     bioBalanced: '<strong>バランスの取れたフェーズ</strong>',
-    personalYearWave: (year) => `${year}年の個人年`
+    personalYearWave: (year) => `${year}年の個人年`,
+    expressionValueDual: (n, l) => `${n} · ${l}`,
+    expressionLabelDual: '日本表記 / ローマ字',
+    expressionLabelNative: '日本表記の響き',
+    expressionDescDual: (n, l, nativeDesc, latinDesc) =>
+      `<p class="expression-line"><strong>${n}</strong>（字形の試し読み）— ${nativeDesc}</p>` +
+      `<p class="expression-line"><strong>${l}</strong>（ピタゴラス式 A–Z）— ${latinDesc}</p>` +
+      '<div class="note">字形換算は古典数秘の公式とは別系統です。ローマ字は一般的な英字名数秘に近い読み方です。</div>',
+    expressionDescNative: (desc, hint) =>
+      `${desc}<div class="note">日本語・漢字は Unicode の字形から簡易換算しています。${hint}</div>`,
+    expressionHintAddRoman: 'ローマ字欄にヘボン式などを入れると、国際式の名前数も並べて読めます。',
+    expressionLatinInvalid: 'ローマ字欄に A–Z の英字がないため、国際式は表示されませんでした。'
   },
   bio: { physical: '身体', emotional: '感情', intellectual: '知性', intuitive: '直感' },
   modal: {

@@ -36,11 +36,18 @@
     <div class="form-card">
       <p class="form-free-badge" id="form-free-badge">基本はずっと無料</p>
       <form id="form">
-        <div class="form-row">
+        <div class="form-row form-row-names">
           <div class="field">
             <label for="name" id="label-name">お名前</label>
             <input type="text" id="name" placeholder="例:山田 太郎" autocomplete="name" required>
           </div>
+          <div class="field">
+            <label for="name-roman" id="label-name-roman">ローマ字（任意）</label>
+            <input type="text" id="name-roman" placeholder="例: YAMADA TARO" autocomplete="off" inputmode="latin" spellcheck="false">
+            <p class="field-hint" id="hint-name-roman"></p>
+          </div>
+        </div>
+        <div class="form-row form-row-action">
           <div class="field">
             <label for="birthdate" id="label-birth">生年月日</label>
             <input type="date" id="birthdate" required>

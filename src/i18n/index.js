@@ -116,11 +116,14 @@ export function applyStaticPageCopy() {
   setText('header-eyebrow', u.header.eyebrow);
   setText('header-subtitle', u.header.subtitle);
   setText('label-name', u.form.nameLabel);
+  setText('label-name-roman', u.form.nameRomanLabel);
+  setText('hint-name-roman', u.form.nameRomanHint);
   setText('label-birth', u.form.birthLabel);
   setText('form-free-badge', u.form.freeBadge);
   setText('footer-line1', u.footer.line1);
   setText('footer-line2', u.footer.line2);
   setAttr('name', 'placeholder', u.form.namePlaceholder);
+  setAttr('name-roman', 'placeholder', u.form.nameRomanPlaceholder);
   setText('btn-submit', u.form.submit);
   setText('label-lang', u.lang.label);
 

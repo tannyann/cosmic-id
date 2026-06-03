@@ -28,14 +28,72 @@ export function personalYear(m, d, currentYear) {
   return reduceDigit(reduceDigit(m) + reduceDigit(d) + reduceDigit(currentYear));
 }
 
-export function expressionNumber(name) {
+/** A=1 … I=9, J=1 … R=9, S=1 … Z=8（ピタゴラス式） */
+function pythagoreanLetterValue(ch) {
+  const code = ch.toUpperCase().charCodeAt(0);
+  if (code < 65 || code > 90) return 0;
+  return ((code - 65) % 9) + 1;
+}
+
+/**
+ * ローマ字・英字名向けの表現数（数秘の一般的な A–Z 換算）。
+ * 英字が無い場合は null。
+ */
+export function expressionNumberLatin(name) {
+  if (!name?.trim()) return null;
   let sum = 0;
+  let letters = 0;
   for (const c of name) {
     if (/\s/.test(c)) continue;
-    sum += c.codePointAt(0);
+    const v = pythagoreanLetterValue(c);
+    if (v) {
+      sum += v;
+      letters++;
+    }
   }
+  if (!letters) return null;
+  return reduceDigit(sum, true);
+}
+
+/**
+ * 日本語・漢字など非ラテン文字向けの簡易響き（字形コードの合計）。
+ * 国際式数秘とは別系統として扱う。
+ */
+export function expressionNumberNative(name) {
+  let sum = 0;
+  let glyphs = 0;
+  for (const c of name) {
+    if (/\s/.test(c)) continue;
+    if (pythagoreanLetterValue(c)) continue;
+    sum += c.codePointAt(0);
+    glyphs++;
+  }
+  if (!glyphs) return null;
   const n = sum % 9;
   return n === 0 ? 9 : n;
+}
+
+/** @deprecated 互換用。native 計算に委譲 */
+export function expressionNumber(name) {
+  return expressionNumberNative(name) ?? expressionNumberLatin(name) ?? 1;
+}
+
+/**
+ * 表示名 + ローマ字（任意）から二系統の名前数を返す。
+ * @returns {{ native: number, latin: number|null, hasLatinLetters: boolean }}
+ */
+export function expressionProfile(displayName, romanName = '') {
+  const latinTrimmed = romanName.trim();
+  const latin = latinTrimmed ? expressionNumberLatin(latinTrimmed) : null;
+  const native =
+    expressionNumberNative(displayName) ??
+    (latinTrimmed ? null : expressionNumberLatin(displayName)) ??
+    1;
+  return {
+    native,
+    latin,
+    hasLatinLetters: Boolean(latinTrimmed && latin != null)
+  };
 }
 
 // ============ 西洋占星術 ============

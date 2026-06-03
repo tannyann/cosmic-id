@@ -14,6 +14,9 @@ export const ui = {
   form: {
     nameLabel: 'Your name',
     namePlaceholder: 'e.g. Alex Morgan',
+    nameRomanLabel: 'Roman / Latin spelling (optional)',
+    nameRomanPlaceholder: 'e.g. ALEX MORGAN',
+    nameRomanHint: 'For international A–Z numerology. Shown alongside your display name when provided.',
     birthLabel: 'Date of birth',
     submit: 'Reveal',
     freeBadge: 'Free to use — always',
@@ -108,7 +111,18 @@ export const ui = {
     bioUp: '<strong>a rising phase</strong> (good for action and expression)',
     bioDown: '<strong>a reflective phase</strong> (good for rest and sorting)',
     bioBalanced: '<strong>a balanced phase</strong>',
-    personalYearWave: (year) => `Personal Year ${year}`
+    personalYearWave: (year) => `Personal Year ${year}`,
+    expressionValueDual: (n, l) => `${n} · ${l}`,
+    expressionLabelDual: 'Display name / Roman letters',
+    expressionLabelNative: 'Name vibration (display script)',
+    expressionDescDual: (n, l, nativeDesc, latinDesc) =>
+      `<p class="expression-line"><strong>${n}</strong> (glyph sketch) — ${nativeDesc}</p>` +
+      `<p class="expression-line"><strong>${l}</strong> (Pythagorean A–Z) — ${latinDesc}</p>` +
+      '<div class="note">Glyph counting is not classical Western numerology. Roman letters follow the usual A–Z chart (master numbers 11, 22, 33 may appear).</div>',
+    expressionDescNative: (desc, hint) =>
+      `${desc}<div class="note">Non-Latin scripts use a simple Unicode glyph sum — exploratory, not traditional. ${hint}</div>`,
+    expressionHintAddRoman: 'Add a Roman or Latin spelling to also see the international name number.',
+    expressionLatinInvalid: 'No A–Z letters were found in the Roman field, so the international number was not shown.'
   },
   bio: { physical: 'Physical', emotional: 'Emotional', intellectual: 'Intellectual', intuitive: 'Intuitive' },
   modal: {

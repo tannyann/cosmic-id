@@ -18,6 +18,9 @@ export const ui = {
   form: {
     nameLabel: '이름',
     namePlaceholder: '예: 김민수',
+    nameRomanLabel: '로마자 표기(선택)',
+    nameRomanPlaceholder: '예: KIM MINSU',
+    nameRomanHint: '국제식 A–Z 수비학용. 한글 이름과 별도로 표시됩니다.',
     birthLabel: '생년월일',
     submit: '해석하기',
     freeBadge: '핵심 기능은 항상 무료',

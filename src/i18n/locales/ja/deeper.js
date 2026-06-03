@@ -93,7 +93,7 @@ export function premiumGeneric(systemLabel, valueLabel) {
 }
 
 export function buildDeep(cardKey, ctx) {
-  const { lp, py, en, sun, mt, cz, sj, ks, gy, an, ct, my, tb, dt, bs, bf, bio, mp, ls } = ctx;
+  const { lp, py, en, expr, nameRoman, sun, mt, cz, sj, ks, gy, an, ct, my, tb, dt, bs, bf, bio, mp, ls } = ctx;
 
   switch (cardKey) {
     case 'lifepath': return {
@@ -127,18 +127,48 @@ export function buildDeep(cardKey, ctx) {
       ]
     };
 
-    case 'expression': return {
-      title: 'お名前の数字',
-      value: en,
-      label: EXPRESSION_MEANINGS[en].replace('名前のエネルギー:', ''),
-      intro: `あなたの名前は、声に出されるたびに ${en} のエネルギーを世界に放っています。これは生まれた瞬間の数(ライフパス)とは別の、「あなたが呼ばれる響き」の数字です。`,
-      free: [
-        { t: '名前が呼ぶ運命', d: `${en}の波動は、${EXPRESSION_MEANINGS[en].split(':')[1]}という気質を周囲に伝えます。` },
-        { t: 'ライフパスとの関係', d: `ライフパス${lp}との組み合わせで、内側(本質)と外側(響き)のバランスが見えてきます。` },
-        { t: '改名のヒント', d: 'もし今の名前が苦しい時、ニックネームや屋号で別の数字を持つことで、別の波長を呼び込めます。' }
-      ],
-      premium: premiumGeneric('名前数', String(en))
-    };
+    case 'expression': {
+      const profile = expr ?? { native: en, latin: null, hasLatinLetters: false };
+      const { native, latin, hasLatinLetters } = profile;
+      const roman = nameRoman || '';
+      const dual = hasLatinLetters && latin != null;
+      const nativeTrait = EXPRESSION_MEANINGS[native].split(':')[1];
+      const latinTrait = dual ? EXPRESSION_MEANINGS[latin].split(':')[1] : '';
+
+      return {
+        title: 'お名前の数字',
+        value: dual ? `${native} · ${latin}` : native,
+        label: dual ? '日本表記 / ローマ字' : EXPRESSION_MEANINGS[native].replace('名前のエネルギー:', ''),
+        intro: dual
+          ? `表示名からは ${native}、ローマ字「${roman}」からは ${latin} の響きが読めます。どちらも「あなたが呼ばれる名」の触媒であり、ライフパス ${lp} とは別の軸です。数字が違っても、どちらか一方だけが正しいというわけではありません。`
+          : `あなたの名前は、声に出されるたびに ${native} のエネルギーを世界に放っています。これは生まれた瞬間の数(ライフパス)とは別の、「あなたが呼ばれる響き」の数字です。`,
+        free: [
+          {
+            t: '日本表記・漢字の名前数',
+            d: `表示名から読んだ ${native} です。Unicode の字形コードを足した簡易換算で、古典数秘の公式そのものではありません。${nativeTrait}という気質の触媒として眺えてみてください。`
+          },
+          dual
+            ? {
+              t: 'ローマ字の名前数（ピタゴラス式）',
+              d: `「${roman}」を A=1…Z=8 で換算すると ${latin} です。${latinTrait}国際式では、こちらが一般的に参照される名前数に近いとされます。`
+            }
+            : {
+              t: 'ローマ字でもう一本の軸',
+              d: roman && latin == null
+                ? 'ローマ字欄に A–Z の英字が入っていないため、国際式は算出されませんでした。ヘボン式など英字表記を入れると、並べて読む幅が広がります。'
+                : 'ローマ字（ヘボン式・パスポート表記など）を任意欄に入れると、国際式（A–Z）の名前数も並べて確認できます。'
+            },
+          {
+            t: 'ライフパスとの関係',
+            d: dual
+              ? `ライフパス ${lp}・日本表記 ${native}・ローマ字 ${latin} を並べると、生まれ持った本質・日常の呼び名・国際的な響きのバランスが見えてきます。`
+              : `ライフパス ${lp} と日本表記 ${native} の組み合わせで、内側(本質)と外側(響き)のバランスが見えてきます。`
+          },
+          { t: '改名のヒント', d: 'もし今の名前が苦しい時、ニックネームや屋号で別の数字を持つことで、別の波長を呼び込めます。' }
+        ],
+        premium: premiumGeneric('名前数', dual ? `${native}/${latin}` : String(native))
+      };
+    }
 
     case 'sun': return {
       title: '太陽星座',

@@ -274,12 +274,43 @@ h1 .deco {
 
 .form-row {
   display: grid;
-  grid-template-columns: 1fr 1fr auto;
   gap: 20px;
   align-items: end;
 }
 
+.form-row-names {
+  grid-template-columns: 1fr 1fr;
+  margin-bottom: 20px;
+}
+
+.form-row-action {
+  grid-template-columns: 1fr auto;
+}
+
 .field { min-width: 0; }
+
+.field-hint {
+  margin: 8px 0 0;
+  font-size: 0.78rem;
+  line-height: 1.45;
+  color: var(--text-muted, rgba(212, 196, 168, 0.65));
+}
+
+.hero-name-sub {
+  margin-top: 6px;
+  font-size: 0.95rem;
+  font-weight: 400;
+  letter-spacing: 0.06em;
+  color: var(--text-muted, rgba(212, 196, 168, 0.75));
+}
+
+.expression-line {
+  margin: 0 0 10px;
+}
+
+.expression-line:last-of-type {
+  margin-bottom: 0;
+}
 
 label {
   display: block;
@@ -1790,9 +1821,14 @@ footer {
     padding: 24px 20px 16px;
   }
 
-  .form-row {
+  .form-row-names,
+  .form-row-action {
     grid-template-columns: 1fr;
     gap: 16px;
+  }
+
+  .form-row-names {
+    margin-bottom: 16px;
   }
 
   .btn-primary,
