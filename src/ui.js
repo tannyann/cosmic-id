@@ -22,8 +22,19 @@ let lastRender = null;
 
 export { escapeHtml };
 
+function expressionMeaningKey(num, meanings) {
+  if (meanings[num]) return num;
+  let n = num;
+  while (n > 9) {
+    n = String(n).split('').reduce((s, c) => s + Number(c), 0);
+  }
+  return n;
+}
+
 function expressionDesc(num, meanings) {
-  const raw = meanings[num];
+  const key = expressionMeaningKey(num, meanings);
+  const raw = meanings[key];
+  if (!raw) return '';
   const colon = raw.indexOf(':');
   return colon >= 0 ? raw.slice(colon + 1).trim() : raw;
 }
@@ -314,8 +325,12 @@ export function openModal(cardKey) {
   document.body.style.overflow = 'hidden';
   document.querySelector('.container')?.setAttribute('inert', '');
 
-  document.getElementById('modal-close')?.focus();
-  document.getElementById('modal-close')?.setAttribute('aria-label', getUI().modal.close);
+  const closeBtn = document.getElementById('modal-close');
+  if (closeBtn) closeBtn.setAttribute('aria-label', getUI().modal.close);
+  // ダイアログ本体へフォーカス（閉じるボタンは inert 外でもフォーカス競合を避ける）
+  const dialog = document.getElementById('modal-dialog');
+  if (dialog) dialog.focus();
+  else closeBtn?.focus();
 }
 
 export function closeModal() {

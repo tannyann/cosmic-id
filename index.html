@@ -59,31 +59,6 @@
 
     <div class="results" id="results"></div>
 
-    <!-- ===== モーダル ===== -->
-    <div class="modal-backdrop" id="modal" hidden>
-      <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-heading">
-        <button type="button" class="modal-close" id="modal-close" aria-label="閉じる">×</button>
-        <div id="modal-body"></div>
-      </div>
-    </div>
-
-    <!-- ===== シェアカード拡大 ===== -->
-    <div class="share-modal-backdrop" id="share-modal" hidden>
-      <div class="share-modal" role="dialog" aria-modal="true" aria-label="シェアカード">
-        <button type="button" class="modal-close" id="share-modal-close" aria-label="閉じる">×</button>
-        <img id="share-modal-img" class="share-modal-img" alt="シェアカードのプレビュー">
-        <div class="share-modal-actions">
-          <button type="button" class="share-btn share-btn-primary" data-share-modal="save">画像を保存</button>
-          <button type="button" class="share-btn" data-share-modal="x">X</button>
-          <button type="button" class="share-btn" data-share-modal="line">LINE</button>
-          <button type="button" class="share-btn" data-share-modal="copy">テキストをコピー</button>
-          <button type="button" class="share-btn" data-share-modal="native" id="share-modal-native">共有…</button>
-        </div>
-      </div>
-    </div>
-
-    <div id="toast" class="toast" role="status" aria-live="polite"></div>
-
     <section id="premium-showcase" class="premium-showcase" aria-label="Premium — coming soon"></section>
 
     <footer>
@@ -91,6 +66,30 @@
       <span id="footer-line2">すべての解釈は一つの可能性。あなたの物語はあなたが書く。</span>
     </footer>
   </div>
+
+  <!-- モーダルは .container 外（inert がダイアログを無効化しないため） -->
+  <div class="modal-backdrop" id="modal" hidden>
+    <div class="modal" id="modal-dialog" role="dialog" aria-modal="true" aria-labelledby="modal-heading" tabindex="-1">
+      <button type="button" class="modal-close" id="modal-close" aria-label="閉じる">×</button>
+      <div id="modal-body"></div>
+    </div>
+  </div>
+
+  <div class="share-modal-backdrop" id="share-modal" hidden>
+    <div class="share-modal" id="share-modal-dialog" role="dialog" aria-modal="true" aria-label="シェアカード" tabindex="-1">
+      <button type="button" class="modal-close" id="share-modal-close" aria-label="閉じる">×</button>
+      <img id="share-modal-img" class="share-modal-img" alt="シェアカードのプレビュー">
+      <div class="share-modal-actions">
+        <button type="button" class="share-btn share-btn-primary" data-share-modal="save">画像を保存</button>
+        <button type="button" class="share-btn" data-share-modal="x">X</button>
+        <button type="button" class="share-btn" data-share-modal="line">LINE</button>
+        <button type="button" class="share-btn" data-share-modal="copy">テキストをコピー</button>
+        <button type="button" class="share-btn" data-share-modal="native" id="share-modal-native">共有…</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
   <script type="module" src="./src/main.js"></script>
 </body>

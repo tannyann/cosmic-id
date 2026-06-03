@@ -132,13 +132,23 @@ export function buildDeep(cardKey, ctx) {
       const { native, latin, hasLatinLetters } = profile;
       const roman = nameRoman || '';
       const dual = hasLatinLetters && latin != null;
-      const nativeTrait = EXPRESSION_MEANINGS[native].split(':')[1];
-      const latinTrait = dual ? EXPRESSION_MEANINGS[latin].split(':')[1] : '';
+      const traitOf = (n) => {
+        let key = n;
+        while (!EXPRESSION_MEANINGS[key] && key > 9) {
+          key = String(key).split('').reduce((s, c) => s + +c, 0);
+        }
+        const raw = EXPRESSION_MEANINGS[key];
+        if (!raw) return '';
+        const i = raw.indexOf(':');
+        return i >= 0 ? raw.slice(i + 1) : raw;
+      };
+      const nativeTrait = traitOf(native);
+      const latinTrait = dual ? traitOf(latin) : '';
 
       return {
         title: 'お名前の数字',
         value: dual ? `${native} · ${latin}` : native,
-        label: dual ? '日本表記 / ローマ字' : EXPRESSION_MEANINGS[native].replace('名前のエネルギー:', ''),
+        label: dual ? '日本表記 / ローマ字' : (EXPRESSION_MEANINGS[native] || '').replace('名前のエネルギー:', ''),
         intro: dual
           ? `表示名からは ${native}、ローマ字「${roman}」からは ${latin} の響きが読めます。どちらも「あなたが呼ばれる名」の触媒であり、ライフパス ${lp} とは別の軸です。数字が違っても、どちらか一方だけが正しいというわけではありません。`
           : `あなたの名前は、声に出されるたびに ${native} のエネルギーを世界に放っています。これは生まれた瞬間の数(ライフパス)とは別の、「あなたが呼ばれる響き」の数字です。`,

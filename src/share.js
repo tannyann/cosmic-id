@@ -471,7 +471,9 @@ function openShareModal(canvas, snap, tweetText) {
     };
   });
 
-  document.getElementById('share-modal-close')?.focus();
+  const shareDialog = document.getElementById('share-modal-dialog');
+  if (shareDialog) shareDialog.focus();
+  else document.getElementById('share-modal-close')?.focus();
 }
 
 export function closeShareModal() {

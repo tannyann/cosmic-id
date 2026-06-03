@@ -132,13 +132,23 @@ export function buildDeep(cardKey, ctx) {
       const { native, latin, hasLatinLetters } = profile;
       const roman = nameRoman || '';
       const dual = hasLatinLetters && latin != null;
-      const nativeTrait = EXPRESSION_MEANINGS[native].split(':')[1];
-      const latinTrait = dual ? EXPRESSION_MEANINGS[latin].split(':')[1] : '';
+      const traitOf = (n) => {
+        let key = n;
+        while (!EXPRESSION_MEANINGS[key] && key > 9) {
+          key = String(key).split('').reduce((s, c) => s + +c, 0);
+        }
+        const raw = EXPRESSION_MEANINGS[key];
+        if (!raw) return '';
+        const i = raw.indexOf(':');
+        return i >= 0 ? raw.slice(i + 1) : raw;
+      };
+      const nativeTrait = traitOf(native);
+      const latinTrait = dual ? traitOf(latin) : '';
 
       return {
         title: 'Name Number',
         value: dual ? `${native} · ${latin}` : native,
-        label: dual ? 'Display name / Roman letters' : EXPRESSION_MEANINGS[native].replace('Name energy:', ''),
+        label: dual ? 'Display name / Roman letters' : (EXPRESSION_MEANINGS[native] || '').replace('Name energy:', ''),
         intro: dual
           ? `From your display name we read ${native}; from "${roman}" we read ${latin}. Both describe how you are called—separate from Life Path ${lp}. Different numbers are not a contest for which is "correct."`
           : `Your name releases the energy of ${native} each time it is spoken—separate from Life Path ${lp}, the number of how you are called.`,
