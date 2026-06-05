@@ -49,6 +49,19 @@ export function getLocale() {
   return current;
 }
 
+/** ローマ字入力欄を出すのは日本語 UI のみ */
+export function isJapaneseLocale() {
+  return current === 'ja';
+}
+
+/** 日本語以外に切り替わったときローマ字入力をクリア（表示は CSS の html[lang] で制御） */
+export function applyRomanNameFieldVisibility() {
+  if (!isJapaneseLocale()) {
+    const romanInput = document.getElementById('name-roman');
+    if (romanInput) romanInput.value = '';
+  }
+}
+
 /** @returns {typeof ja} */
 export function getBundle() {
   return LOCALES[current];
@@ -88,10 +101,31 @@ export function onLocaleChange(fn) {
   return () => listeners.delete(fn);
 }
 
+/** 本番・開発で使うサイトのベース URL（末尾スラッシュなし） */
+export function getSiteUrl() {
+  if (typeof window !== 'undefined') {
+    const base = import.meta.env.BASE_URL || '/';
+    try {
+      return new URL(base, window.location.origin).href.replace(/\/$/, '');
+    } catch {
+      const path = base.startsWith('/') ? base : `/${base}`;
+      return `${window.location.origin}${path}`.replace(/\/$/, '');
+    }
+  }
+  return 'https://tannyann.github.io/cosmic-id';
+}
+
+export function getOgImageUrl() {
+  return `${getSiteUrl()}/og.png`;
+}
+
 export function applyDocumentLocale() {
   const b = getBundle();
   document.documentElement.lang = b.meta.htmlLang;
   document.title = b.ui.meta.title;
+
+  const siteUrl = getSiteUrl();
+  const ogImage = getOgImageUrl();
 
   const desc = document.querySelector('meta[name="description"]');
   if (desc) desc.setAttribute('content', b.ui.meta.description);
@@ -99,6 +133,32 @@ export function applyDocumentLocale() {
   if (ogTitle) ogTitle.setAttribute('content', b.ui.meta.ogTitle);
   const ogDesc = document.querySelector('meta[property="og:description"]');
   if (ogDesc) ogDesc.setAttribute('content', b.ui.meta.ogDescription);
+  const ogImageEl = document.getElementById('meta-og-image');
+  if (ogImageEl) ogImageEl.setAttribute('content', ogImage);
+  const ogUrl = document.getElementById('meta-og-url');
+  if (ogUrl) ogUrl.setAttribute('content', siteUrl);
+  const twitterImage = document.getElementById('meta-twitter-image');
+  if (twitterImage) twitterImage.setAttribute('content', ogImage);
+
+  applyStructuredData(b, siteUrl);
+}
+
+function applyStructuredData(bundle, siteUrl) {
+  const el = document.getElementById('ld-json');
+  if (!el) return;
+  const u = bundle.ui.meta;
+  const data = {
+    '@context': 'https://schema.org',
+    '@type': 'WebApplication',
+    name: 'COSMIC ID',
+    url: siteUrl,
+    description: u.description,
+    applicationCategory: 'LifestyleApplication',
+    operatingSystem: 'Web',
+    offers: { '@type': 'Offer', price: '0', priceCurrency: 'JPY' },
+    inLanguage: bundle.meta.htmlLang
+  };
+  el.textContent = JSON.stringify(data);
 }
 
 /** 静的 HTML のラベルを現在ロケールで更新 */
@@ -116,15 +176,21 @@ export function applyStaticPageCopy() {
   setText('header-eyebrow', u.header.eyebrow);
   setText('header-subtitle', u.header.subtitle);
   setText('label-name', u.form.nameLabel);
-  setText('label-name-roman', u.form.nameRomanLabel);
-  setText('hint-name-roman', u.form.nameRomanHint);
+  if (u.form.nameHint) setText('hint-name', u.form.nameHint);
+  setText('label-name-roman', u.form.nameRomanLabel ?? '');
+  setText('hint-name-roman', u.form.nameRomanHint ?? '');
   setText('label-birth', u.form.birthLabel);
   setText('form-free-badge', u.form.freeBadge);
   setText('footer-line1', u.footer.line1);
   setText('footer-line2', u.footer.line2);
   setAttr('name', 'placeholder', u.form.namePlaceholder);
-  setAttr('name-roman', 'placeholder', u.form.nameRomanPlaceholder);
+  if (u.form.nameRomanPlaceholder) {
+    setAttr('name-roman', 'placeholder', u.form.nameRomanPlaceholder);
+  }
+
+  applyRomanNameFieldVisibility();
   setText('btn-submit', u.form.submit);
+  setText('form-privacy', u.form.privacyNote);
   setText('label-lang', u.lang.label);
 
   const shareClose = document.getElementById('share-modal-close');

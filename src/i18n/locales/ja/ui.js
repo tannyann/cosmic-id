@@ -13,10 +13,12 @@ export const ui = {
   },
   form: {
     nameLabel: 'お名前',
-    namePlaceholder: '例:山田 太郎',
+    namePlaceholder: '例: 山田 太郎 / ジョン・スミス',
+    nameHint: '漢字・かなでお名前を。外国の方も当て字で入力できます。',
     nameRomanLabel: 'ローマ字（任意）',
-    nameRomanPlaceholder: '例: YAMADA TARO',
-    nameRomanHint: '国際式の数秘（A–Z）用。漢字・かなのお名前とは別の読み方として並べて表示します。',
+    nameRomanPlaceholder: '例: YAMADA TARO / JOHN SMITH',
+    nameRomanHint: '国際式の数秘（A–Z）用。パスポート名や母国語のローマ字表記を入れると、表示名とは別の響きも読めます。',
+    privacyNote: '入力情報は端末内でのみ処理され、サーバーには送信されません。',
     birthLabel: '生年月日',
     submit: '読み解く',
     freeBadge: '基本はずっと無料',
@@ -120,7 +122,12 @@ export const ui = {
     expressionDescNative: (desc, hint) =>
       `${desc}<div class="note">日本語・漢字は Unicode の字形から簡易換算しています。${hint}</div>`,
     expressionHintAddRoman: 'ローマ字欄にヘボン式などを入れると、国際式の名前数も並べて読めます。',
-    expressionLatinInvalid: 'ローマ字欄に A–Z の英字がないため、国際式は表示されませんでした。'
+    expressionLatinInvalid: 'ローマ字欄に A–Z の英字がないため、国際式は表示されませんでした。',
+    expressionLabelInferred: '日本表記 / かなから推定',
+    expressionDescInferred: (n, l, nativeDesc, latinDesc, latinName) =>
+      `<p class="expression-line"><strong>${n}</strong>（字形の試し読み）— ${nativeDesc}</p>` +
+      `<p class="expression-line"><strong>${l}</strong>（かな→${latinName} の推定）— ${latinDesc}</p>` +
+      '<div class="note">ローマ字未入力のため、かな部分をヘボン式に換算して国際式を推定しました。パスポート表記がある場合はローマ字欄に入れるとより正確です。</div>'
   },
   bio: { physical: '身体', emotional: '感情', intellectual: '知性', intuitive: '直感' },
   modal: {
@@ -141,6 +148,7 @@ export const ui = {
   share: {
     panelTitle: 'シェアカード',
     panelDesc: '十九の物語を、画像やテキストで共有できます',
+    panelSteps: '① 画像を保存 → ② X や LINE に投稿。あなた専用のカードが拡散の「顔」になります。',
     previewHint: 'タップで拡大',
     previewAria: 'シェアカードを拡大表示',
     previewAlt: (name) => `${name}さんの COSMIC ID シェアカード`,

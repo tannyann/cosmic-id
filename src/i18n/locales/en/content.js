@@ -159,10 +159,10 @@ export const TAROT_MEANINGS = {
   'Wheel of Fortune':   'The turning point. Lives within cycles.',
   'Justice':            'Balance and truth. A fair judge.',
   'The Hanged Man':     'A shift in perspective. What becomes visible upside down.',
-  'Death':              'Ending and rebirth. A soul that transforms deeply.',
+  'Death':              'Major transition and renewal. A symbol of letting go and moving toward a new self.',
   'Temperance':         'Harmony and integration. Blends two poles together.',
   'The Devil':          'Desire and shadow. A confrontation with primal force.',
-  'The Tower':          'Destruction and revelation. Shatters the old shell.',
+  'The Tower':          'Sudden change and insight. Rigid frames may loosen and open new perspective.',
   'The Star':           'Hope and guidance. Quietly radiates light.',
   'The Moon':           'Illusion and intuition. Travels the realm of dreams.',
   'The Sun':            'Joy and manifestation. Light itself.',
@@ -264,7 +264,10 @@ export const PREMIUM_COMING_SOON = {
     'Compatibility & moon rituals, and more'
   ],
   modalHeadline: 'Premium is coming soon',
-  modalLead: 'Deeper layers will be available after launch. For now, enjoy the free "Read deeper" sections.'
+  modalLead: 'Deeper layers will be available after launch. For now, enjoy the free "Read deeper" sections.',
+  paymentLinkUrl: import.meta.env?.VITE_STRIPE_PAYMENT_LINK || '',
+  paymentCta: 'Subscribe to Premium',
+  paymentNote: 'Secure checkout via Stripe. Cancel anytime.'
 };
 
 /** What is always free (marketing copy) */

@@ -4,6 +4,7 @@
  */
 
 import { getContent } from './i18n/index.js';
+import { hasKana, kanaToHepburn } from './kanaHepburn.js';
 
 // ============ ユーティリティ ============
 /** 桁数を1桁まで詰める。keepMasterがtrueなら11/22/33は止める。 */
@@ -79,19 +80,51 @@ export function expressionNumber(name) {
 }
 
 /**
+ * ローマ字未入力時、かな部分をヘボン式に変換して国際式数秘の入力に使う。
+ */
+function inferLatinFromDisplay(displayName) {
+  if (!hasKana(displayName)) return null;
+  const hepburn = kanaToHepburn(displayName);
+  if (!hepburn || !expressionNumberLatin(hepburn)) return null;
+  return hepburn;
+}
+
+/**
  * 表示名 + ローマ字（任意）から二系統の名前数を返す。
- * @returns {{ native: number, latin: number|null, hasLatinLetters: boolean }}
+ * @returns {{
+ *   native: number,
+ *   latin: number|null,
+ *   latinName: string|null,
+ *   latinSource: 'roman'|'hepburn'|null,
+ *   hasExplicitRoman: boolean,
+ *   hasLatinLetters: boolean
+ * }}
  */
 export function expressionProfile(displayName, romanName = '') {
   const latinTrimmed = romanName.trim();
-  const latin = latinTrimmed ? expressionNumberLatin(latinTrimmed) : null;
+  let latinName = latinTrimmed || null;
+  let latinSource = latinTrimmed ? 'roman' : null;
+
+  if (!latinName) {
+    const inferred = inferLatinFromDisplay(displayName);
+    if (inferred) {
+      latinName = inferred;
+      latinSource = 'hepburn';
+    }
+  }
+
+  const latin = latinName ? expressionNumberLatin(latinName) : null;
   const native =
     expressionNumberNative(displayName) ??
     (latinTrimmed ? null : expressionNumberLatin(displayName)) ??
     1;
+
   return {
     native,
     latin,
+    latinName: latin && latinName ? latinName : null,
+    latinSource: latin ? latinSource : null,
+    hasExplicitRoman: Boolean(latinTrimmed && latin != null),
     hasLatinLetters: Boolean(latinTrimmed && latin != null)
   };
 }

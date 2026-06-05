@@ -14,9 +14,7 @@ export const ui = {
   form: {
     nameLabel: 'Your name',
     namePlaceholder: 'e.g. Alex Morgan',
-    nameRomanLabel: 'Roman / Latin spelling (optional)',
-    nameRomanPlaceholder: 'e.g. ALEX MORGAN',
-    nameRomanHint: 'For international A–Z numerology. Shown alongside your display name when provided.',
+    privacyNote: 'Your input is processed only on this device — nothing is sent to a server.',
     birthLabel: 'Date of birth',
     submit: 'Reveal',
     freeBadge: 'Free to use — always',
@@ -143,6 +141,7 @@ export const ui = {
   share: {
     panelTitle: 'Share card',
     panelDesc: 'Share your nineteen stories as an image or text',
+    panelSteps: '① Save the image → ② Post on X or LINE. Your personal card is the face of what you share.',
     previewHint: 'Tap to enlarge',
     previewAria: 'Enlarge share card',
     previewAlt: (name) => `${name}'s COSMIC ID share card`,

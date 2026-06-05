@@ -129,9 +129,11 @@ export function buildDeep(cardKey, ctx) {
 
     case 'expression': {
       const profile = expr ?? { native: en, latin: null, hasLatinLetters: false };
-      const { native, latin, hasLatinLetters } = profile;
+      const { native, latin, hasExplicitRoman, latinSource, latinName } = profile;
       const roman = nameRoman || '';
-      const dual = hasLatinLetters && latin != null;
+      const dualExplicit = hasExplicitRoman && latin != null;
+      const dualInferred = latinSource === 'hepburn' && latin != null;
+      const dual = dualExplicit || dualInferred;
       const traitOf = (n) => {
         let key = n;
         while (!EXPRESSION_MEANINGS[key] && key > 9) {
@@ -148,26 +150,33 @@ export function buildDeep(cardKey, ctx) {
       return {
         title: 'お名前の数字',
         value: dual ? `${native} · ${latin}` : native,
-        label: dual ? '日本表記 / ローマ字' : (EXPRESSION_MEANINGS[native] || '').replace('名前のエネルギー:', ''),
-        intro: dual
+        label: dualExplicit ? '日本表記 / ローマ字' : dualInferred ? '日本表記 / かなから推定' : (EXPRESSION_MEANINGS[native] || '').replace('名前のエネルギー:', ''),
+        intro: dualExplicit
           ? `表示名からは ${native}、ローマ字「${roman}」からは ${latin} の響きが読めます。どちらも「あなたが呼ばれる名」の触媒であり、ライフパス ${lp} とは別の軸です。数字が違っても、どちらか一方だけが正しいというわけではありません。`
-          : `あなたの名前は、声に出されるたびに ${native} のエネルギーを世界に放っています。これは生まれた瞬間の数(ライフパス)とは別の、「あなたが呼ばれる響き」の数字です。`,
+          : dualInferred
+            ? `表示名からは ${native}、かな部分のヘボン式推定（${latinName}）からは ${latin} の響きが読めます。推定値は触媒としてお使いください。`
+            : `あなたの名前は、声に出されるたびに ${native} のエネルギーを世界に放っています。これは生まれた瞬間の数(ライフパス)とは別の、「あなたが呼ばれる響き」の数字です。`,
         free: [
           {
             t: '日本表記・漢字の名前数',
             d: `表示名から読んだ ${native} です。Unicode の字形コードを足した簡易換算で、古典数秘の公式そのものではありません。${nativeTrait}という気質の触媒として眺えてみてください。`
           },
-          dual
+          dualExplicit
             ? {
               t: 'ローマ字の名前数（ピタゴラス式）',
               d: `「${roman}」を A=1…Z=8 で換算すると ${latin} です。${latinTrait}国際式では、こちらが一般的に参照される名前数に近いとされます。`
             }
-            : {
-              t: 'ローマ字でもう一本の軸',
-              d: roman && latin == null
-                ? 'ローマ字欄に A–Z の英字が入っていないため、国際式は算出されませんでした。ヘボン式など英字表記を入れると、並べて読む幅が広がります。'
-                : 'ローマ字（ヘボン式・パスポート表記など）を任意欄に入れると、国際式（A–Z）の名前数も並べて確認できます。'
-            },
+            : dualInferred
+              ? {
+                t: 'かなから推定した名前数',
+                d: `かな部分をヘボン式（${latinName}）に換算すると ${latin} です。${latinTrait}パスポート表記などがあれば、ローマ字欄に入れるとより意図に近い読み方になります。`
+              }
+              : {
+                t: 'ローマ字でもう一本の軸',
+                d: roman && latin == null
+                  ? 'ローマ字欄に A–Z の英字が入っていないため、国際式は算出されませんでした。ヘボン式など英字表記を入れると、並べて読む幅が広がります。'
+                  : 'ローマ字（ヘボン式・パスポート表記など）を任意欄に入れると、国際式（A–Z）の名前数も並べて確認できます。'
+              },
           {
             t: 'ライフパスとの関係',
             d: dual
@@ -347,7 +356,7 @@ export function buildDeep(cardKey, ctx) {
       free: [
         { t: 'このカードの核心', d: TAROT_MEANINGS[tb.name] },
         { t: '数字の象徴', d: `${tb.num}という数字は、タロットにおいて独自の意味を持ちます。あなたの人生はこの数字が織りなす旅。` },
-        { t: '逆位置の警告', d: 'すべてのカードには影があります。あなたのカードが逆さに出るとき、何が起きているかを知る。' }
+        { t: '影の側面', d: 'すべてのカードには光と影の両面があります。重く感じるときは、変容や手放しのプロセスかもしれません。' }
       ],
       premium: [
         { t: '小アルカナのパーソナルカード', d: '大アルカナの背後で動く小アルカナのスート(剣・杯・棒・金貨)を計算。' },

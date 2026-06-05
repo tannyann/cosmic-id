@@ -10,7 +10,7 @@ import {
   birthstone, birthflower, biorhythm, moonPhaseToday, lifeStage
 } from './calculations.js';
 
-import { getContent, getUI, getDeeper } from './i18n/index.js';
+import { getContent, getUI, getDeeper, isJapaneseLocale } from './i18n/index.js';
 import { mountSharePanel } from './share.js';
 import {
   escapeHtml, localDateInputMax, prefersReducedMotion
@@ -39,18 +39,41 @@ function expressionDesc(num, meanings) {
   return colon >= 0 ? raw.slice(colon + 1).trim() : raw;
 }
 
-function buildExpressionCard(u, expr, nameRoman, meanings) {
+function romanNameFromForm() {
+  if (!isJapaneseLocale()) return '';
+  return document.getElementById('name-roman')?.value.trim() ?? '';
+}
+
+function romanNameForRender(stored = '') {
+  return isJapaneseLocale() ? stored : '';
+}
+
+function buildExpressionCard(u, expr, nameRoman, meanings, jaDualMode) {
+  if (!jaDualMode) {
+    const num = expr.latin ?? expr.native;
+    return card(
+      'expression',
+      u.cards.expression,
+      num,
+      u.cards.expressionLabel,
+      expressionDesc(num, meanings)
+    );
+  }
+
   const nativeDesc = expressionDesc(expr.native, meanings);
   const romanTrimmed = nameRoman.trim();
 
-  if (expr.hasLatinLetters && expr.latin != null) {
+  if (expr.latin != null && (expr.hasExplicitRoman || expr.latinSource === 'hepburn')) {
     const latinDesc = expressionDesc(expr.latin, meanings);
+    const inferred = expr.latinSource === 'hepburn';
     return card(
       'expression',
       u.cards.expression,
       u.fmt.expressionValueDual(expr.native, expr.latin),
-      u.fmt.expressionLabelDual,
-      u.fmt.expressionDescDual(expr.native, expr.latin, nativeDesc, latinDesc)
+      inferred ? u.fmt.expressionLabelInferred : u.fmt.expressionLabelDual,
+      inferred
+        ? u.fmt.expressionDescInferred(expr.native, expr.latin, nativeDesc, latinDesc, expr.latinName)
+        : u.fmt.expressionDescDual(expr.native, expr.latin, nativeDesc, latinDesc)
     );
   }
 
@@ -167,7 +190,8 @@ function sectionHeading(title, en) {
 }
 
 export function render(name, nameRoman, y, m, d) {
-  lastRender = { name, nameRoman: nameRoman ?? '', y, m, d };
+  const roman = romanNameForRender(nameRoman ?? '');
+  lastRender = { name, nameRoman: roman, y, m, d };
   const u = getUI();
   const c = getContent();
   const {
@@ -181,7 +205,7 @@ export function render(name, nameRoman, y, m, d) {
 
   const lp  = lifePath(y, m, d);
   const py  = personalYear(m, d, currentYear);
-  const expr = expressionProfile(name, nameRoman ?? '');
+  const expr = expressionProfile(name, roman);
   const en = expr.native;
   const sun = sunSign(m, d);
   const mt  = moonTrait(y, m, d);
@@ -202,7 +226,7 @@ export function render(name, nameRoman, y, m, d) {
   const ls  = lifeStage(y, m, d);
 
   currentContext = {
-    name, nameRoman: (nameRoman ?? '').trim(), y, m, d, currentYear,
+    name, nameRoman: roman.trim(), y, m, d, currentYear,
     lp, py, en, expr, sun, mt, cz, sj, ks, gy, an, my, tb, ct, dt, bs, bf, bio, mp, ls
   };
 
@@ -211,7 +235,8 @@ export function render(name, nameRoman, y, m, d) {
   const html = `
     <div class="hero-card">
       <div class="hero-name">${escapeHtml(name)}</div>
-      ${currentContext.nameRoman ? `<div class="hero-name-sub">${escapeHtml(currentContext.nameRoman)}</div>` : ''}
+      ${isJapaneseLocale() && currentContext.nameRoman
+        ? `<div class="hero-name-sub">${escapeHtml(currentContext.nameRoman)}</div>` : ''}
       <div class="hero-meta">
         ${u.fmt.bornOn(y, m, d)} ・ ${u.fmt.ageNow(ls.years.toFixed(2))}<br>
         ${ls.next ? u.fmt.nextMilestone(ls.next.age, ls.next.name) : ''}
@@ -224,7 +249,7 @@ export function render(name, nameRoman, y, m, d) {
     <div class="grid">
       ${card('lifepath', u.cards.lifepath, lp, LIFE_PATH_MEANINGS[lp].label, LIFE_PATH_MEANINGS[lp].desc)}
       ${card('personalYear', u.cards.personalYear, py, u.fmt.yearYou(currentYear), PERSONAL_YEAR_MEANINGS[py])}
-      ${buildExpressionCard(u, expr, nameRoman ?? '', EXPRESSION_MEANINGS)}
+      ${buildExpressionCard(u, expr, roman, EXPRESSION_MEANINGS, isJapaneseLocale())}
     </div>
 
     ${sectionHeading(...u.sections.western)}
@@ -303,7 +328,7 @@ export function render(name, nameRoman, y, m, d) {
 export function rerenderIfNeeded() {
   if (lastRender) {
     const { name, nameRoman, y, m, d } = lastRender;
-    render(name, nameRoman ?? '', y, m, d);
+    render(name, romanNameForRender(nameRoman ?? ''), y, m, d);
   }
   renderPremiumShowcase();
   const modal = document.getElementById('modal');
@@ -354,6 +379,12 @@ function renderPremiumComingSoonBlock(variant = 'modal') {
   const headline = variant === 'modal' ? cs.modalHeadline : cs.headline;
   const lead = variant === 'modal' ? cs.modalLead : cs.lead;
 
+  const paymentUrl = cs.paymentLinkUrl?.trim();
+  const paymentBlock = paymentUrl
+    ? `<a class="cta-button premium-payment-cta" href="${escapeHtml(paymentUrl)}" target="_blank" rel="noopener noreferrer">${escapeHtml(cs.paymentCta)}</a>
+       <p class="premium-payment-note">${escapeHtml(cs.paymentNote)}</p>`
+    : '';
+
   return `
     <div class="premium-section premium-section--soon">
       <div class="premium-badge">${escapeHtml(cs.badge)}</div>
@@ -361,6 +392,7 @@ function renderPremiumComingSoonBlock(variant = 'modal') {
         <p class="premium-pitch">${escapeHtml(headline)}</p>
         <p class="premium-sub">${escapeHtml(lead)}</p>
         ${teasers}
+        ${paymentBlock}
       </div>
     </div>
   `;
@@ -442,11 +474,10 @@ export function bindForm() {
   document.getElementById('form').addEventListener('submit', e => {
     e.preventDefault();
     const name = document.getElementById('name').value.trim();
-    const nameRoman = document.getElementById('name-roman').value.trim();
     const bd = document.getElementById('birthdate').value;
     if (!name || !bd) return;
     const [y, m, d] = bd.split('-').map(Number);
-    render(name, nameRoman, y, m, d);
+    render(name, romanNameFromForm(), y, m, d);
   });
 
   document.getElementById('birthdate').max = localDateInputMax();

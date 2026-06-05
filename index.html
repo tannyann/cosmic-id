@@ -8,8 +8,14 @@
   <meta property="og:title" content="COSMIC ID — 個人統合占断">
   <meta property="og:description" content="あなたの中に書かれた、十九の物語。複数の占術をひとつに。">
   <meta property="og:type" content="website">
-  <meta name="twitter:card" content="summary">
+  <meta property="og:image" id="meta-og-image" content="">
+  <meta property="og:image:width" content="1080">
+  <meta property="og:image:height" content="630">
+  <meta property="og:url" id="meta-og-url" content="">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" id="meta-twitter-image" content="">
   <title>COSMIC ID — 個人統合占断</title>
+  <script type="application/ld+json" id="ld-json"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=Noto+Serif+JP:wght@300;400;500&display=swap" rel="stylesheet">
@@ -36,12 +42,13 @@
     <div class="form-card">
       <p class="form-free-badge" id="form-free-badge">基本はずっと無料</p>
       <form id="form">
-        <div class="form-row form-row-names">
-          <div class="field">
+        <div class="form-row form-row-names" id="form-row-names">
+          <div class="field field-name-primary">
             <label for="name" id="label-name">お名前</label>
             <input type="text" id="name" placeholder="例:山田 太郎" autocomplete="name" required>
+            <p class="field-hint" id="hint-name"></p>
           </div>
-          <div class="field">
+          <div class="field field-name-roman" id="field-name-roman">
             <label for="name-roman" id="label-name-roman">ローマ字（任意）</label>
             <input type="text" id="name-roman" placeholder="例: YAMADA TARO" autocomplete="off" inputmode="latin" spellcheck="false">
             <p class="field-hint" id="hint-name-roman"></p>
@@ -54,6 +61,7 @@
           </div>
           <button type="submit" class="btn-primary" id="btn-submit">読み解く</button>
         </div>
+        <p class="form-privacy" id="form-privacy"></p>
       </form>
     </div>
 

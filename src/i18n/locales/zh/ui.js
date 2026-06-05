@@ -18,9 +18,7 @@ export const ui = {
   form: {
     nameLabel: '姓名',
     namePlaceholder: '例：王明',
-    nameRomanLabel: '罗马拼音（可选）',
-    nameRomanPlaceholder: '例：WANG MING',
-    nameRomanHint: '用于国际式 A–Z 数秘，与中文姓名分开显示。',
+    privacyNote: '输入信息仅在您的设备上处理，不会发送到服务器。',
     birthLabel: '出生日期',
     submit: '解读',
     freeBadge: '核心功能永久免费',

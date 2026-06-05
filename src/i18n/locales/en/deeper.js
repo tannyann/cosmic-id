@@ -347,7 +347,7 @@ export function buildDeep(cardKey, ctx) {
       free: [
         { t: 'Core of this card', d: TAROT_MEANINGS[tb.name] },
         { t: 'Symbolism of the number', d: `The number ${tb.num} may hold its own meaning in Tarot. Your life may be a journey woven by this number.` },
-        { t: 'Reversed warning', d: 'Every card has a shadow. When your card appears reversed, you may learn what is asking for attention.' }
+        { t: 'Shadow side', d: 'Every card holds light and shadow. When it feels heavy, it may reflect a process of change or letting go—not a verdict.' }
       ],
       premium: [
         { t: 'Personal Minor Arcana cards', d: 'Calculate the Minor Arcana suits (Swords, Cups, Wands, Pentacles) moving behind the Major Arcana.' },

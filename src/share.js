@@ -348,6 +348,7 @@ export async function mountSharePanel(ctx) {
     <div class="share-panel-head">
       <h2 class="share-panel-title">${s.panelTitle}</h2>
       <p class="share-panel-desc">${s.panelDesc}</p>
+      ${s.panelSteps ? `<p class="share-panel-steps">${s.panelSteps}</p>` : ''}
     </div>
     <button type="button" class="share-preview-btn" id="share-preview-btn" aria-label="${s.previewAria}">
       <div class="share-preview-loading" id="share-preview-loading" aria-hidden="true">${s.loading}</div>
