@@ -12,6 +12,7 @@ import {
 
 import { getContent, getUI, getDeeper, isJapaneseLocale } from './i18n/index.js';
 import { mountSharePanel } from './share.js';
+import { bindCompatMode } from './compat-ui.js';
 import {
   escapeHtml, localDateInputMax, prefersReducedMotion
 } from './util.js';
@@ -19,6 +20,11 @@ import {
 let currentContext = null;
 let modalTrigger = null;
 let lastRender = null;
+
+// 相性診断モードから現在の自分側コンテキストを参照するため
+export function getCurrentContext() {
+  return currentContext;
+}
 
 export { escapeHtml };
 
@@ -320,6 +326,7 @@ export function render(name, nameRoman, y, m, d) {
   r.classList.add('active');
   bindResultCards(r);
   mountSharePanel(currentContext).catch(err => console.error('Share panel:', err));
+  bindCompatMode();
 
   const scrollOpts = prefersReducedMotion() ? { block: 'start' } : { behavior: 'smooth', block: 'start' };
   setTimeout(() => r.scrollIntoView(scrollOpts), 100);
