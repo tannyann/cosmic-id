@@ -49,18 +49,7 @@ const listeners = new Set();
 function detectLocale() {
   const saved = typeof localStorage !== 'undefined' ? localStorage.getItem(STORAGE_KEY) : null;
   if (saved && LOCALES[saved]) return /** @type {LocaleCode} */ (saved);
-
-  const nav = (typeof navigator !== 'undefined' && navigator.language) || 'ja';
-  if (nav.startsWith('ja')) return 'ja';
-  if (nav.startsWith('zh')) return 'zh';
-  if (nav.startsWith('ko')) return 'ko';
-  if (nav.startsWith('es')) return 'es';
-  if (nav.startsWith('fr')) return 'fr';
-  if (nav.startsWith('it')) return 'it';
-  if (nav.startsWith('de')) return 'de';
-  if (nav.startsWith('tr')) return 'tr';
-  if (nav.startsWith('he')) return 'he';
-  if (nav.startsWith('ar')) return 'ar';
+  // 初回訪問は英語。言語はセレクタで明示的に選んでもらう。
   return 'en';
 }
 

@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="生年月日と名前から、数秘・占星・九星・動物占いなど複数の体系を横断して読み解く COSMIC ID。">
+  <meta name="description" content="Cross-read numerology, astrology, Kyusei, and more from your birth date and name.">
   <meta name="theme-color" content="#06050f">
-  <meta property="og:title" content="COSMIC ID — 個人統合占断">
-  <meta property="og:description" content="あなたの中に書かれた、十九の物語。複数の占術をひとつに。">
+  <meta property="og:title" content="COSMIC ID — Personal Cosmology">
+  <meta property="og:description" content="Nineteen stories written within you. Many systems, one reading.">
   <meta property="og:type" content="website">
   <meta property="og:image" id="meta-og-image" content="">
   <meta property="og:image:width" content="1080">
@@ -14,7 +14,7 @@
   <meta property="og:url" id="meta-og-url" content="">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:image" id="meta-twitter-image" content="">
-  <title>COSMIC ID — 個人統合占断</title>
+  <title>COSMIC ID — Personal Cosmology</title>
   <script type="application/ld+json" id="ld-json"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -30,22 +30,22 @@
       <div class="header-top">
         <p class="eyebrow" id="header-eyebrow">Personal Cosmology</p>
         <div class="lang-field">
-          <label for="lang-switcher" id="label-lang">言語</label>
+          <label for="lang-switcher" id="label-lang">Language</label>
           <select id="lang-switcher" class="lang-switcher" aria-label="Language"></select>
         </div>
       </div>
       <h1><span class="deco" aria-hidden="true">✦</span>COSMIC ID<span class="deco" aria-hidden="true">✦</span></h1>
-      <p class="subtitle" id="header-subtitle">あなたの中に書かれた、十九の物語</p>
+      <p class="subtitle" id="header-subtitle">Nineteen stories written within you</p>
       <div class="header-ornament" aria-hidden="true"></div>
     </header>
 
     <div class="form-card">
-      <p class="form-free-badge" id="form-free-badge">基本はずっと無料</p>
+      <p class="form-free-badge" id="form-free-badge">Free to use — always</p>
       <form id="form">
         <div class="form-row form-row-names" id="form-row-names">
           <div class="field field-name-primary">
-            <label for="name" id="label-name">お名前</label>
-            <input type="text" id="name" placeholder="例:山田 太郎" autocomplete="name" required>
+            <label for="name" id="label-name">Your name</label>
+            <input type="text" id="name" placeholder="e.g. Alex Morgan" autocomplete="name" required>
             <p class="field-hint" id="hint-name"></p>
           </div>
           <div class="field field-name-roman" id="field-name-roman">
@@ -56,10 +56,10 @@
         </div>
         <div class="form-row form-row-action">
           <div class="field">
-            <label for="birthdate" id="label-birth">生年月日</label>
+            <label for="birthdate" id="label-birth">Date of birth</label>
             <input type="date" id="birthdate" required>
           </div>
-          <button type="submit" class="btn-primary" id="btn-submit">読み解く</button>
+          <button type="submit" class="btn-primary" id="btn-submit">Reveal</button>
         </div>
         <p class="form-privacy" id="form-privacy"></p>
       </form>
@@ -71,28 +71,28 @@
 
     <footer>
       <span id="footer-line1">COSMIC ID — Personal Cosmology Prototype</span><br>
-      <span id="footer-line2">すべての解釈は一つの可能性。あなたの物語はあなたが書く。</span>
+      <span id="footer-line2">Every reading is one possibility. You write your story.</span>
     </footer>
   </div>
 
   <!-- モーダルは .container 外（inert がダイアログを無効化しないため） -->
   <div class="modal-backdrop" id="modal" hidden>
     <div class="modal" id="modal-dialog" role="dialog" aria-modal="true" aria-labelledby="modal-heading" tabindex="-1">
-      <button type="button" class="modal-close" id="modal-close" aria-label="閉じる">×</button>
+      <button type="button" class="modal-close" id="modal-close" aria-label="Close">×</button>
       <div id="modal-body"></div>
     </div>
   </div>
 
   <div class="share-modal-backdrop" id="share-modal" hidden>
-    <div class="share-modal" id="share-modal-dialog" role="dialog" aria-modal="true" aria-label="シェアカード" tabindex="-1">
-      <button type="button" class="modal-close" id="share-modal-close" aria-label="閉じる">×</button>
-      <img id="share-modal-img" class="share-modal-img" alt="シェアカードのプレビュー">
+    <div class="share-modal" id="share-modal-dialog" role="dialog" aria-modal="true" aria-label="Share card" tabindex="-1">
+      <button type="button" class="modal-close" id="share-modal-close" aria-label="Close">×</button>
+      <img id="share-modal-img" class="share-modal-img" alt="Share card preview">
       <div class="share-modal-actions">
-        <button type="button" class="share-btn share-btn-primary" data-share-modal="save">画像を保存</button>
+        <button type="button" class="share-btn share-btn-primary" data-share-modal="save">Save image</button>
         <button type="button" class="share-btn" data-share-modal="x">X</button>
         <button type="button" class="share-btn" data-share-modal="line">LINE</button>
-        <button type="button" class="share-btn" data-share-modal="copy">テキストをコピー</button>
-        <button type="button" class="share-btn" data-share-modal="native" id="share-modal-native">共有…</button>
+        <button type="button" class="share-btn" data-share-modal="copy">Copy text</button>
+        <button type="button" class="share-btn" data-share-modal="native" id="share-modal-native">Share…</button>
       </div>
     </div>
   </div>
