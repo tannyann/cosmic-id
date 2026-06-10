@@ -148,6 +148,7 @@ body::before {
   border-radius: 999px;
   color: var(--text-soft);
   font-family: var(--font-body);
+  max-width: min(100%, 11rem);
   font-size: 12px;
   padding: 6px 28px 6px 12px;
   cursor: pointer;
@@ -2220,4 +2221,32 @@ footer {
   .compat-result {
     animation: none;
   }
+}
+
+/* ===== RTL (עברית / العربية) ===== */
+html[dir="rtl"] .header-top {
+  flex-direction: row-reverse;
+}
+
+html[dir="rtl"] .section-title {
+  flex-direction: row-reverse;
+}
+
+html[dir="rtl"] .section-en {
+  margin-left: 0;
+  margin-right: auto;
+  padding-left: 0;
+  padding-right: 16px;
+}
+
+html[dir="rtl"] .compat-axis-head {
+  flex-direction: row-reverse;
+}
+
+html[dir="rtl"] .share-actions {
+  flex-direction: row-reverse;
+}
+
+html[dir="rtl"] .lang-field {
+  flex-direction: row-reverse;
 }

@@ -8,24 +8,40 @@ import en from './locales/en/index.js';
 import { ui as zhUi } from './locales/zh/ui.js';
 import { ui as koUi } from './locales/ko/ui.js';
 import { ui as esUi } from './locales/es/ui.js';
+import { ui as frUi } from './locales/fr/ui.js';
+import { ui as itUi } from './locales/it/ui.js';
+import { ui as deUi } from './locales/de/ui.js';
+import { ui as trUi } from './locales/tr/ui.js';
+import { ui as heUi } from './locales/he/ui.js';
+import { ui as arUi } from './locales/ar/ui.js';
 
 const STORAGE_KEY = 'cosmic-id-locale';
 
-/** @typedef {'ja'|'en'|'zh'|'ko'|'es'} LocaleCode */
+/** @typedef {'ja'|'en'|'zh'|'ko'|'es'|'fr'|'it'|'de'|'tr'|'he'|'ar'} LocaleCode */
 
 /** UI のみ翻訳・占術コンテンツは英語にフォールバック */
-const zh = { ...en, ui: zhUi, meta: { code: 'zh', label: zhUi.meta.label, htmlLang: 'zh-Hans' } };
-const ko = { ...en, ui: koUi, meta: { code: 'ko', label: koUi.meta.label, htmlLang: 'ko' } };
-const es = { ...en, ui: esUi, meta: { code: 'es', label: esUi.meta.label, htmlLang: 'es' } };
+function uiLocale(ui, code, htmlLang, dir = 'ltr') {
+  return { ...en, ui, meta: { code, label: ui.meta.label, htmlLang, dir } };
+}
 
-ja.meta = { code: 'ja', label: ja.ui.meta.label, htmlLang: 'ja' };
-en.meta = { code: 'en', label: en.ui.meta.label, htmlLang: 'en' };
+const zh = uiLocale(zhUi, 'zh', 'zh-Hans');
+const ko = uiLocale(koUi, 'ko', 'ko');
+const es = uiLocale(esUi, 'es', 'es');
+const fr = uiLocale(frUi, 'fr', 'fr');
+const it = uiLocale(itUi, 'it', 'it');
+const de = uiLocale(deUi, 'de', 'de');
+const tr = uiLocale(trUi, 'tr', 'tr');
+const he = uiLocale(heUi, 'he', 'he', 'rtl');
+const ar = uiLocale(arUi, 'ar', 'ar', 'rtl');
+
+ja.meta = { code: 'ja', label: ja.ui.meta.label, htmlLang: 'ja', dir: 'ltr' };
+en.meta = { code: 'en', label: en.ui.meta.label, htmlLang: 'en', dir: 'ltr' };
 
 /** @type {Record<LocaleCode, typeof ja>} */
-export const LOCALES = { ja, en, zh, ko, es };
+export const LOCALES = { ja, en, zh, ko, es, fr, it, de, tr, he, ar };
 
 /** @type {LocaleCode[]} */
-export const LOCALE_CODES = ['ja', 'en', 'zh', 'ko', 'es'];
+export const LOCALE_CODES = ['ja', 'en', 'zh', 'ko', 'es', 'fr', 'it', 'de', 'tr', 'he', 'ar'];
 
 const listeners = new Set();
 
@@ -39,6 +55,12 @@ function detectLocale() {
   if (nav.startsWith('zh')) return 'zh';
   if (nav.startsWith('ko')) return 'ko';
   if (nav.startsWith('es')) return 'es';
+  if (nav.startsWith('fr')) return 'fr';
+  if (nav.startsWith('it')) return 'it';
+  if (nav.startsWith('de')) return 'de';
+  if (nav.startsWith('tr')) return 'tr';
+  if (nav.startsWith('he')) return 'he';
+  if (nav.startsWith('ar')) return 'ar';
   return 'en';
 }
 
@@ -122,6 +144,7 @@ export function getOgImageUrl() {
 export function applyDocumentLocale() {
   const b = getBundle();
   document.documentElement.lang = b.meta.htmlLang;
+  document.documentElement.dir = b.meta.dir || 'ltr';
   document.title = b.ui.meta.title;
 
   const siteUrl = getSiteUrl();
