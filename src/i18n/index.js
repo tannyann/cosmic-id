@@ -21,7 +21,8 @@ const STORAGE_KEY = 'cosmic-id-locale';
 
 /** UI のみ翻訳・占術コンテンツは英語にフォールバック */
 function uiLocale(ui, code, htmlLang, dir = 'ltr') {
-  return { ...en, ui, meta: { code, label: ui.meta.label, htmlLang, dir } };
+  const base = { ...en, ui: { ...en.ui, ...ui }, meta: { code, label: ui.meta.label, htmlLang, dir } };
+  return base;
 }
 
 const zh = uiLocale(zhUi, 'zh', 'zh-Hans');
@@ -65,12 +66,9 @@ export function isJapaneseLocale() {
   return current === 'ja';
 }
 
-/** 日本語以外に切り替わったときローマ字入力をクリア（表示は CSS の html[lang] で制御） */
+/** 日本語以外に切り替わったときローマ字欄は CSS で非表示（入力値は保持） */
 export function applyRomanNameFieldVisibility() {
-  if (!isJapaneseLocale()) {
-    const romanInput = document.getElementById('name-roman');
-    if (romanInput) romanInput.value = '';
-  }
+  /* visibility is controlled by html[lang="ja"] in styles.css */
 }
 
 /** @returns {typeof ja} */
@@ -97,8 +95,12 @@ export function getDeeper() {
 export function setLocale(code) {
   if (!LOCALES[/** @type {string} */ (code)] || code === current) return;
   current = /** @type {LocaleCode} */ (code);
-  if (typeof localStorage !== 'undefined') {
-    localStorage.setItem(STORAGE_KEY, code);
+  try {
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem(STORAGE_KEY, code);
+    }
+  } catch {
+    /* private mode 等で保存できなくても表示は切り替える */
   }
   applyDocumentLocale();
   applyStaticPageCopy();
@@ -188,7 +190,7 @@ export function applyStaticPageCopy() {
   setText('header-eyebrow', u.header.eyebrow);
   setText('header-subtitle', u.header.subtitle);
   setText('label-name', u.form.nameLabel);
-  if (u.form.nameHint) setText('hint-name', u.form.nameHint);
+  setText('hint-name', u.form.nameHint ?? '');
   setText('label-name-roman', u.form.nameRomanLabel ?? '');
   setText('hint-name-roman', u.form.nameRomanHint ?? '');
   setText('label-birth', u.form.birthLabel);
@@ -235,9 +237,11 @@ export function mountLanguageSwitcher() {
   if (!host) return;
   refreshLanguageSwitcher();
   if (!host.dataset.bound) {
-    host.addEventListener('change', e => {
+    const onPick = e => {
       setLocale(/** @type {HTMLSelectElement} */ (e.target).value);
-    });
+    };
+    host.addEventListener('change', onPick);
+    host.addEventListener('input', onPick);
     host.dataset.bound = '1';
   }
 }

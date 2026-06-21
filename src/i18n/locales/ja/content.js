@@ -372,3 +372,49 @@ export const PREMIUM_ROADMAP = [
   { phase: '開発予定', items: ['10年タイムライン', '相性', '月カレンダー'] },
   { phase: '構想', items: ['AI統合ナラティブ', 'プロフィール保存'] }
 ];
+
+/** 相性診断 — 軸ラベル・バンド・ヒント */
+export const COMPAT_AXIS_LABELS = {
+  lifePath: '数秘・ライフパス',
+  sun: '太陽星座',
+  zodiac: '十二支',
+  gogyou: '五行',
+  kyusei: '九星気学'
+};
+
+export const COMPAT_BANDS = [
+  { min: 90, key: 'fated', label: '運命的な響き合い' },
+  { min: 80, key: 'deep', label: '深い縁で結ばれた組合せ' },
+  { min: 70, key: 'stable', label: '安定した結びつき' },
+  { min: 60, key: 'learning', label: '学び合う関係性' },
+  { min: 50, key: 'growing', label: '時間と対話で育つ縁' },
+  { min: 0, key: 'mirror', label: '鏡のような対比' }
+];
+
+export const COMPAT_AXIS_HINTS = {
+  lifePath: {
+    high: 'ライフパス同士が響き合い、歩幅が近い組合せ。',
+    mid: 'テンポは違っても、時間をかければ整っていく。',
+    low: '対照的なパス。違いへの好奇心が鍵。'
+  },
+  sun: {
+    high: '太陽星座のエレメントが調和し、自然な相性。',
+    mid: 'スタイルの違いが補い合う余地あり。',
+    low: '正反対のエネルギー。尊重がバランスを作る。'
+  },
+  zodiac: {
+    high: '十二支の組合せが相生・三合に近い。',
+    mid: '中立的な組合せ。日常の配慮が効く。',
+    low: '伝統的に注意の組合せ。ユーモアと距離感で。'
+  },
+  gogyou: {
+    high: '五行が互いを生み出す関係。',
+    mid: '中性的な関係。習慣の積み重ねが鍵。',
+    low: '相剋に近い。お互いのペースを尊ぶこと。'
+  },
+  kyusei: {
+    high: '本命星のエネルギーが循環し合う組合せ。',
+    mid: '中庸の相性。日々の習慣を整えると安定する。',
+    low: '勢いの方向が交差する関係。お互いの「間」を尊ぶこと。'
+  }
+};

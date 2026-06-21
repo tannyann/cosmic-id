@@ -12,6 +12,14 @@ import { copyToClipboard, showToast } from './util.js';
 const CARD_W = 1080;
 const CARD_H = 1350;
 
+function waitForFonts(timeoutMs = 2500) {
+  const timeout = new Promise(resolve => setTimeout(resolve, timeoutMs));
+  if (document.fonts?.ready) {
+    return Promise.race([document.fonts.ready.catch(() => undefined), timeout]);
+  }
+  return timeout;
+}
+
 const COLORS = {
   bg0: '#06050f', bg1: '#14102a', bg2: '#221838',
   gold: '#f0d878', goldDim: '#c9a227', cream: '#ede4d4',
@@ -170,9 +178,7 @@ function wrapText(ctx, text, maxWidth, size, font) {
  * ------------------------------------------------------------ */
 
 async function renderCompatCardCanvas({ name1, name2, result }) {
-  if (document.fonts?.ready) {
-    try { await document.fonts.ready; } catch { /* noop */ }
-  }
+  await waitForFonts();
 
   const canvas = document.createElement('canvas');
   canvas.width = CARD_W;
@@ -296,16 +302,17 @@ export async function mountCompatSharePanel({ name1, name2, result }) {
   `;
 
   let canvas;
+  const loading = mount.querySelector('#compat-share-loading');
+  const img = mount.querySelector('#compat-share-img');
   try {
     canvas = await renderCompatCardCanvas({ name1, name2, result });
   } catch (err) {
     console.error('compat-share render failed:', err);
+    if (loading) loading.textContent = '生成に失敗しました';
     showToast('画像の生成に失敗しました');
     return;
   }
 
-  const img = mount.querySelector('#compat-share-img');
-  const loading = mount.querySelector('#compat-share-loading');
   img.src = canvas.toDataURL('image/png');
   img.hidden = false;
   if (loading) loading.hidden = true;

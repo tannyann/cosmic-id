@@ -6,10 +6,19 @@
  *
  * Canvas は CORS 汚染回避でシステムフォントのみ。
  */
-import { copyToClipboard, showToast } from './util.js';
+import { copyToClipboard, showToast, escapeHtml } from './util.js';
+import { getUI } from './i18n/index.js';
 
 const CARD_W = 1080;
 const CARD_H = 1350;
+
+function waitForFonts(timeoutMs = 2500) {
+  const timeout = new Promise(resolve => setTimeout(resolve, timeoutMs));
+  if (document.fonts?.ready) {
+    return Promise.race([document.fonts.ready.catch(() => undefined), timeout]);
+  }
+  return timeout;
+}
 
 const FONT = '"Hiragino Mincho ProN", "Yu Mincho", "Noto Serif JP", serif';
 
@@ -121,9 +130,7 @@ function wrapText(ctx, text, maxWidth, size, weight = 500) {
 /* ---- カード本体 ---- */
 
 async function renderLoveCardCanvas({ name, result, ctx: birthCtx }) {
-  if (document.fonts?.ready) {
-    try { await document.fonts.ready; } catch {}
-  }
+  await waitForFonts();
 
   const canvas = document.createElement('canvas');
   canvas.width = CARD_W;
@@ -241,38 +248,42 @@ export async function mountLoveSharePanel({ name, result, ctx: birthCtx }) {
   const mount = document.getElementById('love-share-mount');
   if (!mount) return;
 
+  const love = getUI().love;
+  const share = getUI().share;
+
   mount.innerHTML = `
-    <div class="share-panel love-share-panel" aria-label="恋愛タイプをシェア">
+    <div class="share-panel love-share-panel" aria-label="${escapeHtml(love.shareTitle)}">
       <div class="share-panel-head">
-        <h3 class="share-panel-title">恋愛診断をシェア</h3>
-        <p class="share-panel-desc">画像を保存して、X や LINE に貼り付けてください。</p>
+        <h3 class="share-panel-title">${escapeHtml(love.shareTitle)}</h3>
+        <p class="share-panel-desc">${escapeHtml(love.shareDesc)}</p>
       </div>
-      <button type="button" class="share-preview-btn" id="love-share-preview" aria-label="シェアカードのプレビュー">
-        <div class="share-preview-loading" id="love-share-loading">画像を生成中…</div>
-        <img id="love-share-img" alt="${name} の恋愛タイプカード" width="270" height="338" hidden>
+      <button type="button" class="share-preview-btn" id="love-share-preview" aria-label="${escapeHtml(love.sharePreviewAria)}">
+        <div class="share-preview-loading" id="love-share-loading">${escapeHtml(share.loading)}</div>
+        <img id="love-share-img" alt="${escapeHtml(love.shareAlt(name))}" width="270" height="338" hidden>
       </button>
       <div class="share-actions">
         <button type="button" class="share-btn share-btn-primary" data-love-share="save">
-          <span aria-hidden="true">↓</span> 画像を保存
+          <span aria-hidden="true">↓</span> ${escapeHtml(share.save)}
         </button>
         <button type="button" class="share-btn" data-love-share="x">X</button>
         <button type="button" class="share-btn" data-love-share="line">LINE</button>
-        <button type="button" class="share-btn" data-love-share="copy">テキストをコピー</button>
+        <button type="button" class="share-btn" data-love-share="copy">${escapeHtml(share.copy)}</button>
       </div>
     </div>
   `;
 
   let canvas;
+  const loading = mount.querySelector('#love-share-loading');
+  const img = mount.querySelector('#love-share-img');
   try {
     canvas = await renderLoveCardCanvas({ name, result, ctx: birthCtx });
   } catch (err) {
     console.error('[love-share] render failed:', err);
-    showToast('画像の生成に失敗しました');
+    if (loading) loading.textContent = share.loadFail;
+    showToast(share.imageFail);
     return;
   }
 
-  const img = mount.querySelector('#love-share-img');
-  const loading = mount.querySelector('#love-share-loading');
   img.src = canvas.toDataURL('image/png');
   img.hidden = false;
   if (loading) loading.hidden = true;
@@ -288,7 +299,7 @@ export async function mountLoveSharePanel({ name, result, ctx: birthCtx }) {
           a.download = safeFilename(name);
           a.href = canvas.toDataURL('image/png');
           a.click();
-          showToast('画像を保存しました');
+          showToast(love.shareSaved);
         } else if (action === 'x') {
           window.open(
             `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`,
@@ -302,10 +313,10 @@ export async function mountLoveSharePanel({ name, result, ctx: birthCtx }) {
           );
         } else if (action === 'copy') {
           const ok = await copyToClipboard(text);
-          showToast(ok ? 'テキストをコピーしました' : 'コピーに失敗しました');
+          showToast(ok ? love.shareCopied : love.shareCopyFail);
         }
       } catch (err) {
-        showToast(err.message || 'シェアに失敗しました');
+        showToast(err.message || love.shareFail);
       }
     });
   });

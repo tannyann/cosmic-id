@@ -26,6 +26,11 @@
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
+/* author の display 指定より優先（シェアプレビュー等） */
+[hidden] {
+  display: none !important;
+}
+
 body {
   font-family: var(--font-body);
   font-weight: 300;
@@ -1669,7 +1674,6 @@ footer {
   border-radius: var(--radius-md);
   transition: transform 0.3s var(--ease-out), box-shadow 0.3s;
 }
-
 .share-preview-btn:hover {
   transform: translateY(-3px);
   box-shadow: 0 16px 48px rgba(0, 0, 0, 0.45);
@@ -1685,6 +1689,9 @@ footer {
 }
 
 .share-preview-loading {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
   aspect-ratio: 1080 / 1350;
   display: flex;
   align-items: center;

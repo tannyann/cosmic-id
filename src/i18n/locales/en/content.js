@@ -371,3 +371,49 @@ export const PREMIUM_ROADMAP = [
   { phase: 'In development', items: ['10-year timeline', 'Compatibility', 'Moon calendar'] },
   { phase: 'Concept', items: ['AI unified narrative', 'Saved profiles'] }
 ];
+
+/** Compatibility mode — axis labels, bands, hints */
+export const COMPAT_AXIS_LABELS = {
+  lifePath: 'Life Path',
+  sun: 'Sun sign',
+  zodiac: 'Chinese zodiac',
+  gogyou: 'Five Elements',
+  kyusei: 'Kyusei star'
+};
+
+export const COMPAT_BANDS = [
+  { min: 90, key: 'fated', label: 'A fated resonance' },
+  { min: 80, key: 'deep', label: 'A deep bond' },
+  { min: 70, key: 'stable', label: 'A steady connection' },
+  { min: 60, key: 'learning', label: 'A learning relationship' },
+  { min: 50, key: 'growing', label: 'A bond that grows with time' },
+  { min: 0, key: 'mirror', label: 'A mirror-like contrast' }
+];
+
+export const COMPAT_AXIS_HINTS = {
+  lifePath: {
+    high: 'Life paths echo each other — shared rhythm and direction.',
+    mid: 'Different tempos, but room to align over time.',
+    low: 'Contrasting paths. Curiosity about differences helps.'
+  },
+  sun: {
+    high: 'Sun signs share element or harmony — natural ease.',
+    mid: 'Different styles that can complement each other.',
+    low: 'Opposite energies. Balance comes from respect.'
+  },
+  zodiac: {
+    high: 'Chinese zodiac signs support each other.',
+    mid: 'Neutral pairing — daily care matters most.',
+    low: 'Traditional caution signs — patience and humor help.'
+  },
+  gogyou: {
+    high: 'Five Elements nourish each other.',
+    mid: 'Neutral cycle — steady habits build trust.',
+    low: 'Controlling cycle — give each other space.'
+  },
+  kyusei: {
+    high: 'Kyusei stars circulate well together.',
+    mid: 'Moderate fit — routines bring stability.',
+    low: 'Crossing energies — honor each other\'s pace.'
+  }
+};

@@ -72,15 +72,12 @@ export function getShareTweetText(snap) {
   return lines.join('\n');
 }
 
-function waitForFonts() {
-  if (document.fonts?.load) {
-    return Promise.all([
-      document.fonts.load('400 48px ' + FONT_SERIF),
-      document.fonts.load('300 56px ' + FONT_DISPLAY),
-      document.fonts.ready
-    ]).catch(() => undefined);
+function waitForFonts(timeoutMs = 2500) {
+  const timeout = new Promise(resolve => setTimeout(resolve, timeoutMs));
+  if (document.fonts?.ready) {
+    return Promise.race([document.fonts.ready.catch(() => undefined), timeout]);
   }
-  return Promise.resolve();
+  return timeout;
 }
 
 function roundRect(ctx, x, y, w, h, r) {
@@ -387,10 +384,13 @@ export async function mountSharePanel(ctx) {
       const canvas = await ensureCanvas();
       img.src = canvas.toDataURL('image/png');
       img.removeAttribute('hidden');
-      loading?.setAttribute('hidden', '');
+      if (loading) loading.hidden = true;
     } catch (err) {
       console.error('Share card render failed:', err);
-      loading.textContent = s.loadFail;
+      if (loading) {
+        loading.textContent = s.loadFail;
+        loading.hidden = false;
+      }
       showToast(s.imageFail);
     }
   }

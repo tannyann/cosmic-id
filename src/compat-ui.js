@@ -12,64 +12,59 @@
 import { computeCompat, axisHint } from './compat.js';
 import { escapeHtml, localDateInputMax } from './util.js';
 import { getCurrentContext } from './ui.js';
+import { getUI } from './i18n/index.js';
 import { mountCompatSharePanel } from './compat-share.js';
 
 const AXIS_ORDER = ['lifePath', 'sun', 'zodiac', 'gogyou', 'kyusei'];
 
-const FORM_HTML = `
+function formHtml() {
+  const c = getUI().compat;
+  return `
 <section class="compat-card" id="compat-card" aria-labelledby="compat-heading">
   <header class="compat-head">
-    <p class="eyebrow">Compatibility</p>
-    <h2 id="compat-heading" class="compat-title">二人の相性を読み解く</h2>
+    <p class="eyebrow">${escapeHtml(c.eyebrow)}</p>
+    <h2 id="compat-heading" class="compat-title">${escapeHtml(c.title)}</h2>
     <p class="compat-lead">
-      もう一人の名前と生年月日を入力すると、5 つの軸から相性を映し出します。<br>
-      <span class="compat-lead-sub">恋人・家族・友人・推し — 誰とでも。</span>
+      ${escapeHtml(c.lead)}<br>
+      <span class="compat-lead-sub">${escapeHtml(c.leadSub)}</span>
     </p>
   </header>
   <form id="compat-form" class="compat-form" novalidate>
     <div class="compat-form-grid">
       <div class="field">
-        <label for="compat-name">お相手のお名前</label>
-        <input type="text" id="compat-name" placeholder="例:山田 花子" autocomplete="off" required>
+        <label for="compat-name">${escapeHtml(c.nameLabel)}</label>
+        <input type="text" id="compat-name" placeholder="${escapeHtml(c.namePlaceholder)}" autocomplete="off" required>
       </div>
       <div class="field">
-        <label for="compat-birth">お相手の生年月日</label>
+        <label for="compat-birth">${escapeHtml(c.birthLabel)}</label>
         <input type="date" id="compat-birth" required>
       </div>
     </div>
     <div class="compat-form-actions">
-      <button type="submit" class="btn-primary">相性を読み解く</button>
+      <button type="submit" class="btn-primary">${escapeHtml(c.submit)}</button>
     </div>
     <p class="compat-disclaimer">
-      占いは可能性の一つ。実際の関係は、あなたと相手の物語が決めていきます。
+      ${escapeHtml(c.disclaimer)}
     </p>
   </form>
   <div id="compat-result" class="compat-result" hidden></div>
 </section>
 `;
-
-/* ============================================================
- * 軸の値を「読める文字列」に整形
- * ============================================================ */
+}
 
 function valueLabel(axisKey, side) {
+  const c = getUI().compat;
   switch (axisKey) {
-    case 'lifePath': return `ライフパス ${side}`;
+    case 'lifePath': return c.lifePathValue(side);
     case 'sun':      return `${side.symbol ?? ''} ${side.name}`.trim();
-    case 'zodiac':   return `${side.char ?? ''} ${side.name ?? ''}`.trim();
+    case 'zodiac':   return side.name ?? '—';
     case 'gogyou':   return side.element ?? side.name ?? '—';
     case 'kyusei':   return side.name ?? '—';
     default:         return String(side ?? '');
   }
 }
 
-/* ============================================================
- * レーダーチャート(SVG 自作 / 外部ライブラリ不要)
- *  - 上頂点を 12 時方向に固定、時計回りに 5 軸配置
- *  - リング 4 段、軸スポーク、データ多角形、軸ラベル+スコア
- * ============================================================ */
-
-function renderRadar(axes) {
+function renderRadar(axes, radarAria) {
   const size = 300;
   const cx = size / 2;
   const cy = size / 2;
@@ -112,7 +107,7 @@ function renderRadar(axes) {
 
   return `
     <svg viewBox="0 0 ${size} ${size}" class="compat-radar"
-         role="img" aria-label="5軸の相性レーダーチャート">
+         role="img" aria-label="${escapeHtml(radarAria)}">
       <defs>
         <radialGradient id="compatGrad" cx="50%" cy="50%" r="60%">
           <stop offset="0%"   stop-color="#9b6fd4" stop-opacity="0.55"/>
@@ -127,11 +122,8 @@ function renderRadar(axes) {
   `;
 }
 
-/* ============================================================
- * 結果セクション全体の HTML を組み立てる
- * ============================================================ */
-
 function renderResult({ name1, name2, result }) {
+  const c = getUI().compat;
   const { axes, overall, band } = result;
 
   const axisRows = AXIS_ORDER.map(k => {
@@ -141,7 +133,7 @@ function renderResult({ name1, name2, result }) {
     return `
       <div class="compat-axis-row">
         <div class="compat-axis-head">
-          <span class="compat-axis-name">${ax.axisLabel}</span>
+          <span class="compat-axis-name">${escapeHtml(ax.axisLabel)}</span>
           <span class="compat-axis-score">${ax.score}</span>
         </div>
         <div class="compat-axis-pair">
@@ -149,14 +141,14 @@ function renderResult({ name1, name2, result }) {
           <span class="compat-axis-arrow" aria-hidden="true">×</span>
           <span class="compat-axis-side">${escapeHtml(String(v2))}</span>
         </div>
-        <p class="compat-axis-hint">${axisHint(k, ax)}</p>
+        <p class="compat-axis-hint">${escapeHtml(axisHint(k, ax))}</p>
       </div>
     `;
   }).join('');
 
   return `
     <header class="compat-result-head">
-      <p class="eyebrow">Two stories woven</p>
+      <p class="eyebrow">${escapeHtml(c.resultEyebrow)}</p>
       <h3 class="compat-pair-names">
         <span>${escapeHtml(name1)}</span>
         <span class="compat-pair-and" aria-hidden="true">×</span>
@@ -166,36 +158,30 @@ function renderResult({ name1, name2, result }) {
 
     <div class="compat-summary">
       <div class="compat-overall">
-        <span class="compat-overall-label">総合</span>
+        <span class="compat-overall-label">${escapeHtml(c.overallLabel)}</span>
         <span class="compat-overall-score">${overall}</span>
-        <span class="compat-overall-band">${band.label}</span>
+        <span class="compat-overall-band">${escapeHtml(band.label)}</span>
       </div>
-      <div class="compat-radar-wrap">${renderRadar(axes)}</div>
+      <div class="compat-radar-wrap">${renderRadar(axes, c.radarAria)}</div>
     </div>
 
     <div class="compat-axes">${axisRows}</div>
 
     <p class="compat-footnote">
-      数値は一つの目安。実際の縁は、二人が日々を積み重ねるなかで形を変えていきます。
+      ${escapeHtml(c.footnote)}
     </p>
 
     <div id="compat-share-mount"></div>
   `;
 }
 
-/* ============================================================
- * 公開関数:結果画面の末尾に相性診断 UI を貼り付ける
- *
- * ui.js の render() の最後で呼ぶ前提。
- *  - すでに #compat-card があれば何もしない(再描画時の重複防止)
- * ============================================================ */
-
 export function bindCompatMode() {
   const results = document.getElementById('results');
   if (!results) return;
-  if (document.getElementById('compat-card')) return;
 
-  results.insertAdjacentHTML('beforeend', FORM_HTML);
+  document.getElementById('compat-card')?.remove();
+
+  results.insertAdjacentHTML('beforeend', formHtml());
 
   const form = document.getElementById('compat-form');
   const nameInput  = document.getElementById('compat-name');
@@ -216,7 +202,7 @@ export function bindCompatMode() {
 
     const me = getCurrentContext();
     if (!me) {
-      console.warn('[compat] 自分側の結果が未表示です');
+      console.warn('[compat] context not ready');
       return;
     }
 

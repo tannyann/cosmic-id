@@ -14,6 +14,7 @@ import {
   kyuseiHonmei,
   gogyou
 } from './calculations.js';
+import { getContent } from './i18n/index.js';
 
 /* ============================================================
  * 数秘 ライフパス
@@ -58,19 +59,35 @@ const SIGN_ELEMENT = {
   '牡羊座': '火', '獅子座': '火', '射手座': '火',
   '牡牛座': '地', '乙女座': '地', '山羊座': '地',
   '双子座': '風', '天秤座': '風', '水瓶座': '風',
-  '蟹座': '水', '蠍座': '水', '魚座': '水'
+  '蟹座': '水', '蠍座': '水', '魚座': '水',
+  Aries: '火', Leo: '火', Sagittarius: '火',
+  Taurus: '地', Capricorn: '地', Virgo: '地',
+  Gemini: '風', Libra: '風', Aquarius: '風',
+  Cancer: '水', Scorpio: '水', Pisces: '水'
 };
 
+const ELEMENT_GROUP = {
+  '火': 'fire', Fire: 'fire',
+  '地': 'earth', Earth: 'earth',
+  '風': 'air', Air: 'air',
+  '水': 'water', Water: 'water'
+};
+
+function sunElementGroup(sign) {
+  const raw = sign?.element ?? SIGN_ELEMENT[sign?.name];
+  return ELEMENT_GROUP[raw] ?? null;
+}
+
 function compatSun(s1, s2) {
-  const e1 = SIGN_ELEMENT[s1.name];
-  const e2 = SIGN_ELEMENT[s2.name];
-  if (!e1 || !e2) return 60;
+  const g1 = sunElementGroup(s1);
+  const g2 = sunElementGroup(s2);
+  if (!g1 || !g2) return 60;
   if (s1.name === s2.name) return 82;
-  if (e1 === e2) return 88;                                                 // 同エレメント
-  if ((e1 === '火' && e2 === '風') || (e1 === '風' && e2 === '火')) return 80;
-  if ((e1 === '地' && e2 === '水') || (e1 === '水' && e2 === '地')) return 80;
-  if ((e1 === '火' && e2 === '水') || (e1 === '水' && e2 === '火')) return 52;
-  if ((e1 === '地' && e2 === '風') || (e1 === '風' && e2 === '地')) return 52;
+  if (g1 === g2) return 88;
+  if ((g1 === 'fire' && g2 === 'air') || (g1 === 'air' && g2 === 'fire')) return 80;
+  if ((g1 === 'earth' && g2 === 'water') || (g1 === 'water' && g2 === 'earth')) return 80;
+  if ((g1 === 'fire' && g2 === 'water') || (g1 === 'water' && g2 === 'fire')) return 52;
+  if ((g1 === 'earth' && g2 === 'air') || (g1 === 'air' && g2 === 'earth')) return 52;
   return 60;
 }
 
@@ -81,18 +98,21 @@ function compatSun(s1, s2) {
  * 沖 :子午 丑未 寅申 卯酉 辰戌 巳亥      → 対立(低いが「課題」の意味)
  * ============================================================ */
 
-const SANGOH  = [['申', '子', '辰'], ['巳', '酉', '丑'], ['寅', '午', '戌'], ['亥', '卯', '未']];
-const RIKUGOH = [['子', '丑'], ['寅', '亥'], ['卯', '戌'], ['辰', '酉'], ['巳', '申'], ['午', '未']];
-const CHU     = [['子', '午'], ['丑', '未'], ['寅', '申'], ['卯', '酉'], ['辰', '戌'], ['巳', '亥']];
+const SANGOH_IDX  = [[8, 0, 4], [5, 9, 1], [2, 6, 10], [11, 3, 7]];
+const RIKUGOH_IDX = [[0, 1], [2, 11], [3, 10], [4, 9], [5, 8], [6, 7]];
+const CHU_IDX     = [[0, 6], [1, 7], [2, 8], [3, 9], [4, 10], [5, 11]];
 
-function compatZodiac(z1, z2) {
-  const c1 = z1.char;
-  const c2 = z2.char;
-  if (!c1 || !c2) return 62;
-  if (c1 === c2) return 72;
-  if (SANGOH.some(g => g.includes(c1) && g.includes(c2))) return 92;
-  if (RIKUGOH.some(p => p.includes(c1) && p.includes(c2))) return 85;
-  if (CHU.some(p => p.includes(c1) && p.includes(c2))) return 38;
+function zodiacBranchIndex(year) {
+  return ((year - 4) % 12 + 12) % 12;
+}
+
+function compatZodiacYears(y1, y2) {
+  const i1 = zodiacBranchIndex(y1);
+  const i2 = zodiacBranchIndex(y2);
+  if (i1 === i2) return 72;
+  if (SANGOH_IDX.some(g => g.includes(i1) && g.includes(i2))) return 92;
+  if (RIKUGOH_IDX.some(p => p.includes(i1) && p.includes(i2))) return 85;
+  if (CHU_IDX.some(p => p.includes(i1) && p.includes(i2))) return 38;
   return 62;
 }
 
@@ -102,8 +122,21 @@ function compatZodiac(z1, z2) {
  * 相剋(打ち消す): 木→土、土→水、水→火、火→金、金→木
  * ============================================================ */
 
-const SEISEI = { '木': '火', '火': '土', '土': '金', '金': '水', '水': '木' };
-const SOKOKU = { '木': '土', '土': '水', '水': '火', '火': '金', '金': '木' };
+const WUXING_GROUP = {
+  '木': 'wood', Wood: 'wood',
+  '火': 'fire', Fire: 'fire',
+  '土': 'earth', Earth: 'earth',
+  '金': 'metal', Metal: 'metal',
+  '水': 'water', Water: 'water'
+};
+
+const SEISEI = { wood: 'fire', fire: 'earth', earth: 'metal', metal: 'water', water: 'wood' };
+const SOKOKU = { wood: 'earth', earth: 'water', water: 'fire', fire: 'metal', metal: 'wood' };
+
+function wuxingGroup(el) {
+  if (!el) return null;
+  return WUXING_GROUP[el] ?? null;
+}
 
 function elementOf(obj) {
   if (typeof obj === 'string') return obj;
@@ -111,12 +144,12 @@ function elementOf(obj) {
 }
 
 function compatGogyou(g1, g2) {
-  const a = elementOf(g1);
-  const b = elementOf(g2);
+  const a = wuxingGroup(elementOf(g1));
+  const b = wuxingGroup(elementOf(g2));
   if (!a || !b) return 60;
-  if (a === b) return 78;                                  // 比和
-  if (SEISEI[a] === b || SEISEI[b] === a) return 88;       // 相生
-  if (SOKOKU[a] === b || SOKOKU[b] === a) return 42;       // 相剋
+  if (a === b) return 78;
+  if (SEISEI[a] === b || SEISEI[b] === a) return 88;
+  if (SOKOKU[a] === b || SOKOKU[b] === a) return 42;
   return 60;
 }
 
@@ -127,14 +160,17 @@ function compatGogyou(g1, g2) {
 const KYUSEI_ELEMENT = {
   '一白水星': '水', '二黒土星': '土', '三碧木星': '木', '四緑木星': '木',
   '五黄土星': '土', '六白金星': '金', '七赤金星': '金', '八白土星': '土',
-  '九紫火星': '火'
+  '九紫火星': '火',
+  'One White Water Star': '水', 'Two Black Earth Star': '土', 'Three Green Wood Star': '木',
+  'Four Green Wood Star': '木', 'Five Yellow Earth Star': '土', 'Six White Metal Star': '金',
+  'Seven Red Metal Star': '金', 'Eight White Earth Star': '土', 'Nine Purple Fire Star': '火'
 };
 
 function compatKyusei(k1, k2) {
   if (!k1?.name || !k2?.name) return 60;
   if (k1.name === k2.name) return 78;
-  const a = KYUSEI_ELEMENT[k1.name];
-  const b = KYUSEI_ELEMENT[k2.name];
+  const a = wuxingGroup(k1.element ?? KYUSEI_ELEMENT[k1.name]);
+  const b = wuxingGroup(k2.element ?? KYUSEI_ELEMENT[k2.name]);
   if (!a || !b) return 60;
   if (a === b) return 70;
   if (SEISEI[a] === b || SEISEI[b] === a) return 86;
@@ -147,36 +183,8 @@ function compatKyusei(k1, k2) {
  * AGENTS.md: 強い断定とネガティブ語(絶望/終わり等)を避ける。
  * ============================================================ */
 
-const AXIS_TEXTS = {
-  lifePath: {
-    high: '人生の歩幅とリズムが自然に噛み合いやすい組合せ。',
-    mid:  '価値観の違いが学びの種になる関係性。',
-    low:  '別々の道を選びがち。だからこそ刺激し合える可能性を秘める。'
-  },
-  sun: {
-    high: '感情の流れが似ていて、言葉にしなくても伝わりやすい傾向。',
-    mid:  '表現の仕方は違うが、根っこの方向は重なっている。',
-    low:  '世界の見方が異なる二人。違いを尊ぶ姿勢が鍵になる。'
-  },
-  zodiac: {
-    high: '東洋占星術で「縁が強い」とされる組合せ。',
-    mid:  '穏やかな相性。意図して関係を育てるのに向く。',
-    low:  '伝統的には対立しやすいとされるが、それは課題ではなく地図。'
-  },
-  gogyou: {
-    high: '五行のエネルギーが互いを育てる関係。',
-    mid:  '同じ気を持つため、心地よくも刺激は少なめ。',
-    low:  '相剋の関係。だからこそ得意分野の補完が生まれやすい。'
-  },
-  kyusei: {
-    high: '本命星のエネルギーが循環し合う組合せ。',
-    mid:  '中庸の相性。日々の習慣を整えると安定する。',
-    low:  '勢いの方向が交差する関係。お互いの「間」を尊ぶこと。'
-  }
-};
-
 export function axisHint(axisKey, axisResult) {
-  const set = AXIS_TEXTS[axisKey];
+  const set = getContent().COMPAT_AXIS_HINTS?.[axisKey];
   if (!set) return '';
   const s = axisResult.score;
   if (s >= 80) return set.high;
@@ -184,21 +192,9 @@ export function axisHint(axisKey, axisResult) {
   return set.low;
 }
 
-/* ============================================================
- * 総合スコアのバンド分類
- * ============================================================ */
-
-const BANDS = [
-  { min: 90, key: 'fated',    label: '運命的な響き合い' },
-  { min: 80, key: 'deep',     label: '深い縁で結ばれた組合せ' },
-  { min: 70, key: 'stable',   label: '安定した結びつき' },
-  { min: 60, key: 'learning', label: '学び合う関係性' },
-  { min: 50, key: 'growing',  label: '時間と対話で育つ縁' },
-  { min: 0,  key: 'mirror',   label: '鏡のような対比' }
-];
-
 function bandFor(score) {
-  return BANDS.find(b => score >= b.min);
+  const bands = getContent().COMPAT_BANDS ?? [];
+  return bands.find(b => score >= b.min);
 }
 
 /* ============================================================
@@ -221,12 +217,14 @@ export function computeCompat(p1, p2) {
   const ks1  = kyuseiHonmei(p1.y, p1.m, p1.d);
   const ks2  = kyuseiHonmei(p2.y, p2.m, p2.d);
 
+  const labels = getContent().COMPAT_AXIS_LABELS ?? {};
+
   const axes = {
-    lifePath: { axisLabel: '数秘・ライフパス', score: compatLifePath(lp1, lp2), a: lp1, b: lp2 },
-    sun:      { axisLabel: '太陽星座',         score: compatSun(sun1, sun2),    a: sun1, b: sun2 },
-    zodiac:   { axisLabel: '十二支',           score: compatZodiac(cz1, cz2),   a: cz1, b: cz2 },
-    gogyou:   { axisLabel: '五行',             score: compatGogyou(gg1, gg2),   a: gg1, b: gg2 },
-    kyusei:   { axisLabel: '九星気学',         score: compatKyusei(ks1, ks2),   a: ks1, b: ks2 }
+    lifePath: { axisLabel: labels.lifePath ?? 'Life Path', score: compatLifePath(lp1, lp2), a: lp1, b: lp2 },
+    sun:      { axisLabel: labels.sun ?? 'Sun sign', score: compatSun(sun1, sun2), a: sun1, b: sun2 },
+    zodiac:   { axisLabel: labels.zodiac ?? 'Chinese zodiac', score: compatZodiacYears(p1.y, p2.y), a: cz1, b: cz2 },
+    gogyou:   { axisLabel: labels.gogyou ?? 'Five Elements', score: compatGogyou(gg1, gg2), a: gg1, b: gg2 },
+    kyusei:   { axisLabel: labels.kyusei ?? 'Kyusei star', score: compatKyusei(ks1, ks2), a: ks1, b: ks2 }
   };
 
   const values = Object.values(axes);

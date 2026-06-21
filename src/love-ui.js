@@ -11,13 +11,11 @@
 import { computeLove } from './love.js';
 import { escapeHtml } from './util.js';
 import { getCurrentContext } from './ui.js';
+import { getUI } from './i18n/index.js';
 import { mountLoveSharePanel } from './love-share.js';
 
-/* ============================================================
- * セクション全体の HTML を組み立てる
- * ============================================================ */
-
-function renderSection({ name, result }) {
+function renderSection({ result }) {
+  const u = getUI().love;
   const { archetype, phase, action, matches } = result;
 
   const matchChips = matches
@@ -34,8 +32,8 @@ function renderSection({ name, result }) {
 
   return `
     <header class="love-head">
-      <p class="eyebrow">Love archetype</p>
-      <h2 class="love-pair-title" id="love-heading">恋愛診断</h2>
+      <p class="eyebrow">${escapeHtml(u.eyebrow)}</p>
+      <h2 class="love-pair-title" id="love-heading">${escapeHtml(u.title)}</h2>
     </header>
 
     <article class="love-hero" style="--love-accent: ${archetype.color}">
@@ -47,57 +45,49 @@ function renderSection({ name, result }) {
     </article>
 
     <div class="love-phase">
-      <p class="love-phase-label">今の恋愛フェーズ</p>
+      <p class="love-phase-label">${escapeHtml(u.phaseLabel)}</p>
       <p class="love-phase-name">${escapeHtml(phase.label)}</p>
       <p class="love-phase-text">${escapeHtml(phase.text)}</p>
     </div>
 
     <div class="love-grid">
       <section class="love-block love-block-sweet">
-        <h4>愛し方のスイートスポット</h4>
+        <h4>${escapeHtml(u.sweetTitle)}</h4>
         <ul>${sweetSpots}</ul>
       </section>
       <section class="love-block love-block-care">
-        <h4>心に留めておきたいこと</h4>
+        <h4>${escapeHtml(u.careTitle)}</h4>
         <ul>${cares}</ul>
       </section>
     </div>
 
     <section class="love-matches">
-      <h4>響き合いやすいタイプ</h4>
+      <h4>${escapeHtml(u.matchesTitle)}</h4>
       <ul class="love-match-list">${matchChips}</ul>
     </section>
 
     <section class="love-action">
-      <p class="love-action-label">今夜できる、出会いを呼ぶ小さなこと</p>
+      <p class="love-action-label">${escapeHtml(u.actionLabel)}</p>
       <p class="love-action-text">${escapeHtml(action)}</p>
     </section>
 
     <div class="love-cta-wrap">
       <button type="button" class="love-cta" id="love-to-compat">
-        気になる人がいるなら、相性診断へ <span aria-hidden="true">→</span>
+        ${escapeHtml(u.cta)} <span aria-hidden="true">→</span>
       </button>
     </div>
 
-    <p class="love-footnote">
-      この結果は一つの可能性です。あなたの恋の物語は、あなたの手で書かれていきます。
-    </p>
+    <p class="love-footnote">${escapeHtml(u.footnote)}</p>
 
     <div id="love-share-mount"></div>
   `;
 }
 
-/* ============================================================
- * 公開関数:結果画面に恋愛診断セクションを差し込む
- *  - #results の末尾(compat より前)に挿入
- *  - 二重バインド防止のため #love-card があれば何もしない
- *  - 「相性診断へ」CTA は #compat-card にスクロール + フォーカス
- * ============================================================ */
-
 export function bindLoveMode() {
   const results = document.getElementById('results');
   if (!results) return;
-  if (document.getElementById('love-card')) return;
+
+  document.getElementById('love-card')?.remove();
 
   const me = getCurrentContext();
   if (!me) {
@@ -117,14 +107,12 @@ export function bindLoveMode() {
   section.className = 'love-card';
   section.id = 'love-card';
   section.setAttribute('aria-labelledby', 'love-heading');
-  section.innerHTML = renderSection({ name: me.name, result });
+  section.innerHTML = renderSection({ result });
 
-  // compat-card より前に置く(compat があれば前へ、無ければ末尾へ)
   const compat = document.getElementById('compat-card');
   if (compat) compat.before(section);
   else results.appendChild(section);
 
-  // 「相性診断へ」CTA
   section.querySelector('#love-to-compat')?.addEventListener('click', () => {
     const compatEl = document.getElementById('compat-card');
     if (!compatEl) return;
@@ -133,6 +121,5 @@ export function bindLoveMode() {
     setTimeout(() => firstInput?.focus(), 500);
   });
 
-  // シェアパネル
   mountLoveSharePanel({ name: me.name, result, ctx: me });
 }
