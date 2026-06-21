@@ -6,14 +6,14 @@ export const ui = {
   meta: {
     ...enUi.meta,
     title: 'COSMIC ID — 개인 우주 해석',
-    description: '생년월일과 이름으로 수비학, 점성술, 구성, 동물占 등 여러 체계를 한눈에.',
+    description: '생년월일과 이름으로 수비학, 점성술, 구성 등 여러 체계를 한눈에. 연애 유형·相性 진단 포함.',
     ogTitle: 'COSMIC ID — 개인 우주 해석',
-    ogDescription: '당신 안에 쓰인 열아홉 가지 이야기.',
+    ogDescription: '열아홉 가지 이야기와 연애 유형·相性. 여러 점술을 하나로.',
     label: '한국어'
   },
   header: {
     eyebrow: 'Personal Cosmology',
-    subtitle: '당신 안에 쓰인 열아홉 가지 이야기'
+    subtitle: '열아홉 가지 이야기와 연애·相性 진단'
   },
   form: {
     nameLabel: '이름',

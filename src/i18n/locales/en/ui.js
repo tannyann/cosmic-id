@@ -2,14 +2,14 @@
 export const ui = {
   meta: {
     title: 'COSMIC ID — Personal Cosmology',
-    description: 'Cross-read numerology, astrology, Kyusei, and more from your birth date and name.',
+    description: 'Cross-read numerology, astrology, Kyusei, and more from your birth date and name. Includes love archetype and compatibility readings.',
     ogTitle: 'COSMIC ID — Personal Cosmology',
-    ogDescription: 'Nineteen stories written within you. Many systems, one reading.',
+    ogDescription: 'Nineteen stories within you — plus your love type and compatibility. Many systems, one reading.',
     label: 'English'
   },
   header: {
     eyebrow: 'Personal Cosmology',
-    subtitle: 'Nineteen stories written within you'
+    subtitle: 'Nineteen stories — plus love and compatibility readings'
   },
   form: {
     nameLabel: 'Your name',

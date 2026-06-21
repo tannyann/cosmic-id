@@ -6,14 +6,14 @@ export const ui = {
   meta: {
     ...enUi.meta,
     title: 'COSMIC ID — Kişisel Kozmoloji',
-    description: 'Doğum tarihi ve adınızdan numeroloji, astroloji, Kyusei ve daha fazlası.',
+    description: 'Doğum tarihi ve adınızdan numeroloji, astroloji, Kyusei ve daha fazlası. Aşk arketipi ve uyum analizi dahil.',
     ogTitle: 'COSMIC ID — Kişisel Kozmoloji',
-    ogDescription: 'İçinizde yazılı on dokuz hikâye. Birçok sistem, tek okuma.',
+    ogDescription: 'On dokuz hikâye, aşk tipiniz ve uyumunuz. Birçok sistem, tek okuma.',
     label: 'Türkçe'
   },
   header: {
     eyebrow: 'Personal Cosmology',
-    subtitle: 'İçinizde yazılı on dokuz hikâye'
+    subtitle: 'On dokuz hikâye, aşk ve uyum analizi'
   },
   form: {
     nameLabel: 'Adınız',

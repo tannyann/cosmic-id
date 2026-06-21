@@ -2250,3 +2250,369 @@ html[dir="rtl"] .share-actions {
 html[dir="rtl"] .lang-field {
   flex-direction: row-reverse;
 }
+/* ============================================================
+ * 恋愛診断 — 既存 styles.css の末尾に追記
+ *
+ * アーケタイプのアクセント色は --love-accent としてカード単位で受け取る。
+ * その他の色変数(--gold-bright, --cream, --border …)は既存定義を使う。
+ * ============================================================ */
+
+.love-card {
+  --love-accent: #d4799a;
+  margin: 64px 0 36px;
+  padding: 36px;
+  background: linear-gradient(165deg, rgba(28, 22, 52, 0.6), rgba(12, 10, 28, 0.88));
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg, 24px);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  box-shadow: var(--shadow-card, 0 20px 50px rgba(0, 0, 0, 0.55)),
+              var(--shadow-gold, 0 0 40px rgba(184, 149, 46, 0.12));
+  position: relative;
+  overflow: hidden;
+  animation: love-card-in 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes love-card-in {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.love-head {
+  text-align: center;
+  margin-bottom: 28px;
+}
+
+.love-pair-title {
+  font-family: var(--font-display, serif);
+  font-size: clamp(22px, 4vw, 30px);
+  color: var(--cream, #ede4d4);
+  font-weight: 300;
+  letter-spacing: 0.08em;
+  margin: 4px 0;
+}
+
+.love-name {
+  color: var(--gold-bright, #e8d49a);
+}
+
+.love-conjunction {
+  color: var(--text-muted, #8f84a8);
+  font-size: 0.82em;
+  margin-left: 8px;
+}
+
+/* ===== ヒーロー(アーケタイプの主役) ===== */
+
+.love-hero {
+  text-align: center;
+  padding: 36px 32px;
+  background:
+    radial-gradient(circle at 50% 0%, color-mix(in srgb, var(--love-accent) 18%, transparent), transparent 60%),
+    rgba(10, 8, 22, 0.7);
+  border: 1px solid color-mix(in srgb, var(--love-accent) 35%, transparent);
+  border-radius: var(--radius-md, 16px);
+  margin-bottom: 32px;
+  position: relative;
+  overflow: hidden;
+}
+
+.love-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 100% 100%, color-mix(in srgb, var(--love-accent) 8%, transparent), transparent 60%);
+  pointer-events: none;
+}
+
+.love-hero-symbol {
+  font-size: clamp(80px, 16vw, 140px);
+  line-height: 1;
+  color: var(--love-accent);
+  filter: drop-shadow(0 0 30px color-mix(in srgb, var(--love-accent) 35%, transparent));
+  margin-bottom: 18px;
+}
+
+.love-hero-id {
+  font-family: var(--font-display, serif);
+  font-size: 13px;
+  letter-spacing: 0.3em;
+  color: var(--text-muted, #8f84a8);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.love-hero-name {
+  font-family: var(--font-display, serif);
+  font-size: clamp(28px, 6vw, 44px);
+  color: var(--cream, #ede4d4);
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  margin-bottom: 8px;
+  position: relative;
+  z-index: 1;
+}
+
+.love-hero-catch {
+  font-size: 15px;
+  color: var(--love-accent);
+  letter-spacing: 0.12em;
+  margin-bottom: 22px;
+  font-weight: 500;
+}
+
+.love-hero-story {
+  font-size: 14px;
+  line-height: 2;
+  color: var(--cream, #ede4d4);
+  opacity: 0.92;
+  max-width: 540px;
+  margin: 0 auto;
+}
+
+/* ===== フェーズ ===== */
+
+.love-phase {
+  text-align: center;
+  padding: 22px;
+  background: rgba(0, 0, 0, 0.28);
+  border: 1px solid var(--border, rgba(184, 149, 46, 0.18));
+  border-radius: var(--radius-md, 16px);
+  margin-bottom: 28px;
+}
+
+.love-phase-label {
+  font-size: 11px;
+  letter-spacing: 0.3em;
+  color: var(--text-muted, #8f84a8);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.love-phase-name {
+  font-family: var(--font-display, serif);
+  font-size: clamp(24px, 5vw, 32px);
+  color: var(--gold-bright, #e8d49a);
+  font-weight: 400;
+  letter-spacing: 0.1em;
+  margin-bottom: 10px;
+}
+
+.love-phase-text {
+  font-size: 13px;
+  line-height: 1.95;
+  color: var(--cream, #ede4d4);
+  opacity: 0.9;
+  max-width: 520px;
+  margin: 0 auto;
+}
+
+/* ===== 強み / 留意点グリッド ===== */
+
+.love-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  margin-bottom: 28px;
+}
+
+@media (max-width: 680px) {
+  .love-grid { grid-template-columns: 1fr; }
+}
+
+.love-block {
+  padding: 22px 24px;
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid var(--border, rgba(184, 149, 46, 0.18));
+  border-radius: var(--radius-md, 16px);
+}
+
+.love-block h4 {
+  font-family: var(--font-display, serif);
+  font-size: 14px;
+  letter-spacing: 0.18em;
+  color: var(--gold, #b8952e);
+  font-weight: 400;
+  margin-bottom: 14px;
+  padding-bottom: 10px;
+  border-bottom: 1px dashed rgba(184, 149, 46, 0.2);
+}
+
+.love-block ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.love-block li {
+  font-size: 13px;
+  line-height: 1.9;
+  color: var(--cream, #ede4d4);
+  opacity: 0.9;
+  padding: 8px 0 8px 18px;
+  position: relative;
+}
+
+.love-block li::before {
+  content: '◆';
+  position: absolute;
+  left: 0;
+  top: 8px;
+  color: var(--love-accent);
+  font-size: 9px;
+}
+
+.love-block-care li::before {
+  content: '○';
+  font-size: 10px;
+  color: var(--gold-dim, rgba(184, 149, 46, 0.6));
+}
+
+/* ===== 相性タイプ(チップ) ===== */
+
+.love-matches {
+  margin-bottom: 28px;
+}
+
+.love-matches h4 {
+  font-family: var(--font-display, serif);
+  font-size: 14px;
+  letter-spacing: 0.18em;
+  color: var(--gold, #b8952e);
+  font-weight: 400;
+  margin-bottom: 14px;
+  text-align: center;
+}
+
+.love-match-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
+  list-style: none;
+  padding: 0;
+}
+
+.love-match-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  background: rgba(28, 22, 52, 0.6);
+  border: 1px solid var(--border-strong, rgba(232, 212, 154, 0.42));
+  border-radius: 999px;
+  font-size: 13px;
+  color: var(--cream, #ede4d4);
+  letter-spacing: 0.04em;
+  transition: background 0.25s, border-color 0.25s;
+}
+
+.love-match-chip:hover {
+  background: rgba(40, 32, 68, 0.7);
+  border-color: var(--gold-bright, #e8d49a);
+}
+
+.love-match-icon {
+  color: var(--gold-bright, #e8d49a);
+  font-size: 1.1em;
+}
+
+/* ===== 今夜のアクション ===== */
+
+.love-action {
+  padding: 22px 26px;
+  background: linear-gradient(135deg,
+    rgba(155, 111, 212, 0.12),
+    rgba(212, 121, 154, 0.08));
+  border: 1px solid var(--border, rgba(184, 149, 46, 0.18));
+  border-left: 3px solid var(--love-accent);
+  border-radius: var(--radius-md, 16px);
+  margin-bottom: 28px;
+}
+
+.love-action-label {
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  color: var(--gold, #b8952e);
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+.love-action-text {
+  font-size: 14px;
+  line-height: 1.95;
+  color: var(--cream, #ede4d4);
+}
+
+/* ===== CTA(相性診断へ) ===== */
+
+.love-cta-wrap {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.love-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 28px;
+  background: transparent;
+  border: 1px solid var(--border-strong, rgba(232, 212, 154, 0.42));
+  border-radius: 999px;
+  color: var(--gold-bright, #e8d49a);
+  font-family: inherit;
+  font-size: 13px;
+  letter-spacing: 0.12em;
+  cursor: pointer;
+  transition: background 0.25s, border-color 0.25s, transform 0.25s;
+}
+
+.love-cta:hover {
+  background: rgba(232, 212, 154, 0.08);
+  border-color: var(--gold-bright, #e8d49a);
+  transform: translateY(-1px);
+}
+
+.love-cta:focus-visible {
+  outline: 2px solid var(--gold-bright, #e8d49a);
+  outline-offset: 3px;
+}
+
+/* ===== フットノート ===== */
+
+.love-footnote {
+  font-size: 11px;
+  text-align: center;
+  color: var(--text-muted, #8f84a8);
+  letter-spacing: 0.06em;
+  line-height: 1.85;
+  margin-bottom: 28px;
+}
+
+/* ===== シェアパネル(継承スタイル) ===== */
+
+.love-share-panel { margin-top: 16px; }
+
+/* ===== prefers-reduced-motion ===== */
+
+@media (prefers-reduced-motion: reduce) {
+  .love-card { animation: none; }
+}
+
+/* ============================================================
+ * color-mix が未対応のブラウザ(Safari 古版・Firefox 古版)へのフォールバック
+ *  - JS で archetype.color を直接背景に流し込みつつ、ベースは静的なまま動く
+ * ============================================================ */
+
+@supports not (background: color-mix(in srgb, red, blue)) {
+  .love-hero {
+    background:
+      radial-gradient(circle at 50% 0%, rgba(212, 121, 154, 0.2), transparent 60%),
+      rgba(10, 8, 22, 0.7);
+    border-color: rgba(212, 121, 154, 0.35);
+  }
+  .love-hero-symbol {
+    filter: drop-shadow(0 0 30px rgba(212, 121, 154, 0.35));
+  }
+}

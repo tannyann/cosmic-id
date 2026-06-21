@@ -12,6 +12,7 @@ import {
 
 import { getContent, getUI, getDeeper, isJapaneseLocale } from './i18n/index.js';
 import { mountSharePanel } from './share.js';
+import { bindLoveMode } from './love-ui.js';
 import { bindCompatMode } from './compat-ui.js';
 import {
   escapeHtml, localDateInputMax, prefersReducedMotion
@@ -326,6 +327,7 @@ export function render(name, nameRoman, y, m, d) {
   r.classList.add('active');
   bindResultCards(r);
   mountSharePanel(currentContext).catch(err => console.error('Share panel:', err));
+  bindLoveMode();
   bindCompatMode();
 
   const scrollOpts = prefersReducedMotion() ? { block: 'start' } : { behavior: 'smooth', block: 'start' };

@@ -6,14 +6,14 @@ export const ui = {
   meta: {
     ...enUi.meta,
     title: 'COSMIC ID — Persönliche Kosmologie',
-    description: 'Numerologie, Astrologie, Kyusei und mehr aus Geburtsdatum und Name.',
+    description: 'Numerologie, Astrologie, Kyusei und mehr aus Geburtsdatum und Name. Inkl. Liebes-Archetyp und Kompatibilität.',
     ogTitle: 'COSMIC ID — Persönliche Kosmologie',
-    ogDescription: 'Neunzehn Geschichten in dir geschrieben. Viele Systeme, eine Deutung.',
+    ogDescription: 'Neunzehn Geschichten, dein Liebestyp und Kompatibilität. Viele Systeme, eine Deutung.',
     label: 'Deutsch'
   },
   header: {
     eyebrow: 'Personal Cosmology',
-    subtitle: 'Neunzehn Geschichten in dir geschrieben'
+    subtitle: 'Neunzehn Geschichten, Liebe und Kompatibilität'
   },
   form: {
     nameLabel: 'Dein Name',

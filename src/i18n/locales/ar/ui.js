@@ -6,14 +6,14 @@ export const ui = {
   meta: {
     ...enUi.meta,
     title: 'COSMIC ID — كوسمولوجيا شخصية',
-    description: 'علم الأعداد والتنجيم وKyusei والمزيد من تاريخ الميلاد والاسم.',
-    ogTitle: 'COSMIC ID — كوسمولوجيا شخصية',
-    ogDescription: 'تسعة عشر قصة مكتوبة في داخلك. أنظمة متعددة، قراءة واحدة.',
+    description: 'علم الأعداد والتنجيم وKyusei والمزيد من تاريخ الميلاد والاسم. يتضمن نمط الحب وتحليل التوافق.',
+    ogTitle: 'COSMIC ID — كосمولوجيا شخصية',
+    ogDescription: 'تسعة عشر قصة، نوع حبك وتوافقك. أنظمة متعددة، قراءة واحدة.',
     label: 'العربية'
   },
   header: {
     eyebrow: 'Personal Cosmology',
-    subtitle: 'تسعة عشر قصة مكتوبة في داخلك'
+    subtitle: 'تسعة عشر قصة، الحب والتوافق'
   },
   form: {
     nameLabel: 'اسمك',

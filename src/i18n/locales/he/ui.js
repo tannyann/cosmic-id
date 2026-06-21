@@ -6,14 +6,14 @@ export const ui = {
   meta: {
     ...enUi.meta,
     title: 'COSMIC ID — קוסמולוגיה אישית',
-    description: 'נומרולוגיה, אסטרולוגיה, Kyusei ועוד — מתאריך לידה ושם.',
+    description: 'נומרולוגיה, אסטרולוגיה, Kyusei ועוד — מתאריך לידה ושם. כולל ארכיטип רומנטי וניתוח התאמה.',
     ogTitle: 'COSMIC ID — קוסמולוגיה אישית',
-    ogDescription: 'תשע עשרה סיפורים שנכתבו בתוכך. מערכות רבות, קריאה אחת.',
+    ogDescription: 'תשע עשרה סיפורים, סוג האהבה שלך והתאמה. מערכות רבות, קריאה אחת.',
     label: 'עברית'
   },
   header: {
     eyebrow: 'Personal Cosmology',
-    subtitle: 'תשע עשרה סיפורים שנכתבו בתוכך'
+    subtitle: 'תשע עשרה סיפורים, אהבה והתאמה'
   },
   form: {
     nameLabel: 'השם שלך',

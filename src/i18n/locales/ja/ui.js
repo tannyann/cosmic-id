@@ -2,14 +2,14 @@
 export const ui = {
   meta: {
     title: 'COSMIC ID — 個人統合占断',
-    description: '生年月日と名前から、数秘・占星・九星・動物占いなど複数の体系を横断して読み解く COSMIC ID。',
+    description: '生年月日と名前から、数秘・占星・九星・動物占いなど複数体系を横断解読。恋愛診断（12アーケタイプ）と相性診断付きの COSMIC ID。',
     ogTitle: 'COSMIC ID — 個人統合占断',
-    ogDescription: 'あなたの中に書かれた、十九の物語。複数の占術をひとつに。',
+    ogDescription: '十九の物語に加え、恋愛タイプと相性も読み解く。複数の占術をひとつに。',
     label: '日本語'
   },
   header: {
     eyebrow: 'Personal Cosmology',
-    subtitle: 'あなたの中に書かれた、十九の物語'
+    subtitle: '十九の物語に、恋愛診断と相性診断を添えて'
   },
   form: {
     nameLabel: 'お名前',

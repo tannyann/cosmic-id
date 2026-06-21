@@ -6,14 +6,14 @@ export const ui = {
   meta: {
     ...enUi.meta,
     title: 'COSMIC ID — 个人宇宙解读',
-    description: '根据出生日期与姓名，横览数秘、占星、九星、动物占卜等多种体系。',
+    description: '根据出生日期与姓名，横览数秘、占星、九星等多种体系。含恋爱类型与相性分析。',
     ogTitle: 'COSMIC ID — 个人宇宙解读',
-    ogDescription: '写在你内心的十九个故事。多种占卜，一次读懂。',
+    ogDescription: '十九个故事，加上恋爱类型与相性。多种占卜，一次读懂。',
     label: '中文'
   },
   header: {
     eyebrow: 'Personal Cosmology',
-    subtitle: '写在你内心的十九个故事'
+    subtitle: '十九个故事，加上恋爱与相性解读'
   },
   form: {
     nameLabel: '姓名',
