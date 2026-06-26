@@ -318,6 +318,32 @@ html:not([lang="ja"]) .form-row-names {
   color: var(--text-muted, rgba(212, 196, 168, 0.65));
 }
 
+.field-group-label {
+  display: block;
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  font-weight: 400;
+}
+
+.birth-date-grid {
+  display: grid;
+  grid-template-columns: 1.35fr 0.7fr 0.95fr;
+  gap: 10px;
+}
+
+.birth-date-part label {
+  font-size: 9px;
+  letter-spacing: 0.16em;
+  margin-bottom: 6px;
+}
+
+.field-birth {
+  min-width: 0;
+}
+
 .form-privacy {
   margin: 16px 0 0;
   font-size: 0.78rem;
@@ -372,7 +398,8 @@ label {
 }
 
 input[type=text],
-input[type=date] {
+input[type=date],
+select {
   width: 100%;
   background: rgba(0, 0, 0, 0.4);
   border: 1px solid var(--border);
@@ -387,6 +414,22 @@ input[type=date] {
   box-sizing: border-box;
 }
 
+select {
+  cursor: pointer;
+  appearance: none;
+  background-image: linear-gradient(45deg, transparent 50%, var(--gold-dim) 50%),
+    linear-gradient(135deg, var(--gold-dim) 50%, transparent 50%);
+  background-position: calc(100% - 18px) calc(50% + 2px), calc(100% - 12px) calc(50% + 2px);
+  background-size: 6px 6px, 6px 6px;
+  background-repeat: no-repeat;
+  padding-right: 36px;
+}
+
+select option {
+  color: #1a1428;
+  background: #f5efe6;
+}
+
 input[type=date] {
   color-scheme: dark;
 }
@@ -395,12 +438,14 @@ input::placeholder {
   color: rgba(154, 143, 184, 0.55);
 }
 
-input:hover {
+input:hover,
+select:hover {
   border-color: var(--gold-dim);
-  background: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.5);
 }
 
-input:focus {
+input:focus,
+select:focus {
   outline: none;
   border-color: var(--gold);
   box-shadow: 0 0 0 3px rgba(201, 162, 39, 0.12);
@@ -1880,6 +1925,14 @@ footer {
 
   .form-row-names {
     margin-bottom: 16px;
+  }
+
+  .birth-date-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .birth-date-part:last-child {
+    grid-column: 1 / -1;
   }
 
   .btn-primary,

@@ -15,7 +15,7 @@ import { ui as trUi } from './locales/tr/ui.js';
 import { ui as heUi } from './locales/he/ui.js';
 import { ui as arUi } from './locales/ar/ui.js';
 
-import { createDateFormatters, formatBirthFromIso } from './dateFormat.js';
+import { createDateFormatters } from './dateFormat.js';
 
 const STORAGE_KEY = 'cosmic-id-locale';
 
@@ -187,28 +187,6 @@ export function applyDocumentLocale() {
   applyStructuredData(b, siteUrl);
 }
 
-/** 生年月日入力の lang と読みやすい表示を現在ロケールに合わせる */
-export function updateBirthDateFields() {
-  const birthInput = document.getElementById('birthdate');
-  const hint = document.getElementById('hint-birth');
-  const compatBirth = document.getElementById('compat-birth');
-  const compatHint = document.getElementById('hint-compat-birth');
-  const meta = getBundle().meta;
-
-  if (birthInput) {
-    birthInput.lang = meta.htmlLang;
-    if (hint) {
-      hint.textContent = birthInput.value ? formatBirthFromIso(birthInput.value, meta) : '';
-    }
-  }
-  if (compatBirth) {
-    compatBirth.lang = meta.htmlLang;
-    if (compatHint) {
-      compatHint.textContent = compatBirth.value ? formatBirthFromIso(compatBirth.value, meta) : '';
-    }
-  }
-}
-
 function applyStructuredData(bundle, siteUrl) {
   const el = document.getElementById('ld-json');
   if (!el) return;
@@ -246,6 +224,9 @@ export function applyStaticPageCopy() {
   setText('label-name-roman', u.form.nameRomanLabel ?? '');
   setText('hint-name-roman', u.form.nameRomanHint ?? '');
   setText('label-birth', u.form.birthLabel);
+  setText('label-birth-month', u.form.birthMonthLabel);
+  setText('label-birth-day', u.form.birthDayLabel);
+  setText('label-birth-year', u.form.birthYearLabel);
   setText('form-free-badge', u.form.freeBadge);
   setText('footer-line1', u.footer.line1);
   setText('footer-line2', u.footer.line2);
@@ -282,8 +263,6 @@ export function applyStaticPageCopy() {
     const cs = getContent().PREMIUM_COMING_SOON;
     premiumShowcase.setAttribute('aria-label', cs?.headline || u.premiumShowcase.ariaLabel || 'Premium');
   }
-
-  updateBirthDateFields();
 }
 
 export function mountLanguageSwitcher() {

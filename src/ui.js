@@ -10,12 +10,12 @@ import {
   birthstone, birthflower, biorhythm, moonPhaseToday, lifeStage
 } from './calculations.js';
 
-import { getContent, getUI, getDeeper, isJapaneseLocale, updateBirthDateFields } from './i18n/index.js';
+import { getContent, getUI, getDeeper, isJapaneseLocale } from './i18n/index.js';
 import { mountSharePanel } from './share.js';
 import { bindLoveMode } from './love-ui.js';
 import { bindCompatMode } from './compat-ui.js';
 import {
-  escapeHtml, localDateInputMax, prefersReducedMotion
+  escapeHtml, prefersReducedMotion
 } from './util.js';
 
 let currentContext = null;
@@ -486,12 +486,7 @@ export function bindForm() {
     const bd = document.getElementById('birthdate').value;
     if (!name || !bd) return;
     const [y, m, d] = bd.split('-').map(Number);
+    if (!y || !m || !d) return;
     render(name, romanNameFromForm(), y, m, d);
   });
-
-  document.getElementById('birthdate').max = localDateInputMax();
-
-  const birthInput = document.getElementById('birthdate');
-  birthInput?.addEventListener('change', () => updateBirthDateFields());
-  birthInput?.addEventListener('input', () => updateBirthDateFields());
 }

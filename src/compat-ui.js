@@ -10,9 +10,13 @@
  *  - 文言は強い断定を避け、可能性として提示する。
  */
 import { computeCompat, axisHint } from './compat.js';
-import { escapeHtml, localDateInputMax } from './util.js';
+import { escapeHtml } from './util.js';
 import { getCurrentContext } from './ui.js';
-import { getUI, updateBirthDateFields } from './i18n/index.js';
+import { getUI } from './i18n/index.js';
+import {
+  mountBirthDateField, setBirthDateValue, getBirthDateValue,
+  COMPAT_BIRTH_IDS, refreshBirthDateFieldLabels
+} from './birthDateField.js';
 import { mountCompatSharePanel } from './compat-share.js';
 
 const AXIS_ORDER = ['lifePath', 'sun', 'zodiac', 'gogyou', 'kyusei'];
@@ -39,8 +43,22 @@ function formHtml() {
         <input type="text" id="compat-name" placeholder="${escapeHtml(c.namePlaceholder)}" autocomplete="off" required>
       </div>
       <div class="field">
-        <label for="compat-birth">${escapeHtml(c.birthLabel)}</label>
-        <input type="date" id="compat-birth" required>
+        <span class="field-group-label" id="label-compat-birth">${escapeHtml(c.birthLabel)}</span>
+        <div class="birth-date-grid" role="group" aria-labelledby="label-compat-birth">
+          <div class="birth-date-part">
+            <label for="compat-birth-month" id="label-compat-birth-month">${escapeHtml(c.birthMonthLabel ?? getUI().form.birthMonthLabel)}</label>
+            <select id="compat-birth-month" required></select>
+          </div>
+          <div class="birth-date-part">
+            <label for="compat-birth-day" id="label-compat-birth-day">${escapeHtml(c.birthDayLabel ?? getUI().form.birthDayLabel)}</label>
+            <select id="compat-birth-day" required></select>
+          </div>
+          <div class="birth-date-part">
+            <label for="compat-birth-year" id="label-compat-birth-year">${escapeHtml(c.birthYearLabel ?? getUI().form.birthYearLabel)}</label>
+            <select id="compat-birth-year" required></select>
+          </div>
+        </div>
+        <input type="hidden" id="compat-birth">
         <p class="field-hint" id="hint-compat-birth" aria-live="polite"></p>
       </div>
     </div>
@@ -179,10 +197,6 @@ function renderResult({ name1, name2, result }) {
   `;
 }
 
-function isoDate(y, m, d) {
-  return `${y}-${String(m).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
-}
-
 function showCompatResult({ name1, name2, y, m, d }) {
   const me = getCurrentContext();
   if (!me) return;
@@ -209,9 +223,8 @@ export function rerenderCompatIfNeeded() {
   if (!me) return;
 
   const nameInput = document.getElementById('compat-name');
-  const birthInput = document.getElementById('compat-birth');
   if (nameInput) nameInput.value = name2;
-  if (birthInput) birthInput.value = isoDate(y, m, d);
+  setBirthDateValue(COMPAT_BIRTH_IDS, y, m, d);
 
   showCompatResult({ name1: me.name, name2, y, m, d });
 }
@@ -226,26 +239,27 @@ export function bindCompatMode() {
 
   const form = document.getElementById('compat-form');
   const nameInput  = document.getElementById('compat-name');
-  const birthInput = document.getElementById('compat-birth');
 
-  if (birthInput) birthInput.max = localDateInputMax();
+  mountBirthDateField(COMPAT_BIRTH_IDS);
 
   if (lastCompatInput) {
     nameInput.value = lastCompatInput.name2;
-    birthInput.value = isoDate(lastCompatInput.y, lastCompatInput.m, lastCompatInput.d);
+    setBirthDateValue(
+      COMPAT_BIRTH_IDS,
+      lastCompatInput.y,
+      lastCompatInput.m,
+      lastCompatInput.d
+    );
   }
-
-  birthInput?.addEventListener('change', () => updateBirthDateFields());
 
   form?.addEventListener('submit', (e) => {
     e.preventDefault();
 
     const name2 = (nameInput?.value || '').trim();
-    const birth = birthInput?.value || '';
-    if (!name2 || !birth) return;
+    const parts = getBirthDateValue('compat-birth');
+    if (!name2 || !parts) return;
 
-    const [y, m, d] = birth.split('-').map(Number);
-    if (!y || !m || !d) return;
+    const { y, m, d } = parts;
 
     const me = getCurrentContext();
     if (!me) {
@@ -263,5 +277,5 @@ export function bindCompatMode() {
     rerenderCompatIfNeeded();
   }
 
-  updateBirthDateFields();
+  refreshBirthDateFieldLabels(COMPAT_BIRTH_IDS);
 }

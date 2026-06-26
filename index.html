@@ -50,15 +50,29 @@
             <p class="field-hint" id="hint-name"></p>
           </div>
           <div class="field field-name-roman" id="field-name-roman">
-            <label for="name-roman" id="label-name-roman">ローマ字（任意）</label>
-            <input type="text" id="name-roman" placeholder="例: YAMADA TARO" autocomplete="off" inputmode="latin" spellcheck="false">
+            <label for="name-roman" id="label-name-roman">Roman letters (optional)</label>
+            <input type="text" id="name-roman" placeholder="e.g. YAMADA TARO" autocomplete="off" inputmode="latin" spellcheck="false">
             <p class="field-hint" id="hint-name-roman"></p>
           </div>
         </div>
         <div class="form-row form-row-action">
-          <div class="field">
-            <label for="birthdate" id="label-birth">Date of birth</label>
-            <input type="date" id="birthdate" required>
+          <div class="field field-birth">
+            <span class="field-group-label" id="label-birth">Date of birth</span>
+            <div class="birth-date-grid" role="group" aria-labelledby="label-birth">
+              <div class="birth-date-part">
+                <label for="birth-month" id="label-birth-month">Month</label>
+                <select id="birth-month" required></select>
+              </div>
+              <div class="birth-date-part">
+                <label for="birth-day" id="label-birth-day">Day</label>
+                <select id="birth-day" required></select>
+              </div>
+              <div class="birth-date-part">
+                <label for="birth-year" id="label-birth-year">Year</label>
+                <select id="birth-year" required></select>
+              </div>
+            </div>
+            <input type="hidden" id="birthdate">
             <p class="field-hint" id="hint-birth" aria-live="polite"></p>
           </div>
           <button type="submit" class="btn-primary" id="btn-submit">Reveal</button>
