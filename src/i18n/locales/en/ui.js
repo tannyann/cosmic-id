@@ -23,7 +23,7 @@ export const ui = {
     birthDayPlaceholder: 'Day',
     birthYearPlaceholder: 'Year',
     submit: 'Reveal',
-    freeBadge: 'Free to use — always',
+    freeBadge: 'Everything is free',
     premiumDemo: 'Preview deep readings (demo)',
     premiumDemoTitle: 'Preview Premium deep readings (core experience stays free)'
   },
@@ -131,7 +131,7 @@ export const ui = {
   bio: { physical: 'Physical', emotional: 'Emotional', intellectual: 'Intellectual', intuitive: 'Intuitive' },
   modal: {
     deepRead: 'Read deeper',
-    premiumBadge: 'Deeper reading (Premium · optional)',
+    premiumBadge: 'Extended reading (free)',
     premiumPitch: 'Go deeper',
     premiumSub: (line0, line1, chapters) =>
       `${line0} ${line1} (<strong>${chapters} chapters</strong> in this card).`,
@@ -225,9 +225,11 @@ export const ui = {
   },
   premiumShowcase: {
     roadmapSummary: 'See Premium roadmap',
-    note: 'Use “Preview deep readings (demo)” in the form to preview locked content. The core experience stays free.',
-    optionalEyebrow: 'Optional · Premium',
+    note: 'All readings are free — tap any card to explore deeper chapters.',
+    optionalEyebrow: 'Included free',
     freeIncludesTitle: 'Included free',
-    ariaLabel: 'Premium plan'
+    allFreeTitle: 'Also included — no subscription',
+    allFreeNote: 'Every feature on this page is free. Readings show possibilities; you write your story.',
+    ariaLabel: 'What\'s included'
   }
 };

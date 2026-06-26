@@ -246,14 +246,14 @@ export const LIFE_MILESTONES = [
 
 // ============ 無料 / プレミアムの位置づけ（文言） ============
 export const PRODUCT_PHILOSOPHY = {
-  freeBadge: '基本はずっと無料',
+  freeBadge: 'すべて無料',
   freeHeadline: '十九の物語は、誰でも読める',
-  freeLead: '生年月日と名前だけで、十九の体系を横断した結果・サマリー・各カードの解釈まで。コア体験に料金はかかりません。',
-  premiumHeadline: 'さらに深く知りたい方へ',
-  premiumLead: '「もっと読みたい」「長い時間軸で見たい」「相性まで知りたい」——そんなときだけ、Premium が扉を開きます。'
+  freeLead: '生年月日と名前だけで、十九体系の結果・サマリー・各カードの解釈、恋愛診断・相性診断まで。すべて無料です。',
+  premiumHeadline: 'さらに深く、それも無料',
+  premiumLead: '各カードの深層リーディングも、誰でもそのままお読みいただけます。'
 };
 
-/** 公開前の Premium 表示（料金・決済は未提供） */
+/** @deprecated 課金未使用 — 参照用に残置 */
 export const PREMIUM_COMING_SOON = {
   badge: '近日公開',
   headline: 'Premium は近日公開',
@@ -281,7 +281,7 @@ export const FREE_INCLUDES = [
   {
     icon: '○',
     title: 'カードごとの解釈',
-    desc: '各体系をタップすると、無料の「深く読み解く」が開きます。'
+    desc: '各体系をタップすると無料で「深く読み解く」が開きます。拡張チャプターも含めてすべて無料。'
   },
   {
     icon: '○',
@@ -292,6 +292,25 @@ export const FREE_INCLUDES = [
     icon: '○',
     title: 'シェアカード',
     desc: '結果を画像で保存したり、テキストで共有したりできます。'
+  }
+];
+
+/** 拡張機能も無料で提供（ショーケース用） */
+export const ALL_FREE_HIGHLIGHTS = [
+  {
+    icon: '✦',
+    title: '深層マスターリーディング',
+    desc: '全カードで拡張チャプターを開放。時間軸・シャドウ・横断ヒントまで、課金なしで読めます。'
+  },
+  {
+    icon: '♡',
+    title: '恋愛診断',
+    desc: '恋愛タイプ・フェーズ・今夜の小さな一歩まで、無料で。'
+  },
+  {
+    icon: '◇',
+    title: '相性診断',
+    desc: '二人の五軸レーダー。恋人・友人・誰とでも無料で。'
   }
 ];
 

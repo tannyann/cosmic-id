@@ -379,30 +379,47 @@ export function closeModal() {
   modalTrigger = null;
 }
 
-function renderPremiumComingSoonBlock(variant = 'modal') {
-  const cs = getContent().PREMIUM_COMING_SOON;
-  const teasers = cs.teasers?.length && variant === 'showcase'
-    ? `<ul class="premium-teaser-list">${cs.teasers.map(t => `<li>${escapeHtml(t)}</li>`).join('')}</ul>`
-    : '';
-
-  const headline = variant === 'modal' ? cs.modalHeadline : cs.headline;
-  const lead = variant === 'modal' ? cs.modalLead : cs.lead;
-
-  const paymentUrl = cs.paymentLinkUrl?.trim();
-  const paymentBlock = paymentUrl
-    ? `<a class="cta-button premium-payment-cta" href="${escapeHtml(paymentUrl)}" target="_blank" rel="noopener noreferrer">${escapeHtml(cs.paymentCta)}</a>
-       <p class="premium-payment-note">${escapeHtml(cs.paymentNote)}</p>`
-    : '';
+function renderPremiumSection(d) {
+  const u = getUI();
+  if (!d.premium?.length) return '';
 
   return `
-    <div class="premium-section premium-section--soon">
-      <div class="premium-badge">${escapeHtml(cs.badge)}</div>
-      <div class="premium-coming-soon-body">
-        <p class="premium-pitch">${escapeHtml(headline)}</p>
-        <p class="premium-sub">${escapeHtml(lead)}</p>
-        ${teasers}
-        ${paymentBlock}
+    <div class="premium-section unlocked">
+      <div class="premium-badge">${escapeHtml(u.modal.premiumBadge)}</div>
+      <div class="premium-content">
+        <div class="premium-items">
+          <div class="detail-list">
+            ${d.premium.map(item => `
+              <div class="detail-item">
+                <div class="detail-title">${escapeHtml(item.t)}</div>
+                <div class="detail-text">${item.d}</div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
       </div>
+    </div>
+  `;
+}
+
+function renderAllFreeHighlights() {
+  const u = getUI();
+  const { ALL_FREE_HIGHLIGHTS } = getContent();
+  if (!ALL_FREE_HIGHLIGHTS?.length) return '';
+
+  return `
+    <div class="free-includes free-includes-deep">
+      <h3 class="free-includes-title">${escapeHtml(u.premiumShowcase.allFreeTitle)}</h3>
+      <div class="free-includes-grid">
+        ${ALL_FREE_HIGHLIGHTS.map(f => `
+          <article class="free-include-card">
+            <span class="free-include-mark" aria-hidden="true">${f.icon}</span>
+            <h4>${escapeHtml(f.title)}</h4>
+            <p>${escapeHtml(f.desc)}</p>
+          </article>
+        `).join('')}
+      </div>
+      <p class="premium-showcase-note">${escapeHtml(u.premiumShowcase.allFreeNote)}</p>
     </div>
   `;
 }
@@ -417,7 +434,7 @@ function renderModalBody(d) {
       <div class="detail-list">
         ${d.free.map(item => `
           <div class="detail-item">
-            <div class="detail-title">${item.t}</div>
+            <div class="detail-title">${escapeHtml(item.t)}</div>
             <div class="detail-text">${item.d}</div>
           </div>
         `).join('')}
@@ -426,11 +443,11 @@ function renderModalBody(d) {
     : `<p class="modal-intro">${d.intro}</p>`;
 
   return `
-    <div class="modal-system" id="modal-heading">${d.title}</div>
-    <div class="modal-value">${d.value}</div>
-    <div class="modal-label">${d.label}</div>
+    <div class="modal-system" id="modal-heading">${escapeHtml(d.title)}</div>
+    <div class="modal-value">${escapeHtml(String(d.value))}</div>
+    <div class="modal-label">${escapeHtml(d.label)}</div>
     ${freeSection}
-    ${renderPremiumComingSoonBlock('modal')}
+    ${renderPremiumSection(d)}
   `;
 }
 
@@ -463,7 +480,7 @@ export function renderPremiumShowcase() {
         </div>
       </div>
 
-      ${renderPremiumComingSoonBlock('showcase')}
+      ${renderAllFreeHighlights()}
     </div>
   `;
 }
@@ -476,7 +493,7 @@ export function bindModalEvents() {
 }
 
 export function bindPremiumToggle() {
-  /* Premium デモトグルは公開前のため無効 */
+  /* 全機能無料解放のためトグル不要 */
 }
 
 export function bindForm() {

@@ -344,6 +344,12 @@ html:not([lang="ja"]) .form-row-names {
   min-width: 0;
 }
 
+.free-includes-deep {
+  margin-top: 2rem;
+  padding-top: 1.75rem;
+  border-top: 1px solid var(--border);
+}
+
 .form-privacy {
   margin: 16px 0 0;
   font-size: 0.78rem;

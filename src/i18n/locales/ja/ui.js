@@ -27,7 +27,7 @@ export const ui = {
     birthDayPlaceholder: '日',
     birthYearPlaceholder: '年',
     submit: '読み解く',
-    freeBadge: '基本はずっと無料',
+    freeBadge: 'すべて無料',
     premiumDemo: '深層解釈をプレビュー（デモ）',
     premiumDemoTitle: '深層解釈のプレビュー（通常は無料のまま利用できます）'
   },
@@ -138,7 +138,7 @@ export const ui = {
   bio: { physical: '身体', emotional: '感情', intellectual: '知性', intuitive: '直感' },
   modal: {
     deepRead: '深く読み解く',
-    premiumBadge: 'さらに深い解釈（Premium・任意）',
+    premiumBadge: '拡張リーディング（無料）',
     premiumPitch: 'さらに深く読む',
     premiumSub: (line0, line1, chapters) =>
       `${line0}。${line1}（全 <strong>${chapters} 章</strong>）。`,
@@ -232,9 +232,11 @@ export const ui = {
   },
   premiumShowcase: {
     roadmapSummary: 'Premium の開発予定を見る',
-    note: 'フォーム上の「深層解釈をプレビュー（デモ）」で、深層解釈のプレビューができます。通常は無料のままお使いいただけます。',
-    optionalEyebrow: 'Optional · Premium',
+    note: 'すべての機能が無料です。各カードから深層チャプターをお読みください。',
+    optionalEyebrow: '無料で含まれる',
     freeIncludesTitle: '無料でできること',
-    ariaLabel: 'プレミアムプラン'
+    allFreeTitle: 'これも無料 — 登録不要',
+    allFreeNote: 'このページの機能はすべて無料です。解釈は可能性の一つ。物語はあなたが書きます。',
+    ariaLabel: '含まれる機能'
   }
 };

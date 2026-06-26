@@ -260,8 +260,7 @@ export function applyStaticPageCopy() {
 
   const premiumShowcase = document.getElementById('premium-showcase');
   if (premiumShowcase) {
-    const cs = getContent().PREMIUM_COMING_SOON;
-    premiumShowcase.setAttribute('aria-label', cs?.headline || u.premiumShowcase.ariaLabel || 'Premium');
+    premiumShowcase.setAttribute('aria-label', u.premiumShowcase.ariaLabel || 'What\'s included');
   }
 }
 

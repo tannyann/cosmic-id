@@ -246,14 +246,14 @@ export const LIFE_MILESTONES = [
 
 // ============ Free / Premium positioning (copy) ============
 export const PRODUCT_PHILOSOPHY = {
-  freeBadge: 'Core experience stays free',
+  freeBadge: 'Everything is free',
   freeHeadline: 'Nineteen stories, open to everyone',
-  freeLead: 'With just your birth date and name, you get cross-system results, a summary, and card interpretations across nineteen traditions. The core experience costs nothing.',
-  premiumHeadline: 'For those who want to go deeper',
-  premiumLead: 'When you want to read more, see a longer timeline, or explore compatibility — Premium opens that door.'
+  freeLead: 'With just your birth date and name, you get cross-system results, a summary, card readings, love and compatibility — all at no cost.',
+  premiumHeadline: 'Go deeper, still free',
+  premiumLead: 'Extended chapters in every card modal are unlocked for everyone.'
 };
 
-/** Pre-launch Premium copy (no pricing or billing yet) */
+/** @deprecated Billing not used — kept for reference */
 export const PREMIUM_COMING_SOON = {
   badge: 'Coming soon',
   headline: 'Premium is coming soon',
@@ -280,7 +280,7 @@ export const FREE_INCLUDES = [
   {
     icon: '○',
     title: 'Card-by-card readings',
-    desc: 'Tap any system to open a free "Read deeper" interpretation.'
+    desc: 'Tap any system for free readings — including extended deep chapters in each modal.'
   },
   {
     icon: '○',
@@ -291,6 +291,25 @@ export const FREE_INCLUDES = [
     icon: '○',
     title: 'Share cards',
     desc: 'Save results as an image or share them as text.'
+  }
+];
+
+/** Extended features now included free (showcase) */
+export const ALL_FREE_HIGHLIGHTS = [
+  {
+    icon: '✦',
+    title: 'Master deep readings',
+    desc: 'Every card opens extended chapters — timelines, shadows, and cross-system hints. No paywall.'
+  },
+  {
+    icon: '♡',
+    title: 'Love archetype',
+    desc: 'Your love type, phase, and tonight\'s small step — included free.'
+  },
+  {
+    icon: '◇',
+    title: 'Compatibility reading',
+    desc: 'Five-axis radar for you and someone else — partner, friend, or anyone.'
   }
 ];
 
