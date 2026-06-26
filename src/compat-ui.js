@@ -12,10 +12,13 @@
 import { computeCompat, axisHint } from './compat.js';
 import { escapeHtml, localDateInputMax } from './util.js';
 import { getCurrentContext } from './ui.js';
-import { getUI } from './i18n/index.js';
+import { getUI, updateBirthDateFields } from './i18n/index.js';
 import { mountCompatSharePanel } from './compat-share.js';
 
 const AXIS_ORDER = ['lifePath', 'sun', 'zodiac', 'gogyou', 'kyusei'];
+
+/** @type {{ name2: string, y: number, m: number, d: number } | null} */
+let lastCompatInput = null;
 
 function formHtml() {
   const c = getUI().compat;
@@ -38,6 +41,7 @@ function formHtml() {
       <div class="field">
         <label for="compat-birth">${escapeHtml(c.birthLabel)}</label>
         <input type="date" id="compat-birth" required>
+        <p class="field-hint" id="hint-compat-birth" aria-live="polite"></p>
       </div>
     </div>
     <div class="compat-form-actions">
@@ -175,6 +179,43 @@ function renderResult({ name1, name2, result }) {
   `;
 }
 
+function isoDate(y, m, d) {
+  return `${y}-${String(m).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+}
+
+function showCompatResult({ name1, name2, y, m, d }) {
+  const me = getCurrentContext();
+  if (!me) return;
+
+  const result = computeCompat(
+    { name: me.name, y: me.y, m: me.m, d: me.d },
+    { name: name2, y, m, d }
+  );
+
+  const resultEl = document.getElementById('compat-result');
+  if (resultEl) {
+    resultEl.hidden = false;
+    resultEl.innerHTML = renderResult({ name1: me.name, name2, result });
+  }
+
+  mountCompatSharePanel({ name1: me.name, name2, result });
+}
+
+/** 言語切替後に相性結果を再描画 */
+export function rerenderCompatIfNeeded() {
+  if (!lastCompatInput) return;
+  const { name2, y, m, d } = lastCompatInput;
+  const me = getCurrentContext();
+  if (!me) return;
+
+  const nameInput = document.getElementById('compat-name');
+  const birthInput = document.getElementById('compat-birth');
+  if (nameInput) nameInput.value = name2;
+  if (birthInput) birthInput.value = isoDate(y, m, d);
+
+  showCompatResult({ name1: me.name, name2, y, m, d });
+}
+
 export function bindCompatMode() {
   const results = document.getElementById('results');
   if (!results) return;
@@ -186,9 +227,15 @@ export function bindCompatMode() {
   const form = document.getElementById('compat-form');
   const nameInput  = document.getElementById('compat-name');
   const birthInput = document.getElementById('compat-birth');
-  const resultEl   = document.getElementById('compat-result');
 
   if (birthInput) birthInput.max = localDateInputMax();
+
+  if (lastCompatInput) {
+    nameInput.value = lastCompatInput.name2;
+    birthInput.value = isoDate(lastCompatInput.y, lastCompatInput.m, lastCompatInput.d);
+  }
+
+  birthInput?.addEventListener('change', () => updateBirthDateFields());
 
   form?.addEventListener('submit', (e) => {
     e.preventDefault();
@@ -206,21 +253,15 @@ export function bindCompatMode() {
       return;
     }
 
-    const result = computeCompat(
-      { name: me.name, y: me.y, m: me.m, d: me.d },
-      { name: name2,   y, m, d }
-    );
+    lastCompatInput = { name2, y, m, d };
+    showCompatResult({ name1: me.name, name2, y, m, d });
 
-    if (resultEl) {
-      resultEl.hidden = false;
-      resultEl.innerHTML = renderResult({ name1: me.name, name2, result });
-      resultEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-
-    mountCompatSharePanel({
-      name1: me.name,
-      name2,
-      result
-    });
+    document.getElementById('compat-result')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   });
+
+  if (lastCompatInput) {
+    rerenderCompatIfNeeded();
+  }
+
+  updateBirthDateFields();
 }

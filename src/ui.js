@@ -10,7 +10,7 @@ import {
   birthstone, birthflower, biorhythm, moonPhaseToday, lifeStage
 } from './calculations.js';
 
-import { getContent, getUI, getDeeper, isJapaneseLocale } from './i18n/index.js';
+import { getContent, getUI, getDeeper, isJapaneseLocale, updateBirthDateFields } from './i18n/index.js';
 import { mountSharePanel } from './share.js';
 import { bindLoveMode } from './love-ui.js';
 import { bindCompatMode } from './compat-ui.js';
@@ -490,4 +490,8 @@ export function bindForm() {
   });
 
   document.getElementById('birthdate').max = localDateInputMax();
+
+  const birthInput = document.getElementById('birthdate');
+  birthInput?.addEventListener('change', () => updateBirthDateFields());
+  birthInput?.addEventListener('input', () => updateBirthDateFields());
 }

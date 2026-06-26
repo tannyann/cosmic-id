@@ -15,14 +15,37 @@ import { ui as trUi } from './locales/tr/ui.js';
 import { ui as heUi } from './locales/he/ui.js';
 import { ui as arUi } from './locales/ar/ui.js';
 
+import { createDateFormatters, formatBirthFromIso } from './dateFormat.js';
+
 const STORAGE_KEY = 'cosmic-id-locale';
 
 /** @typedef {'ja'|'en'|'zh'|'ko'|'es'|'fr'|'it'|'de'|'tr'|'he'|'ar'} LocaleCode */
 
+/** ネストした UI 辞書をマージ（fmt 等の部分上書きを壊さない） */
+function deepMerge(base, override) {
+  const out = { ...base };
+  for (const key of Object.keys(override)) {
+    const bVal = base[key];
+    const oVal = override[key];
+    if (
+      oVal && typeof oVal === 'object' && !Array.isArray(oVal)
+      && bVal && typeof bVal === 'object' && !Array.isArray(bVal)
+    ) {
+      out[key] = deepMerge(bVal, oVal);
+    } else {
+      out[key] = oVal;
+    }
+  }
+  return out;
+}
+
 /** UI のみ翻訳・占術コンテンツは英語にフォールバック */
 function uiLocale(ui, code, htmlLang, dir = 'ltr') {
-  const base = { ...en, ui: { ...en.ui, ...ui }, meta: { code, label: ui.meta.label, htmlLang, dir } };
-  return base;
+  return {
+    ...en,
+    ui: deepMerge(en.ui, ui),
+    meta: { code, label: ui.meta.label, htmlLang, dir }
+  };
 }
 
 const zh = uiLocale(zhUi, 'zh', 'zh-Hans');
@@ -81,9 +104,16 @@ export function getContent() {
   return getBundle().content;
 }
 
-/** UI 文言 */
+/** UI 文言（日付表示は現在ロケールで上書き） */
 export function getUI() {
-  return getBundle().ui;
+  const bundle = getBundle();
+  const dates = createDateFormatters(bundle.meta);
+  const ui = bundle.ui;
+  return {
+    ...ui,
+    fmt: { ...ui.fmt, ...dates },
+    share: { ...ui.share, birthDate: dates.birthDate, bornLine: dates.bornLine }
+  };
 }
 
 /** deeper モジュール */
@@ -155,6 +185,28 @@ export function applyDocumentLocale() {
   if (twitterImage) twitterImage.setAttribute('content', ogImage);
 
   applyStructuredData(b, siteUrl);
+}
+
+/** 生年月日入力の lang と読みやすい表示を現在ロケールに合わせる */
+export function updateBirthDateFields() {
+  const birthInput = document.getElementById('birthdate');
+  const hint = document.getElementById('hint-birth');
+  const compatBirth = document.getElementById('compat-birth');
+  const compatHint = document.getElementById('hint-compat-birth');
+  const meta = getBundle().meta;
+
+  if (birthInput) {
+    birthInput.lang = meta.htmlLang;
+    if (hint) {
+      hint.textContent = birthInput.value ? formatBirthFromIso(birthInput.value, meta) : '';
+    }
+  }
+  if (compatBirth) {
+    compatBirth.lang = meta.htmlLang;
+    if (compatHint) {
+      compatHint.textContent = compatBirth.value ? formatBirthFromIso(compatBirth.value, meta) : '';
+    }
+  }
 }
 
 function applyStructuredData(bundle, siteUrl) {
@@ -230,6 +282,8 @@ export function applyStaticPageCopy() {
     const cs = getContent().PREMIUM_COMING_SOON;
     premiumShowcase.setAttribute('aria-label', cs?.headline || u.premiumShowcase.ariaLabel || 'Premium');
   }
+
+  updateBirthDateFields();
 }
 
 export function mountLanguageSwitcher() {
