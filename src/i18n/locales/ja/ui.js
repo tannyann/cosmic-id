@@ -69,7 +69,10 @@ export const ui = {
     biorhythm: 'バイオリズム',
     moonTonight: '今夜の月',
     lifeStagePrev: '直近の節目',
-    lifeStageNext: '次の節目'
+    lifeStageNext: '次の節目',
+    timeline: '10年タイムライン',
+    timelineLabel: 'これからの10年',
+    timelineDesc: '個人年の波・実りの年・人生の節目を、年ごとにタップして読み解けます。'
   },
   fmt: {
     yearYou: (y) => `${y}年のあなた`,
@@ -150,6 +153,30 @@ export const ui = {
   },
   toast: {
     premiumDemo: 'デモでは「深層解釈をプレビュー」をONにすると Premium の中身が見られます'
+  },
+  timeline: {
+    eyebrow: 'インタラクティブ・リーディング',
+    title: '10年タイムライン',
+    subtitle: 'これからの10年の、あなたの個人年リズム',
+    intro: '一本一本の棒が個人年(1〜9)です。年をタップするとテーマが開き、✦は人生の節目を表します。',
+    ageLabel: '年齢',
+    pyLabel: '個人年',
+    yearLabel: '年',
+    milestoneLabel: '人生の節目',
+    thisYear: '今年',
+    milestoneHere: '節目の年',
+    ageAt: (age) => `${age}歳になる年`,
+    pyHeading: (py) => `個人年 ${py} ・ ${({
+      1: '始まり', 2: '忍耐と絆', 3: '表現と喜び',
+      4: '土台づくり', 5: '変化と自由', 6: '責任と愛',
+      7: '内省', 8: '収穫', 9: '完成と手放し'
+    })[py] ?? ''}`
+  },
+  master: {
+    title: 'マスターリーディング',
+    intro: '深層チャプターを誰でも開けます。タップして読み進めてください。',
+    expandAll: 'すべて開く',
+    collapseAll: 'すべて閉じる'
   },
   share: {
     panelTitle: 'シェアカード',

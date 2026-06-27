@@ -7,7 +7,7 @@ import {
   lifePath, personalYear, expressionProfile, sunSign, moonTrait,
   chineseZodiac, sixtyJikkan, kyuseiHonmei, gogyou, animalUranai,
   mayaKin, tarotBirthCard, dailyTarot, celticTree,
-  birthstone, birthflower, biorhythm, moonPhaseToday, lifeStage
+  birthstone, birthflower, biorhythm, moonPhaseToday, lifeStage, lifeTimeline
 } from './calculations.js';
 
 import { getContent, getUI, getDeeper, isJapaneseLocale } from './i18n/index.js';
@@ -21,6 +21,12 @@ import {
 let currentContext = null;
 let modalTrigger = null;
 let lastRender = null;
+
+// 現在開いているモーダルの 10年タイムライン用データ（年ノードのクリックで参照）
+let activeTimeline = [];
+
+// 10年タイムラインを出す時間系カード
+const TIMELINE_CARDS = new Set(['personalYear', 'lifeStagePrev', 'lifeStageNext']);
 
 // 相性診断モードから現在の自分側コンテキストを参照するため
 export function getCurrentContext() {
@@ -320,6 +326,14 @@ export function render(name, nameRoman, y, m, d) {
       ${ls.prev ? card('lifeStagePrev', u.cards.lifeStagePrev, u.fmt.ageYears(ls.prev.age), ls.prev.name, ls.prev.desc) : ''}
       ${ls.next ? card('lifeStageNext', u.cards.lifeStageNext, u.fmt.ageYears(ls.next.age), ls.next.name, ls.next.desc) : ''}
     </div>
+    <div class="grid">
+      <div class="card card-wide card-timeline" data-key="timeline" role="button" tabindex="0" aria-label="${escapeHtml(u.cards.timeline)}${u.fmt.cardMoreAria}">
+        <div class="card-system">${u.cards.timeline}</div>
+        <div class="card-value card-timeline-value">${u.timeline.subtitle}</div>
+        <div class="card-desc">${u.cards.timelineDesc}</div>
+        <div class="card-more">${u.fmt.cardMore}</div>
+      </div>
+    </div>
   `;
 
   const r = document.getElementById('results');
@@ -348,11 +362,27 @@ export function rerenderIfNeeded() {
 
 export function openModal(cardKey) {
   if (!currentContext) return;
-  const data = getDeeper().buildDeep(cardKey, currentContext);
-  if (!data) return;
   const modal = document.getElementById('modal');
+  const body = document.getElementById('modal-body');
+
+  if (cardKey === 'timeline') {
+    const u = getUI();
+    const t = u.timeline ?? {};
+    body.innerHTML = `
+      <div class="modal-system" id="modal-heading">${escapeHtml(t.eyebrow ?? '')}</div>
+      <div class="modal-value">${escapeHtml(t.title ?? '')}</div>
+      <div class="modal-label">${escapeHtml(t.subtitle ?? '')}</div>
+      ${renderTimeline(currentContext, { heading: false })}
+    `;
+    bindModalInteractions(body);
+  } else {
+    const data = getDeeper().buildDeep(cardKey, currentContext);
+    if (!data) return;
+    body.innerHTML = renderModalBody(data, cardKey, currentContext);
+    bindModalInteractions(body);
+  }
+
   modal.dataset.cardKey = cardKey;
-  document.getElementById('modal-body').innerHTML = renderModalBody(data);
   modalTrigger = document.activeElement;
   modal.removeAttribute('hidden');
   modal.classList.add('open');
@@ -379,25 +409,112 @@ export function closeModal() {
   modalTrigger = null;
 }
 
-function renderPremiumSection(d) {
+/**
+ * マスターリーディング：深層チャプターをクリックで開閉するアコーディオン。
+ * 旧 premium 配列をインタラクティブに見せる。
+ */
+function renderMasterReading(d) {
   const u = getUI();
   if (!d.premium?.length) return '';
+  const m = u.master ?? {};
+
+  const chapters = d.premium.map((item, i) => `
+    <div class="master-chapter${i === 0 ? ' open' : ''}">
+      <button type="button" class="master-chapter-head" aria-expanded="${i === 0 ? 'true' : 'false'}">
+        <span class="master-chapter-index" aria-hidden="true">${String(i + 1).padStart(2, '0')}</span>
+        <span class="master-chapter-title">${escapeHtml(item.t)}</span>
+        <span class="master-chapter-icon" aria-hidden="true"></span>
+      </button>
+      <div class="master-chapter-body"${i === 0 ? '' : ' hidden'}>
+        <p>${item.d}</p>
+      </div>
+    </div>
+  `).join('');
 
   return `
-    <div class="premium-section unlocked">
-      <div class="premium-badge">${escapeHtml(u.modal.premiumBadge)}</div>
-      <div class="premium-content">
-        <div class="premium-items">
-          <div class="detail-list">
-            ${d.premium.map(item => `
-              <div class="detail-item">
-                <div class="detail-title">${escapeHtml(item.t)}</div>
-                <div class="detail-text">${item.d}</div>
-              </div>
-            `).join('')}
-          </div>
-        </div>
+    <div class="master-section">
+      <div class="master-head">
+        <div class="premium-badge">${escapeHtml(u.modal.premiumBadge)}</div>
+        <p class="master-intro">${escapeHtml(m.intro ?? '')}</p>
+        <button type="button" class="master-toggle-all" data-master-toggle="open">${escapeHtml(m.expandAll ?? 'Open all')}</button>
       </div>
+      <div class="master-chapters">
+        ${chapters}
+      </div>
+    </div>
+  `;
+}
+
+/** タイムライン1年ぶんの詳細パネル HTML（クリックで差し替え）。 */
+function timelineDetailHtml(entry) {
+  const u = getUI();
+  const t = u.timeline ?? {};
+  const { PERSONAL_YEAR_MEANINGS } = getContent();
+  const meaning = PERSONAL_YEAR_MEANINGS?.[entry.py] ?? '';
+  const milestoneHtml = entry.milestones.length
+    ? `
+      <div class="timeline-detail-milestones">
+        ${entry.milestones.map(ms => `
+          <div class="timeline-detail-milestone">
+            <span class="timeline-milestone-label">${escapeHtml(t.milestoneLabel ?? '')}</span>
+            <strong>${escapeHtml(ms.name)}</strong>
+            <span>${escapeHtml(ms.desc)}</span>
+          </div>
+        `).join('')}
+      </div>`
+    : '';
+
+  return `
+    <div class="timeline-detail-head">
+      <span class="timeline-detail-year">${entry.year}</span>
+      <span class="timeline-detail-age">${escapeHtml((t.ageAt ? t.ageAt(entry.age) : String(entry.age)))}</span>
+      ${entry.isCurrent ? `<span class="timeline-detail-now">${escapeHtml(t.thisYear ?? '')}</span>` : ''}
+    </div>
+    <div class="timeline-detail-py">
+      <span class="timeline-detail-py-num" data-py="${entry.py}">${entry.py}</span>
+      <div class="timeline-detail-py-text">
+        <strong>${escapeHtml(t.pyHeading ? t.pyHeading(entry.py) : '')}</strong>
+        <p>${escapeHtml(meaning)}</p>
+      </div>
+    </div>
+    ${milestoneHtml}
+  `;
+}
+
+/**
+ * インタラクティブ 10年タイムライン。
+ * 個人年の波（1〜9）を年ノードで表し、人生の節目をマークする。
+ */
+function renderTimeline(ctx, { heading = true } = {}) {
+  const u = getUI();
+  const t = u.timeline ?? {};
+  const startYear = new Date().getFullYear();
+  activeTimeline = lifeTimeline(ctx.y, ctx.m, ctx.d, startYear, 10);
+
+  const nodes = activeTimeline.map((e, i) => `
+    <button type="button"
+      class="timeline-node${e.isCurrent ? ' current' : ''}${i === 0 ? ' selected' : ''}${e.milestones.length ? ' has-milestone' : ''}"
+      data-tl-index="${i}"
+      aria-pressed="${i === 0 ? 'true' : 'false'}"
+      style="--py-level:${e.py}"
+      title="${e.year} · ${escapeHtml(t.pyLabel ?? '')} ${e.py}">
+      <span class="timeline-node-bar"><span class="timeline-node-fill"></span></span>
+      <span class="timeline-node-py">${e.py}</span>
+      <span class="timeline-node-year">${String(e.year).slice(2)}</span>
+      ${e.milestones.length ? '<span class="timeline-node-dot" aria-hidden="true"></span>' : ''}
+    </button>
+  `).join('');
+
+  const head = heading
+    ? `<div class="modal-section-title">${escapeHtml(t.title ?? '')}</div>
+       <p class="modal-intro">${escapeHtml(t.intro ?? '')}</p>`
+    : `<p class="modal-intro">${escapeHtml(t.intro ?? '')}</p>`;
+
+  return `
+    <div class="timeline-section" data-timeline>
+      ${head}
+      <div class="timeline-track" role="group">${nodes}</div>
+      <div class="timeline-detail" data-timeline-detail>${timelineDetailHtml(activeTimeline[0])}</div>
     </div>
   `;
 }
@@ -424,7 +541,7 @@ function renderAllFreeHighlights() {
   `;
 }
 
-function renderModalBody(d) {
+function renderModalBody(d, cardKey, ctx) {
   const u = getUI();
   const freeSection = d.free.length
     ? `
@@ -442,13 +559,72 @@ function renderModalBody(d) {
     </div>`
     : `<p class="modal-intro">${d.intro}</p>`;
 
+  const timelineSection =
+    ctx && TIMELINE_CARDS.has(cardKey) ? renderTimeline(ctx) : '';
+
   return `
     <div class="modal-system" id="modal-heading">${escapeHtml(d.title)}</div>
     <div class="modal-value">${escapeHtml(String(d.value))}</div>
     <div class="modal-label">${escapeHtml(d.label)}</div>
     ${freeSection}
-    ${renderPremiumSection(d)}
+    ${timelineSection}
+    ${renderMasterReading(d)}
   `;
+}
+
+/** モーダル内のインタラクティブ要素（タイムライン・マスターリーディング）を配線。 */
+function bindModalInteractions(root) {
+  // 10年タイムライン：年ノードのクリックで詳細を更新
+  const track = root.querySelector('.timeline-track');
+  const detail = root.querySelector('[data-timeline-detail]');
+  if (track && detail) {
+    track.addEventListener('click', e => {
+      const node = e.target.closest('.timeline-node');
+      if (!node) return;
+      const idx = Number(node.dataset.tlIndex);
+      const entry = activeTimeline[idx];
+      if (!entry) return;
+      track.querySelectorAll('.timeline-node').forEach(n => {
+        const on = n === node;
+        n.classList.toggle('selected', on);
+        n.setAttribute('aria-pressed', on ? 'true' : 'false');
+      });
+      detail.innerHTML = timelineDetailHtml(entry);
+    });
+  }
+
+  // マスターリーディング：チャプターの開閉
+  root.querySelectorAll('.master-chapter-head').forEach(head => {
+    head.addEventListener('click', () => {
+      const chapter = head.closest('.master-chapter');
+      const bodyEl = chapter.querySelector('.master-chapter-body');
+      const open = head.getAttribute('aria-expanded') === 'true';
+      head.setAttribute('aria-expanded', open ? 'false' : 'true');
+      chapter.classList.toggle('open', !open);
+      if (bodyEl) bodyEl.hidden = open;
+    });
+  });
+
+  // すべて開く / すべて閉じる
+  const toggleAll = root.querySelector('[data-master-toggle]');
+  if (toggleAll) {
+    toggleAll.addEventListener('click', () => {
+      const u = getUI();
+      const m = u.master ?? {};
+      const opening = toggleAll.dataset.masterToggle === 'open';
+      root.querySelectorAll('.master-chapter').forEach(chapter => {
+        const head = chapter.querySelector('.master-chapter-head');
+        const bodyEl = chapter.querySelector('.master-chapter-body');
+        head?.setAttribute('aria-expanded', opening ? 'true' : 'false');
+        chapter.classList.toggle('open', opening);
+        if (bodyEl) bodyEl.hidden = !opening;
+      });
+      toggleAll.dataset.masterToggle = opening ? 'close' : 'open';
+      toggleAll.textContent = opening
+        ? (m.collapseAll ?? 'Close all')
+        : (m.expandAll ?? 'Open all');
+    });
+  }
 }
 
 export function renderPremiumShowcase() {

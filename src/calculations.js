@@ -289,3 +289,27 @@ export function lifeStage(y, m, d) {
   }
   return { years, next, prev };
 }
+
+/**
+ * 今後 span 年ぶんの「個人年サイクル + 年齢 + その年に重なる人生の節目」を返す。
+ * 10年タイムライン UI のためのデータ。純粋関数（startYear は引数で渡す）。
+ *
+ * @param {number} y 生まれ年
+ * @param {number} m 生まれ月
+ * @param {number} d 生まれ日
+ * @param {number} startYear 起点の暦年（通常は今年）
+ * @param {number} span 何年分か
+ * @returns {Array<{ year:number, age:number, py:number, milestones:Array, isCurrent:boolean }>}
+ */
+export function lifeTimeline(y, m, d, startYear, span = 10) {
+  const { LIFE_MILESTONES } = getContent();
+  const out = [];
+  for (let i = 0; i < span; i++) {
+    const year = startYear + i;
+    const age = year - y;
+    const py = personalYear(m, d, year);
+    const milestones = LIFE_MILESTONES.filter(ms => Math.floor(ms.age) === age);
+    out.push({ year, age, py, milestones, isCurrent: i === 0 });
+  }
+  return out;
+}

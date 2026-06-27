@@ -2682,3 +2682,277 @@ html[dir="rtl"] .lang-field {
     filter: drop-shadow(0 0 30px rgba(212, 121, 154, 0.35));
   }
 }
+
+/* ============================================================
+ * インタラクティブ 10年タイムライン
+ * ============================================================ */
+
+/* 人生の地図セクションの「10年タイムライン」カード */
+.card-timeline {
+  background:
+    radial-gradient(circle at 0% 0%, rgba(166, 127, 216, 0.1), transparent 55%),
+    var(--card-bg, rgba(10, 8, 22, 0.5));
+}
+.card-timeline .card-value.card-timeline-value {
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--cream);
+  letter-spacing: 0;
+}
+
+.timeline-section {
+  margin-top: 28px;
+  padding: 20px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: rgba(10, 8, 22, 0.5);
+}
+
+.timeline-track {
+  display: flex;
+  gap: 6px;
+  align-items: flex-end;
+  margin: 18px 0 20px;
+  overflow-x: auto;
+  padding-bottom: 6px;
+  scrollbar-width: thin;
+}
+
+.timeline-node {
+  flex: 1 1 0;
+  min-width: 38px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 4px 6px;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  color: var(--text-muted);
+  font-family: var(--font-body);
+  transition: background 0.25s var(--ease-out), border-color 0.25s var(--ease-out), color 0.25s var(--ease-out);
+  position: relative;
+}
+
+.timeline-node:hover { background: rgba(184, 149, 46, 0.08); color: var(--cream); }
+
+.timeline-node.selected {
+  background: rgba(184, 149, 46, 0.14);
+  border-color: var(--gold-dim);
+  color: var(--gold-bright);
+}
+
+.timeline-node-bar {
+  width: 10px;
+  height: 56px;
+  display: flex;
+  align-items: flex-end;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.06);
+  overflow: hidden;
+}
+
+.timeline-node-fill {
+  width: 100%;
+  /* 個人年 1〜9 を波の高さに */
+  height: calc(20% + (var(--py-level, 1) / 9) * 80%);
+  background: linear-gradient(180deg, var(--gold-bright), var(--gold));
+  border-radius: 6px;
+  transition: filter 0.25s var(--ease-out);
+}
+
+.timeline-node.selected .timeline-node-fill { filter: drop-shadow(0 0 8px rgba(232, 212, 154, 0.55)); }
+
+.timeline-node-py { font-size: 13px; font-weight: 600; }
+.timeline-node-year { font-size: 10px; letter-spacing: 0.04em; opacity: 0.8; }
+.timeline-node-year::before { content: "'"; }
+
+.timeline-node.current .timeline-node-year { color: var(--accent-teal); font-weight: 700; }
+
+.timeline-node-dot {
+  position: absolute;
+  top: 2px;
+  right: 6px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--accent-rose);
+  box-shadow: 0 0 8px rgba(201, 122, 154, 0.8);
+}
+
+.timeline-detail {
+  border-top: 1px solid var(--border);
+  padding-top: 16px;
+}
+
+.timeline-detail-head {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+
+.timeline-detail-year {
+  font-family: var(--font-display);
+  font-size: 30px;
+  color: var(--gold-bright);
+  line-height: 1;
+}
+
+.timeline-detail-age { font-size: 13px; color: var(--text-muted); }
+
+.timeline-detail-now {
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  padding: 2px 10px;
+  border-radius: 999px;
+  background: rgba(94, 184, 168, 0.16);
+  color: var(--accent-teal);
+}
+
+.timeline-detail-py {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 12px;
+}
+
+.timeline-detail-py-num {
+  flex: 0 0 auto;
+  width: 46px;
+  height: 46px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--bg-deep);
+  background: linear-gradient(180deg, var(--gold-champagne), var(--gold));
+}
+
+.timeline-detail-py-text strong { display: block; color: var(--gold-bright); font-size: 14px; margin-bottom: 2px; }
+.timeline-detail-py-text p { font-size: 13px; color: var(--cream); line-height: 1.7; }
+
+.timeline-detail-milestones { display: flex; flex-direction: column; gap: 10px; }
+
+.timeline-detail-milestone {
+  padding: 10px 12px;
+  border-left: 2px solid var(--accent-rose);
+  background: rgba(201, 122, 154, 0.08);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+}
+
+.timeline-milestone-label {
+  display: block;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent-rose);
+  margin-bottom: 2px;
+}
+
+.timeline-detail-milestone strong { display: block; color: var(--cream); font-size: 14px; }
+.timeline-detail-milestone span { font-size: 12px; color: var(--text-muted); line-height: 1.6; }
+
+/* ============================================================
+ * マスターリーディング（アコーディオン）
+ * ============================================================ */
+
+.master-section {
+  margin-top: 28px;
+  padding: 20px;
+  border: 1px solid var(--gold-dim);
+  border-radius: var(--radius-md);
+  background:
+    radial-gradient(circle at 100% 0%, rgba(166, 127, 216, 0.08), transparent 60%),
+    rgba(10, 8, 22, 0.55);
+}
+
+.master-head { margin-bottom: 14px; }
+.master-intro { font-size: 13px; color: var(--text-muted); line-height: 1.7; margin: 8px 0 10px; }
+
+.master-toggle-all {
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--gold-bright);
+  font-family: var(--font-body);
+  font-size: 12px;
+  padding: 5px 14px;
+  cursor: pointer;
+  transition: background 0.2s var(--ease-out);
+}
+.master-toggle-all:hover { background: rgba(184, 149, 46, 0.12); }
+
+.master-chapters { display: flex; flex-direction: column; gap: 8px; }
+
+.master-chapter {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.master-chapter.open { border-color: var(--gold-dim); }
+
+.master-chapter-head {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 13px 14px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  color: var(--cream);
+  font-family: var(--font-body);
+}
+
+.master-chapter-head:hover { background: rgba(184, 149, 46, 0.06); }
+
+.master-chapter-index {
+  font-family: var(--font-display);
+  font-size: 15px;
+  color: var(--gold);
+  flex: 0 0 auto;
+}
+
+.master-chapter-title { flex: 1 1 auto; font-size: 14px; }
+
+.master-chapter-icon {
+  flex: 0 0 auto;
+  width: 16px;
+  height: 16px;
+  position: relative;
+}
+.master-chapter-icon::before,
+.master-chapter-icon::after {
+  content: '';
+  position: absolute;
+  background: var(--gold-bright);
+  transition: transform 0.25s var(--ease-out), opacity 0.25s var(--ease-out);
+}
+.master-chapter-icon::before { top: 7px; left: 2px; width: 12px; height: 2px; }
+.master-chapter-icon::after { top: 2px; left: 7px; width: 2px; height: 12px; }
+.master-chapter.open .master-chapter-icon::after { transform: scaleY(0); opacity: 0; }
+
+.master-chapter-body {
+  padding: 0 14px 14px 38px;
+}
+.master-chapter-body p { font-size: 13px; color: var(--cream); line-height: 1.8; }
+
+@media (max-width: 420px) {
+  .timeline-node { min-width: 32px; }
+  .timeline-node-bar { height: 44px; }
+  .master-chapter-body { padding-left: 14px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .timeline-node, .timeline-node-fill, .master-chapter-icon::before, .master-chapter-icon::after,
+  .master-toggle-all { transition: none; }
+}

@@ -65,7 +65,10 @@ export const ui = {
     biorhythm: 'Biorhythm',
     moonTonight: 'Tonight\'s Moon',
     lifeStagePrev: 'Recent Milestone',
-    lifeStageNext: 'Next Milestone'
+    lifeStageNext: 'Next Milestone',
+    timeline: '10-Year Timeline',
+    timelineLabel: 'The decade ahead',
+    timelineDesc: 'Your personal-year wave, peak years, and milestones — tap to explore each year.'
   },
   fmt: {
     yearYou: (y) => `You in ${y}`,
@@ -143,6 +146,30 @@ export const ui = {
   },
   toast: {
     premiumDemo: 'Turn on “Preview deep readings” in the form to see Premium content in this demo'
+  },
+  timeline: {
+    eyebrow: 'Interactive reading',
+    title: '10-Year Timeline',
+    subtitle: 'Your personal-year rhythm for the decade ahead',
+    intro: 'Each bar is a personal year (1–9). Tap a year to read its theme; ✦ marks a life milestone.',
+    ageLabel: 'Age',
+    pyLabel: 'Personal Year',
+    yearLabel: 'Year',
+    milestoneLabel: 'Life milestone',
+    thisYear: 'This year',
+    milestoneHere: 'A milestone year',
+    ageAt: (age) => `Turning ${age}`,
+    pyHeading: (py) => `Personal Year ${py} · ${({
+      1: 'New beginnings', 2: 'Patience & bonds', 3: 'Expression & joy',
+      4: 'Building foundations', 5: 'Change & freedom', 6: 'Responsibility & love',
+      7: 'Introspection', 8: 'Harvest', 9: 'Completion & release'
+    })[py] ?? ''}`
+  },
+  master: {
+    title: 'Master reading',
+    intro: 'Deeper chapters, opened for everyone. Tap each to explore.',
+    expandAll: 'Open all',
+    collapseAll: 'Close all'
   },
   share: {
     panelTitle: 'Share card',
