@@ -15,6 +15,10 @@ import { mountSharePanel } from './share.js';
 import { bindLoveMode } from './love-ui.js';
 import { bindCompatMode } from './compat-ui.js';
 import {
+  renderExtendedWidget, renderUnifiedModal, bindExtendedReading
+} from './extendedReading.js';
+import { renderDeepChapterBody, bindDeepChapters } from './deepChapters.js';
+import {
   escapeHtml, prefersReducedMotion
 } from './util.js';
 
@@ -258,6 +262,15 @@ export function render(name, nameRoman, y, m, d) {
 
     <div class="summary-card">${summaryHtml}</div>
 
+    <div class="grid">
+      <div class="card card-wide card-unified" data-key="unified" role="button" tabindex="0" aria-label="${escapeHtml(u.cards.unified)}${u.fmt.cardMoreAria}">
+        <div class="card-system">${escapeHtml(u.extended?.unified?.eyebrow ?? u.cards.unified)}</div>
+        <div class="card-value card-unified-value">${escapeHtml(u.cards.unified)}</div>
+        <div class="card-desc">${escapeHtml(u.cards.unifiedDesc)}</div>
+        <div class="card-more">${u.fmt.cardMore}</div>
+      </div>
+    </div>
+
     ${sectionHeading(...u.sections.numerology)}
     <div class="grid">
       ${card('lifepath', u.cards.lifepath, lp, LIFE_PATH_MEANINGS[lp].label, LIFE_PATH_MEANINGS[lp].desc)}
@@ -374,12 +387,15 @@ export function openModal(cardKey) {
       <div class="modal-label">${escapeHtml(t.subtitle ?? '')}</div>
       ${renderTimeline(currentContext, { heading: false })}
     `;
-    bindModalInteractions(body);
+    bindModalInteractions(body, cardKey);
+  } else if (cardKey === 'unified') {
+    body.innerHTML = renderUnifiedModal(currentContext);
+    bindExtendedReading(body, 'unified', currentContext);
   } else {
     const data = getDeeper().buildDeep(cardKey, currentContext);
     if (!data) return;
     body.innerHTML = renderModalBody(data, cardKey, currentContext);
-    bindModalInteractions(body);
+    bindModalInteractions(body, cardKey);
   }
 
   modal.dataset.cardKey = cardKey;
@@ -413,20 +429,20 @@ export function closeModal() {
  * マスターリーディング：深層チャプターをクリックで開閉するアコーディオン。
  * 旧 premium 配列をインタラクティブに見せる。
  */
-function renderMasterReading(d) {
+function renderMasterReading(d, cardKey, ctx) {
   const u = getUI();
   if (!d.premium?.length) return '';
   const m = u.master ?? {};
 
   const chapters = d.premium.map((item, i) => `
-    <div class="master-chapter${i === 0 ? ' open' : ''}">
+    <div class="master-chapter${i === 0 ? ' open' : ''}" data-deep-chapter="${i}">
       <button type="button" class="master-chapter-head" aria-expanded="${i === 0 ? 'true' : 'false'}">
         <span class="master-chapter-index" aria-hidden="true">${String(i + 1).padStart(2, '0')}</span>
         <span class="master-chapter-title">${escapeHtml(item.t)}</span>
         <span class="master-chapter-icon" aria-hidden="true"></span>
       </button>
       <div class="master-chapter-body"${i === 0 ? '' : ' hidden'}>
-        <p>${item.d}</p>
+        ${ctx ? renderDeepChapterBody(cardKey, ctx, item, i) : `<p>${escapeHtml(item.d)}</p>`}
       </div>
     </div>
   `).join('');
@@ -562,18 +578,22 @@ function renderModalBody(d, cardKey, ctx) {
   const timelineSection =
     ctx && TIMELINE_CARDS.has(cardKey) ? renderTimeline(ctx) : '';
 
+  const extendedSection =
+    ctx ? renderExtendedWidget(cardKey, ctx) : '';
+
   return `
     <div class="modal-system" id="modal-heading">${escapeHtml(d.title)}</div>
     <div class="modal-value">${escapeHtml(String(d.value))}</div>
     <div class="modal-label">${escapeHtml(d.label)}</div>
     ${freeSection}
     ${timelineSection}
-    ${renderMasterReading(d)}
+    ${extendedSection}
+    ${renderMasterReading(d, cardKey, ctx)}
   `;
 }
 
-/** モーダル内のインタラクティブ要素（タイムライン・マスターリーディング）を配線。 */
-function bindModalInteractions(root) {
+/** モーダル内のインタラクティブ要素（タイムライン・マスターリーディング・拡張）を配線。 */
+function bindModalInteractions(root, cardKey) {
   // 10年タイムライン：年ノードのクリックで詳細を更新
   const track = root.querySelector('.timeline-track');
   const detail = root.querySelector('[data-timeline-detail]');
@@ -624,6 +644,11 @@ function bindModalInteractions(root) {
         ? (m.collapseAll ?? 'Close all')
         : (m.expandAll ?? 'Open all');
     });
+  }
+
+  if (cardKey && currentContext) {
+    bindExtendedReading(root, cardKey, currentContext);
+    bindDeepChapters(root, cardKey, currentContext);
   }
 }
 

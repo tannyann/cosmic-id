@@ -244,6 +244,40 @@ export const LIFE_MILESTONES = [
   { age: 84,   name: 'Uranus return',                desc: 'Surveying a lifetime of revolution.' }
 ];
 
+/** ラッキー要素コンパス（統合リーディング用・断定しないトーン） */
+export const LUCKY_COMPASS = {
+  fire: {
+    colors: ['Gold', 'Coral', 'Amber'],
+    days: ['Tuesday', 'Sunday'],
+    hint: 'Warm tones and forward-moving days may help you feel more aligned — not as rules, but as gentle anchors.'
+  },
+  earth: {
+    colors: ['Olive', 'Sand', 'Brown'],
+    days: ['Saturday', 'Wednesday'],
+    hint: 'Grounded hues and steady-paced days may support patience and building — a compass, not a command.'
+  },
+  air: {
+    colors: ['Sky blue', 'Lilac', 'Silver'],
+    days: ['Wednesday', 'Friday'],
+    hint: 'Light, airy colors and days for conversation may help ideas circulate more freely.'
+  },
+  water: {
+    colors: ['Deep blue', 'Sea green', 'Pearl'],
+    days: ['Monday', 'Thursday'],
+    hint: 'Fluid colors and reflective days may invite intuition and emotional clarity.'
+  },
+  wood: {
+    colors: ['Forest green', 'Teal', 'Sage'],
+    days: ['Thursday', 'Tuesday'],
+    hint: 'Growing greens and days for planting seeds — literal or metaphorical — may feel supportive.'
+  },
+  metal: {
+    colors: ['White', 'Silver', 'Platinum'],
+    days: ['Friday', 'Sunday'],
+    hint: 'Clean lines and crisp colors may help you refine and release what no longer serves.'
+  }
+};
+
 // ============ Free / Premium positioning (copy) ============
 export const PRODUCT_PHILOSOPHY = {
   freeBadge: 'Everything is free',

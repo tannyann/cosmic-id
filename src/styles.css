@@ -2956,3 +2956,456 @@ html[dir="rtl"] .lang-field {
   .timeline-node, .timeline-node-fill, .master-chapter-icon::before, .master-chapter-icon::after,
   .master-toggle-all { transition: none; }
 }
+
+/* ============================================================
+ * 拡張リーディング（月カレンダー・バイオリズム・統合）
+ * ============================================================ */
+
+.extended-section {
+  margin-top: 24px;
+  padding: 18px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: rgba(10, 8, 22, 0.45);
+}
+
+.extended-hint, .extended-foot {
+  font-size: 12px;
+  color: var(--text-muted);
+  line-height: 1.6;
+  margin-top: 10px;
+}
+
+.card-unified {
+  background:
+    radial-gradient(circle at 100% 0%, rgba(212, 121, 154, 0.12), transparent 55%),
+    radial-gradient(circle at 0% 100%, rgba(155, 111, 212, 0.1), transparent 50%),
+    var(--card-bg, rgba(10, 8, 22, 0.5));
+  border-color: rgba(212, 121, 154, 0.25);
+}
+
+.card-unified .card-unified-value {
+  font-family: var(--font-display);
+  font-size: clamp(22px, 4.5vw, 28px);
+  color: var(--gold-bright);
+}
+
+.unified-chapter-body p { font-size: 13px; color: var(--cream); line-height: 1.8; margin-bottom: 8px; }
+.unified-chapter-body p:last-child { margin-bottom: 0; }
+
+/* 月カレンダー */
+.moon-cal-list { display: flex; flex-direction: column; gap: 8px; margin-top: 14px; }
+
+.moon-cal-row {
+  display: grid;
+  grid-template-columns: minmax(100px, 1fr) 2fr;
+  gap: 10px;
+  align-items: center;
+  padding: 8px 10px;
+  border-radius: var(--radius-sm);
+  border: 1px solid transparent;
+}
+
+.moon-cal-row.has-resonance {
+  border-color: rgba(201, 122, 154, 0.35);
+  background: rgba(201, 122, 154, 0.06);
+}
+
+.moon-cal-month { font-size: 13px; color: var(--cream); }
+
+.moon-cal-events { display: flex; gap: 8px; flex-wrap: wrap; }
+
+.moon-cal-event {
+  flex: 1 1 120px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.03);
+  cursor: pointer;
+  color: var(--text-muted);
+  font-family: var(--font-body);
+  text-align: left;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.moon-cal-event:hover { border-color: var(--gold-dim); color: var(--cream); }
+.moon-cal-event.is-resonant { border-color: var(--accent-rose); }
+.moon-cal-event[aria-pressed="true"] {
+  background: rgba(184, 149, 46, 0.14);
+  border-color: var(--gold-dim);
+  color: var(--gold-bright);
+}
+
+.moon-cal-type { font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; }
+.moon-cal-date { font-size: 13px; font-weight: 500; }
+.moon-cal-empty { font-size: 13px; color: var(--text-muted); padding: 8px; }
+
+.moon-cal-detail {
+  margin-top: 14px;
+  padding: 14px;
+  border-top: 1px solid var(--border);
+  border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+  background: rgba(155, 111, 212, 0.06);
+}
+
+.moon-cal-detail-date { font-size: 14px; color: var(--gold-bright); margin-bottom: 6px; }
+.moon-cal-resonance { font-size: 12px; color: var(--accent-rose); margin-bottom: 8px; }
+.moon-cal-detail-text { font-size: 13px; color: var(--cream); line-height: 1.75; }
+
+/* バイオリズム予測 */
+.bio-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 14px 0 12px;
+}
+
+.bio-tab {
+  padding: 5px 12px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--text-muted);
+  font-family: var(--font-body);
+  font-size: 12px;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
+}
+
+.bio-tab:hover { color: var(--cream); }
+.bio-tab.active {
+  background: rgba(184, 149, 46, 0.14);
+  border-color: var(--gold-dim);
+  color: var(--gold-bright);
+}
+
+.bio-track {
+  display: flex;
+  gap: 3px;
+  align-items: flex-end;
+  height: 72px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  scrollbar-width: thin;
+}
+
+.bio-day {
+  flex: 0 0 8px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  position: relative;
+}
+
+.bio-day-bar {
+  width: 6px;
+  height: var(--h, 20%);
+  min-height: 4px;
+  border-radius: 3px;
+  background: linear-gradient(180deg, var(--gold-bright), var(--gold));
+  opacity: 0.75;
+  transition: opacity 0.2s, filter 0.2s;
+}
+
+.bio-day:hover .bio-day-bar,
+.bio-day.selected .bio-day-bar { opacity: 1; filter: drop-shadow(0 0 4px rgba(232, 212, 154, 0.5)); }
+.bio-day.is-today .bio-day-bar { box-shadow: 0 0 0 1px var(--gold-bright); }
+.bio-day.is-critical .bio-day-dot {
+  position: absolute;
+  top: 0;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--accent-teal);
+}
+
+.bio-detail {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
+  font-size: 13px;
+  color: var(--cream);
+  line-height: 1.7;
+}
+
+.bio-detail-head { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 8px; }
+.bio-detail-date { font-weight: 500; color: var(--gold-bright); }
+.bio-detail-critical {
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: rgba(94, 184, 168, 0.16);
+  color: var(--accent-teal);
+}
+.bio-detail-hint { color: var(--text-muted); margin-top: 6px; }
+
+/* ラッキーコンパス */
+.lucky-compass { display: flex; flex-direction: column; gap: 12px; }
+.lucky-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.lucky-label {
+  flex: 0 0 72px;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+.lucky-chip {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--gold-dim);
+  background: rgba(184, 149, 46, 0.1);
+  color: var(--gold-bright);
+  font-size: 12px;
+}
+.lucky-hint { font-size: 12px; color: var(--text-muted); line-height: 1.7; margin-top: 4px; }
+
+@media (max-width: 480px) {
+  .moon-cal-row { grid-template-columns: 1fr; }
+  .bio-day { flex: 0 0 6px; }
+  .py-month-grid { grid-template-columns: repeat(3, 1fr); }
+}
+
+/* ============================================================
+ * 深層チャプター（マスターリーディング内）
+ * ============================================================ */
+
+.deep-chapter-lead {
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1.7;
+  margin-bottom: 14px;
+}
+
+.deep-chapter-static p,
+.deep-chapter-interactive .deep-hint {
+  font-size: 13px;
+  color: var(--cream);
+  line-height: 1.75;
+}
+
+.deep-hint { color: var(--text-muted); font-size: 12px; margin-top: 8px; }
+
+.deep-scroll-btn {
+  display: inline-block;
+  margin-top: 8px;
+  padding: 6px 14px;
+  border: 1px solid var(--gold-dim);
+  border-radius: 999px;
+  background: rgba(184, 149, 46, 0.1);
+  color: var(--gold-bright);
+  font-family: var(--font-body);
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.deep-prompts { display: flex; flex-direction: column; gap: 6px; margin-top: 12px; }
+
+.deep-prompt {
+  text-align: left;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--cream);
+  font-family: var(--font-body);
+  font-size: 13px;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.deep-prompt:hover { border-color: var(--gold-dim); background: rgba(184, 149, 46, 0.08); }
+
+.deep-prompt-answer {
+  font-size: 12px;
+  color: var(--text-muted);
+  line-height: 1.7;
+  padding: 0 12px 10px;
+  border-left: 2px solid var(--gold-dim);
+  margin-left: 4px;
+}
+
+/* 個人年・月カレンダー */
+.py-month-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.py-month-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 10px 6px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.02);
+  cursor: pointer;
+  color: var(--text-muted);
+  font-family: var(--font-body);
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.py-month-cell:hover { border-color: var(--gold-dim); color: var(--cream); }
+.py-month-cell.selected,
+.py-month-cell.is-now {
+  border-color: var(--gold-dim);
+  background: rgba(184, 149, 46, 0.12);
+  color: var(--gold-bright);
+}
+.py-month-cell.is-watch { box-shadow: inset 0 0 0 1px rgba(201, 122, 154, 0.4); }
+.py-month-name { font-size: 11px; }
+.py-month-num { font-size: 18px; font-weight: 600; }
+
+.py-month-detail { font-size: 13px; color: var(--cream); line-height: 1.7; }
+.py-month-detail-head { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 6px; }
+.py-month-tag {
+  font-size: 10px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: rgba(201, 122, 154, 0.15);
+  color: var(--accent-rose);
+}
+
+.deep-keyword-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+.deep-keyword {
+  padding: 8px 16px;
+  border-radius: 999px;
+  border: 1px solid var(--gold-dim);
+  background: linear-gradient(180deg, rgba(232, 212, 154, 0.15), rgba(184, 149, 46, 0.08));
+  color: var(--gold-bright);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.deep-encounter-grid { display: flex; flex-direction: column; gap: 8px; margin-top: 8px; }
+
+.deep-encounter-card {
+  text-align: left;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.03);
+  cursor: pointer;
+  color: var(--cream);
+  font-family: var(--font-body);
+}
+
+.deep-encounter-type { display: block; font-weight: 600; color: var(--gold-bright); margin-bottom: 4px; }
+.deep-encounter-hint { font-size: 12px; color: var(--text-muted); }
+.deep-encounter-body {
+  font-size: 12px;
+  color: var(--text-muted);
+  line-height: 1.7;
+  padding: 8px 12px 12px;
+  border-left: 2px solid var(--accent-rose);
+  margin-left: 8px;
+}
+
+.deep-watch-list { list-style: none; padding: 0; margin: 8px 0 0; }
+.deep-watch-list li {
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 13px;
+  color: var(--cream);
+  line-height: 1.7;
+}
+.deep-watch-list em { font-size: 12px; color: var(--text-muted); font-style: normal; }
+
+/* ライフパス深層 */
+.deep-compat-grid { display: flex; flex-direction: column; gap: 10px; margin-top: 8px; }
+.deep-compat-card {
+  padding: 12px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  font-size: 13px;
+  line-height: 1.7;
+}
+.deep-compat-resonate { border-left: 3px solid var(--accent-teal); }
+.deep-compat-grow { border-left: 3px solid var(--gold); }
+.deep-compat-care { border-left: 3px solid var(--accent-rose); }
+.deep-compat-label { display: block; font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 4px; }
+
+.deep-pillar-tabs { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0; }
+.deep-pillar-tab {
+  padding: 5px 12px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--text-muted);
+  font-family: var(--font-body);
+  font-size: 12px;
+  cursor: pointer;
+}
+.deep-pillar-tab.active { background: rgba(184, 149, 46, 0.14); border-color: var(--gold-dim); color: var(--gold-bright); }
+.deep-pillar-body { font-size: 13px; color: var(--cream); line-height: 1.75; }
+
+.deep-figures { list-style: none; padding: 0; margin: 8px 0 0; font-size: 13px; line-height: 1.75; color: var(--cream); }
+.deep-figures li { padding: 8px 0; border-bottom: 1px solid var(--border); }
+
+.deep-element-card {
+  padding: 14px;
+  border: 1px solid var(--gold-dim);
+  border-radius: var(--radius-sm);
+  background: rgba(184, 149, 46, 0.06);
+  margin-top: 8px;
+}
+.deep-element-dir { display: block; font-size: 14px; color: var(--gold-bright); margin-bottom: 8px; }
+
+/* 九星サイクル */
+.kyusei-cycle-track {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin: 10px 0;
+}
+
+.kyusei-cycle-node {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text-muted);
+  font-family: var(--font-body);
+  font-size: 14px;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.kyusei-cycle-node.is-now,
+.kyusei-cycle-node[aria-pressed="true"] {
+  border-color: var(--gold-dim);
+  background: rgba(184, 149, 46, 0.18);
+  color: var(--gold-bright);
+  font-weight: 600;
+}
+
+.kyusei-cycle-detail { font-size: 13px; color: var(--cream); line-height: 1.75; }
+
+/* タロット光と影 */
+.tarot-dual-tabs { display: flex; gap: 8px; margin: 10px 0; }
+.tarot-dual-tab {
+  flex: 1;
+  padding: 8px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text-muted);
+  font-family: var(--font-body);
+  font-size: 13px;
+  cursor: pointer;
+}
+.tarot-dual-tab.active { border-color: var(--gold-dim); background: rgba(184, 149, 46, 0.12); color: var(--gold-bright); }
+.tarot-dual-body { font-size: 13px; color: var(--cream); line-height: 1.75; }

@@ -29,6 +29,39 @@ export function personalYear(m, d, currentYear) {
   return reduceDigit(reduceDigit(m) + reduceDigit(d) + reduceDigit(currentYear));
 }
 
+/** 個人月（個人年 + 暦月を還元） */
+export function personalMonth(py, calendarMonth) {
+  return reduceDigit(py + reduceDigit(calendarMonth));
+}
+
+/**
+ * 指定年の12ヶ月ぶん個人月カレンダー。
+ */
+export function personalYearMonthCalendar(py, year) {
+  const now = new Date();
+  const curMo = now.getMonth() + 1;
+  const curY = now.getFullYear();
+  const out = [];
+  for (let mo = 1; mo <= 12; mo++) {
+    const pm = personalMonth(py, mo);
+    out.push({
+      month: mo,
+      year,
+      personalMonth: pm,
+      isCurrent: mo === curMo && year === curY,
+      isAction: pm === 1 || pm === 3 || pm === 8,
+      isWait: pm === 2 || pm === 7,
+      isWatch: pm === 5 || pm === 9
+    });
+  }
+  return out;
+}
+
+/** 九星気学の年サイクル位置 1–9 */
+export function kyuseiCycleYear(birthYear, currentYear) {
+  return ((currentYear - birthYear) % 9 + 9) % 9 + 1;
+}
+
 /** A=1 … I=9, J=1 … R=9, S=1 … Z=8（ピタゴラス式） */
 function pythagoreanLetterValue(ch) {
   const code = ch.toUpperCase().charCodeAt(0);
@@ -312,4 +345,130 @@ export function lifeTimeline(y, m, d, startYear, span = 10) {
     out.push({ year, age, py, milestones, isCurrent: i === 0 });
   }
   return out;
+}
+
+/** 任意日時の月相位相 0–1（0=新月付近, 0.5=満月付近） */
+export function moonPhaseAt(date) {
+  const ref = new Date(Date.UTC(2000, 0, 6, 18, 14));
+  const d = new Date(date);
+  d.setHours(12, 0, 0, 0);
+  const days = (d - ref) / 86400000;
+  const cycle = 29.530588;
+  return (((days % cycle) + cycle) % cycle) / cycle;
+}
+
+/**
+ * 起点日から spanDays 先までの新月・満月イベント。
+ * @returns {Array<{ date: Date, type: 'new'|'full', phase: number }>}
+ */
+export function lunarEventsAhead(startDate = new Date(), spanDays = 400) {
+  const start = new Date(startDate);
+  start.setHours(0, 0, 0, 0);
+  const events = [];
+  let prev = moonPhaseAt(start);
+
+  for (let i = 1; i <= spanDays; i++) {
+    const date = new Date(start);
+    date.setDate(start.getDate() + i);
+    const phase = moonPhaseAt(date);
+
+    if (prev > 0.85 && phase < 0.2) {
+      const last = events[events.length - 1];
+      if (!last || last.type !== 'new' || (date - last.date) / 86400000 > 18) {
+        events.push({ date: new Date(date), type: 'new', phase });
+      }
+    }
+    if (prev < 0.48 && phase >= 0.5) {
+      events.push({ date: new Date(date), type: 'full', phase });
+    }
+    prev = phase;
+  }
+  return events;
+}
+
+/** 誕生時の月相カテゴリ 0–3（moonTrait と同じ区分） */
+export function birthMoonPhaseIndex(y, m, d) {
+  const phase = moonPhaseAt(new Date(y, m - 1, d));
+  if (phase < 0.25) return 0;
+  if (phase < 0.5) return 1;
+  if (phase < 0.75) return 2;
+  return 3;
+}
+
+/**
+ * 今後 span 日ぶんのバイオリズム予測。
+ * @returns {Array<{ date:Date, y:number, mo:number, day:number, physical:number, emotional:number, intellectual:number, intuitive:number, critical:boolean, isToday:boolean }>}
+ */
+export function biorhythmForecast(y, m, d, span = 90, startOffset = 0) {
+  const birth = new Date(y, m - 1, d);
+  const base = new Date();
+  base.setHours(0, 0, 0, 0);
+  const wave = (days, period) => Math.sin(2 * Math.PI * days / period);
+  const crossesZero = (v, prev) => (prev < 0 && v >= 0) || (prev > 0 && v <= 0);
+
+  const rows = [];
+  let prevP = 0;
+  let prevE = 0;
+  let prevI = 0;
+  let prevN = 0;
+
+  for (let i = 0; i < span; i++) {
+    const date = new Date(base);
+    date.setDate(base.getDate() + startOffset + i);
+    const days = Math.floor((date - birth) / 86400000);
+    const physical = wave(days, 23);
+    const emotional = wave(days, 28);
+    const intellectual = wave(days, 33);
+    const intuitive = wave(days, 38);
+    const critical = crossesZero(physical, prevP) || crossesZero(emotional, prevE)
+      || crossesZero(intellectual, prevI) || crossesZero(intuitive, prevN);
+
+    rows.push({
+      date,
+      y: date.getFullYear(),
+      mo: date.getMonth() + 1,
+      day: date.getDate(),
+      physical,
+      emotional,
+      intellectual,
+      intuitive,
+      critical,
+      isToday: startOffset === 0 && i === 0
+    });
+    prevP = physical;
+    prevE = emotional;
+    prevI = intellectual;
+    prevN = intuitive;
+  }
+  return rows;
+}
+
+/** 五行・西洋元素名を LUCKY_COMPASS のキーに正規化 */
+export function normalizeElementKey(element) {
+  const map = {
+    Fire: 'fire', Earth: 'earth', Air: 'air', Water: 'water',
+    Wood: 'wood', Metal: 'metal',
+    火: 'fire', 土: 'earth', 金: 'metal', 水: 'water', 木: 'wood'
+  };
+  return map[element] || 'earth';
+}
+
+/**
+ * ラッキー要素コンパス（数秘・太陽・九星・五行から合成）。
+ * 辞書は getContent().LUCKY_COMPASS を参照。
+ */
+export function luckyCompass(lp, sunElement, kyuseiElement, gogyouElement) {
+  const { LUCKY_COMPASS } = getContent();
+  const primary = normalizeElementKey(kyuseiElement || sunElement);
+  const secondary = normalizeElementKey(gogyouElement || sunElement);
+  const base = LUCKY_COMPASS[primary] || LUCKY_COMPASS.earth;
+  const alt = LUCKY_COMPASS[secondary] || base;
+  const luckyNumbers = [...new Set([lp, reduceDigit(lp + 3), reduceDigit(lp + 5)])].sort((a, b) => a - b);
+  return {
+    primary,
+    colors: [...new Set([...base.colors, ...alt.colors])].slice(0, 3),
+    numbers: luckyNumbers,
+    days: base.days,
+    hint: base.hint
+  };
 }
