@@ -1,84 +1,30 @@
 /**
- * 多言語切替コア。
- * content / ui / deeper はロケールバンドルから取得する。
+ * 言語切替（日本語 / English のみ）。
  */
-
 import ja from './locales/ja/index.js';
 import en from './locales/en/index.js';
-import { ui as zhUi } from './locales/zh/ui.js';
-import { ui as koUi } from './locales/ko/ui.js';
-import { ui as esUi } from './locales/es/ui.js';
-import { ui as frUi } from './locales/fr/ui.js';
-import { ui as itUi } from './locales/it/ui.js';
-import { ui as deUi } from './locales/de/ui.js';
-import { ui as trUi } from './locales/tr/ui.js';
-import { ui as heUi } from './locales/he/ui.js';
-import { ui as arUi } from './locales/ar/ui.js';
-
 import { createDateFormatters } from './dateFormat.js';
-import { getLocaleContent } from './localeContent.js';
-import { getLocaleDeeper } from './localeDeeper.js';
-import { UI_EXTRAS } from './localeUiExtras.js';
 
 const STORAGE_KEY = 'cosmic-id-locale';
 
-/** @typedef {'ja'|'en'|'zh'|'ko'|'es'|'fr'|'it'|'de'|'tr'|'he'|'ar'} LocaleCode */
-
-/** ネストした UI 辞書をマージ（fmt 等の部分上書きを壊さない） */
-function deepMerge(base, override) {
-  const out = { ...base };
-  for (const key of Object.keys(override)) {
-    const bVal = base[key];
-    const oVal = override[key];
-    if (
-      oVal && typeof oVal === 'object' && !Array.isArray(oVal)
-      && bVal && typeof bVal === 'object' && !Array.isArray(bVal)
-    ) {
-      out[key] = deepMerge(bVal, oVal);
-    } else {
-      out[key] = oVal;
-    }
-  }
-  return out;
-}
-
-/** UI + ロケール別 content / deeper を束ねる */
-function buildLocaleBundle(ui, code, htmlLang, dir = 'ltr') {
-  const extras = UI_EXTRAS[code] || {};
-  return {
-    content: getLocaleContent(code),
-    ui: deepMerge(deepMerge(en.ui, ui), extras),
-    deeper: getLocaleDeeper(code),
-    meta: { code, label: ui.meta.label, htmlLang, dir }
-  };
-}
-
-const zh = buildLocaleBundle(zhUi, 'zh', 'zh-Hans');
-const ko = buildLocaleBundle(koUi, 'ko', 'ko');
-const es = buildLocaleBundle(esUi, 'es', 'es');
-const fr = buildLocaleBundle(frUi, 'fr', 'fr');
-const it = buildLocaleBundle(itUi, 'it', 'it');
-const de = buildLocaleBundle(deUi, 'de', 'de');
-const tr = buildLocaleBundle(trUi, 'tr', 'tr');
-const he = buildLocaleBundle(heUi, 'he', 'he', 'rtl');
-const ar = buildLocaleBundle(arUi, 'ar', 'ar', 'rtl');
+/** @typedef {'ja'|'en'} LocaleCode */
 
 ja.meta = { code: 'ja', label: ja.ui.meta.label, htmlLang: 'ja', dir: 'ltr' };
 en.meta = { code: 'en', label: en.ui.meta.label, htmlLang: 'en', dir: 'ltr' };
 
 /** @type {Record<LocaleCode, typeof ja>} */
-export const LOCALES = { ja, en, zh, ko, es, fr, it, de, tr, he, ar };
+export const LOCALES = { ja, en };
 
 /** @type {LocaleCode[]} */
-export const LOCALE_CODES = ['ja', 'en', 'zh', 'ko', 'es', 'fr', 'it', 'de', 'tr', 'he', 'ar'];
+export const LOCALE_CODES = ['ja', 'en'];
 
 const listeners = new Set();
 
 /** @returns {LocaleCode} */
 function detectLocale() {
   const saved = typeof localStorage !== 'undefined' ? localStorage.getItem(STORAGE_KEY) : null;
-  if (saved && LOCALES[saved]) return /** @type {LocaleCode} */ (saved);
-  // 初回訪問は英語。言語はセレクタで明示的に選んでもらう。
+  if (saved === 'ja' || saved === 'en') return saved;
+  if (typeof navigator !== 'undefined' && /^ja\b/i.test(navigator.language || '')) return 'ja';
   return 'en';
 }
 
@@ -89,12 +35,10 @@ export function getLocale() {
   return current;
 }
 
-/** ローマ字入力欄を出すのは日本語 UI のみ */
 export function isJapaneseLocale() {
   return current === 'ja';
 }
 
-/** 日本語以外に切り替わったときローマ字欄は CSS で非表示（入力値は保持） */
 export function applyRomanNameFieldVisibility() {
   /* visibility is controlled by html[lang="ja"] in styles.css */
 }
@@ -104,12 +48,10 @@ export function getBundle() {
   return LOCALES[current];
 }
 
-/** 占術辞書（旧 content.js 相当） */
 export function getContent() {
   return getBundle().content;
 }
 
-/** UI 文言（日付表示は現在ロケールで上書き） */
 export function getUI() {
   const bundle = getBundle();
   const dates = createDateFormatters(bundle.meta);
@@ -121,21 +63,21 @@ export function getUI() {
   };
 }
 
-/** deeper モジュール */
 export function getDeeper() {
   return getBundle().deeper;
 }
 
 /** @param {LocaleCode} code */
 export function setLocale(code) {
-  if (!LOCALES[/** @type {string} */ (code)] || code === current) return;
-  current = /** @type {LocaleCode} */ (code);
+  if (code !== 'ja' && code !== 'en') return;
+  if (code === current) return;
+  current = code;
   try {
     if (typeof localStorage !== 'undefined') {
       localStorage.setItem(STORAGE_KEY, code);
     }
   } catch {
-    /* private mode 等で保存できなくても表示は切り替える */
+    /* private mode */
   }
   applyDocumentLocale();
   applyStaticPageCopy();
@@ -149,7 +91,6 @@ export function onLocaleChange(fn) {
   return () => listeners.delete(fn);
 }
 
-/** 本番・開発で使うサイトのベース URL（末尾スラッシュなし） */
 export function getSiteUrl() {
   if (typeof window !== 'undefined') {
     const base = import.meta.env.BASE_URL || '/';
@@ -205,12 +146,11 @@ function applyStructuredData(bundle, siteUrl) {
     applicationCategory: 'LifestyleApplication',
     operatingSystem: 'Web',
     offers: { '@type': 'Offer', price: '0', priceCurrency: 'JPY' },
-    inLanguage: bundle.meta.htmlLang
+    inLanguage: [bundle.meta.htmlLang]
   };
   el.textContent = JSON.stringify(data);
 }
 
-/** 静的 HTML のラベルを現在ロケールで更新 */
 export function applyStaticPageCopy() {
   const u = getUI();
   const setText = (id, text) => {
@@ -243,7 +183,6 @@ export function applyStaticPageCopy() {
   applyRomanNameFieldVisibility();
   setText('btn-submit', u.form.submit);
   setText('form-privacy', u.form.privacyNote);
-  setText('label-lang', u.lang.label);
 
   const shareClose = document.getElementById('share-modal-close');
   if (shareClose) shareClose.setAttribute('aria-label', u.modal.close);
@@ -260,8 +199,8 @@ export function applyStaticPageCopy() {
   const nativeBtn = document.getElementById('share-modal-native');
   if (nativeBtn) nativeBtn.textContent = u.share.shareNative;
 
-  const langSwitcher = document.getElementById('lang-switcher');
-  if (langSwitcher) langSwitcher.setAttribute('aria-label', u.lang.label);
+  const langToggle = document.getElementById('lang-toggle');
+  if (langToggle) langToggle.setAttribute('aria-label', u.lang.label);
 
   const premiumShowcase = document.getElementById('premium-showcase');
   if (premiumShowcase) {
@@ -270,28 +209,28 @@ export function applyStaticPageCopy() {
 }
 
 export function mountLanguageSwitcher() {
-  const host = document.getElementById('lang-switcher');
+  const host = document.getElementById('lang-toggle');
   if (!host) return;
   refreshLanguageSwitcher();
   if (!host.dataset.bound) {
-    const onPick = e => {
-      setLocale(/** @type {HTMLSelectElement} */ (e.target).value);
-    };
-    host.addEventListener('change', onPick);
-    host.addEventListener('input', onPick);
+    host.querySelectorAll('[data-locale]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const code = /** @type {LocaleCode} */ (btn.dataset.locale);
+        setLocale(code);
+      });
+    });
     host.dataset.bound = '1';
   }
 }
 
 export function refreshLanguageSwitcher() {
-  const host = document.getElementById('lang-switcher');
+  const host = document.getElementById('lang-toggle');
   if (!host) return;
-  host.innerHTML = LOCALE_CODES.map(code => {
-    const loc = LOCALES[code];
-    const selected = code === current ? ' selected' : '';
-    return `<option value="${code}"${selected}>${loc.ui.meta.label}</option>`;
-  }).join('');
-  host.value = current;
+  host.querySelectorAll('[data-locale]').forEach(btn => {
+    const on = btn.dataset.locale === current;
+    btn.classList.toggle('is-active', on);
+    btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+  });
 }
 
 export function initI18n() {
