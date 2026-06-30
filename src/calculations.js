@@ -465,3 +465,92 @@ export function luckyCompass(lp, sunElement, kyuseiElement, gogyouElement) {
     hint: base.hint
   };
 }
+
+/** 六十干支のサイクル位置（0–59） */
+export function sixtyCycleIndex(year) {
+  return ((year - 4) % 60 + 60) % 60;
+}
+
+/** マヤ暦の関連 KIN（ガイド・アンチポッド・オカルト） */
+export function mayaRelatedKin(kin) {
+  const mod = (n) => (((n - 1) % 260) + 260) % 260 + 1;
+  return { guide: mod(kin + 19), antipode: mod(kin + 130), occult: mod(kin + 65) };
+}
+
+/** 九星気学の月命星（簡易式） */
+export function kyuseiMonthStar(month, day) {
+  let s = reduceDigit(month + day);
+  while (s > 9) s = digitSum(s);
+  return s || 1;
+}
+
+/** 九星気学の日命星（簡易式） */
+export function kyuseiDayStar(day) {
+  let s = reduceDigit(day);
+  while (s > 9) s = digitSum(s);
+  return s || 1;
+}
+
+/** 十二支の関係（六合・三合・冲・中立） */
+export function zodiacRelation(a, b) {
+  const liuhe = [[0, 1], [2, 11], [3, 10], [4, 9], [5, 8], [6, 7]];
+  if (liuhe.some(([x, y]) => (x === a && y === b) || (x === b && y === a))) return 'liuhe';
+  const sanhe = [[0, 4, 8], [1, 5, 9], [2, 6, 10], [3, 7, 11]];
+  if (sanhe.some(g => g.includes(a) && g.includes(b) && a !== b)) return 'sanhe';
+  if ((a - b + 12) % 12 === 6) return 'chong';
+  return 'neutral';
+}
+
+/** 五行の相生・相克関係 */
+export function gogyouRelation(el, other, elements) {
+  const els = elements || getContent().FIVE_ELEMENTS;
+  const i = els.indexOf(el);
+  const j = els.indexOf(other);
+  if (i < 0 || j < 0) return 'neutral';
+  if (i === j) return 'same';
+  if ((i + 1) % 5 === j) return 'generate';
+  if ((i + 2) % 5 === j) return 'overcome';
+  if ((j + 1) % 5 === i) return 'generated';
+  if ((j + 2) % 5 === i) return 'overcame';
+  return 'neutral';
+}
+
+/** 動物占いのグループ（月・地・太陽） */
+export function animalGroupIndex(animalIdx) {
+  return animalIdx % 3;
+}
+
+/** 指定日のデイリータロット */
+export function dailyTarotForDate(name, tarotKeys, date) {
+  const y = date.getFullYear();
+  const m = date.getMonth() + 1;
+  const d = date.getDate();
+  let h = y * 10000 + m * 100 + d;
+  for (const c of name) h = (h * 31 + c.codePointAt(0)) % 1000003;
+  return tarotKeys[h % tarotKeys.length];
+}
+
+/** 連続日のデイリータロット */
+export function dailyTarotWeek(name, tarotKeys, days = 7, start = new Date()) {
+  const out = [];
+  for (let i = 0; i < days; i++) {
+    const dt = new Date(start);
+    dt.setDate(dt.getDate() + i);
+    out.push({ date: dt, key: dailyTarotForDate(name, tarotKeys, dt) });
+  }
+  return out;
+}
+
+/** 通過済み・これからの人生節目 */
+export function lifeMilestonesAround(y, m, d, spanYears = 15) {
+  const { LIFE_MILESTONES } = getContent();
+  const { years } = lifeStage(y, m, d);
+  const passed = LIFE_MILESTONES.filter(ms => ms.age <= years + 0.01);
+  const upcoming = LIFE_MILESTONES.filter(ms => ms.age > years && ms.age <= years + spanYears);
+  return { passed, upcoming, years };
+}
+
+/** バイオリズムのクリティカル日一覧 */
+export function biorhythmCriticalDays(y, m, d, span = 90) {
+  return biorhythmForecast(y, m, d, span).filter(r => r.critical);
+}

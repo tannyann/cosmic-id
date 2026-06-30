@@ -3603,3 +3603,193 @@ html[dir="rtl"] .lang-field {
 @media (max-width: 400px) {
   .zodiac-grid { grid-template-columns: repeat(3, 1fr); }
 }
+
+/* 拡張リーディング共通ピッカー */
+.lp-pick-grid, .py-wave-grid, .sun-pick-grid, .ky-star-grid, .animal-grid,
+.month-pick-grid, .tarot-major-grid, .tarot-day-grid, .maya-seal-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 10px 0;
+}
+
+.lp-pick-cell, .py-wave-cell, .ky-star-cell, .tarot-major-cell, .animal-num-cell {
+  min-width: 36px;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--cream);
+  font-family: var(--font-body);
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.sun-pick-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 8px 6px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--cream);
+  font-size: 11px;
+  cursor: pointer;
+  min-width: 52px;
+}
+
+.moon-trait-cell, .month-pick-cell, .maya-seal-cell, .celtic-cell, .tarot-day-cell {
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--cream);
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.lp-pick-cell.is-you, .py-wave-cell.is-you, .sun-pick-cell.is-you, .ky-star-cell.is-you,
+.tarot-major-cell.is-you, .animal-cell.is-you, .moon-trait-cell.is-you, .month-pick-cell.is-you,
+.maya-seal-cell.is-you, .celtic-cell.is-you, .tarot-day-cell.is-you, .animal-num-cell.is-you,
+.branch-cell.is-you, .house-cell.is-you, .zodiac-rel-cell.is-you, .gogy-rel-cell.is-you,
+.maya-tone-cell.is-you, .decade-cell.active, .ky-trio-cell.is-you, .ky-compat-cell.is-you,
+.el-compat-cell.is-you, .lunar-mini-cell.is-you, .spread-pos-cell.is-you, .transit-year-cell.is-you {
+  border-color: var(--gold-dim);
+  background: rgba(184, 149, 46, 0.14);
+  color: var(--gold-bright);
+}
+
+.lp-pick-detail, .py-wave-detail, .sun-pick-detail, .ky-star-detail, .sixty-detail,
+.animal-ext-detail, .celtic-ext-detail, .maya-seal-detail, .tarot-major-detail,
+.tarot-day-detail, .birthstone-detail, .birthflower-detail, .moon-trait-detail,
+.house-detail, .transit-year-detail, .el-compat-detail, .lunar-mini-detail,
+.zodiac-ext-detail, .zodiac-rel-detail, .branch-detail, .gogy-rel-detail,
+.maya-tone-detail, .decade-detail, .ky-trio-detail, .ky-compat-detail,
+.flower-cal-detail, .tarot-week-detail, .spread-pos-detail, .animal-compat-detail {
+  font-size: 13px;
+  color: var(--cream);
+  line-height: 1.75;
+  margin-top: 8px;
+}
+
+.sixty-track-wrap { overflow-x: auto; margin: 10px 0; padding-bottom: 4px; }
+.sixty-track { display: flex; gap: 4px; min-width: max-content; }
+.sixty-cell {
+  flex: 0 0 28px;
+  height: 28px;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 9px;
+  cursor: pointer;
+}
+
+.expr-dual-display { display: flex; gap: 12px; flex-wrap: wrap; margin: 10px 0; }
+.expr-dual-box {
+  flex: 1;
+  min-width: 120px;
+  padding: 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  text-align: center;
+}
+.expr-dual-box.is-solo { flex: 1 1 100%; }
+.expr-dual-label { display: block; font-size: 10px; color: var(--text-muted); letter-spacing: 0.1em; margin-bottom: 6px; }
+.expr-dual-num { font-family: var(--font-display); font-size: 28px; color: var(--gold-bright); }
+
+.pillar-display, .ky-trio { display: flex; flex-direction: column; gap: 8px; margin: 10px 0; }
+.pillar-row, .ky-trio-cell {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--cream);
+  font-size: 13px;
+  cursor: pointer;
+  text-align: left;
+}
+.pillar-row span:first-child, .ky-trio-cell span:first-child { color: var(--text-muted); font-size: 11px; }
+
+.gogy-bar-row { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; font-size: 12px; }
+.gogy-bar-row span { min-width: 24px; }
+.gogy-bar-track { flex: 1; height: 8px; background: rgba(255,255,255,0.06); border-radius: 4px; overflow: hidden; }
+.gogy-bar-fill { height: 100%; background: linear-gradient(90deg, var(--gold-dim), var(--gold-bright)); }
+
+.zodiac-rel-cell, .gogy-rel-cell, .house-cell, .branch-cell, .lunar-mini-cell,
+.spread-pos-cell, .transit-year-cell, .el-compat-cell, .decade-cell, .maya-tone-cell {
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--cream);
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.zodiac-rel-cell { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+.zodiac-rel-tag { font-size: 9px; color: var(--text-muted); }
+
+.animal-group-tabs, .season-tabs, .tarot-suit-tabs, .ritual-picker, .bio-cmp-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 10px 0;
+}
+
+.animal-group-tab, .season-tab, .tarot-suit-tab, .ritual-pick-btn, .bio-wave-compare {
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.animal-group-tab.active, .season-tab.active, .tarot-suit-tab.active,
+.ritual-pick-btn.active, .bio-wave-compare.active {
+  border-color: var(--gold-dim);
+  color: var(--gold-bright);
+  background: rgba(184, 149, 46, 0.12);
+}
+
+.maya-related { display: flex; flex-direction: column; gap: 6px; }
+.maya-rel-card {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--cream);
+  font-size: 13px;
+  cursor: pointer;
+  text-align: left;
+}
+.maya-rel-body { font-size: 12px; color: var(--text-muted); padding: 0 4px 8px; line-height: 1.65; }
+
+.tarot-highlight { padding: 12px; border-left: 2px solid var(--gold); margin: 8px 0; }
+.ritual-steps { margin: 10px 0 0 18px; font-size: 13px; color: var(--cream); line-height: 1.8; }
+.animal-group-body, .season-body, .tarot-suit-body, .ritual-pick-body, .bio-cmp-body {
+  font-size: 13px;
+  color: var(--cream);
+  line-height: 1.75;
+  margin-top: 8px;
+}
+
+.house-grid, .zodiac-rel-grid, .branch-grid, .gogy-rel-grid, .maya-tone-grid,
+.spread-pos-grid, .transit-year-grid, .el-compat-grid, .lunar-mini-grid, .decade-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(64px, 1fr));
+  gap: 6px;
+  margin: 10px 0;
+}

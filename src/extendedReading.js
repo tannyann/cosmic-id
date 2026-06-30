@@ -6,6 +6,7 @@ import {
   lunarEventsAhead, birthMoonPhaseIndex, biorhythmForecast, luckyCompass
 } from './calculations.js';
 import { getBundle, getContent, getUI } from './i18n/index.js';
+import { renderExtendedSection, bindCardInteractives } from './cardInteractives.js';
 
 function esc(s) {
   return String(s ?? '').replace(/[&<>"]/g, (c) => (
@@ -245,7 +246,7 @@ export function renderUnifiedModal(ctx) {
 export function renderExtendedWidget(cardKey, ctx) {
   if (cardKey === 'moon') return renderMoonCalendar(ctx);
   if (cardKey === 'biorhythm') return renderBiorhythmForecast(ctx);
-  return '';
+  return renderExtendedSection(cardKey, ctx);
 }
 
 /** 拡張 UI のイベント配線 */
@@ -319,6 +320,8 @@ export function bindExtendedReading(root, cardKey, ctx) {
     const todayBtn = track?.querySelector('.bio-day.is-today');
     todayBtn?.classList.add('selected');
   }
+
+  bindCardInteractives(root, cardKey, ctx);
 }
 
 function bindUnifiedAccordion(root) {

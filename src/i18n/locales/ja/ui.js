@@ -212,6 +212,22 @@ export const ui = {
           ? '休息・守り・静かな固めに向きやすい日かもしれません。'
           : '過渡期——ピークでも谷でもない。ゆるやかに動く日です。'
     },
+    lifepath: { title: 'ライフパス探索', intro: '数字をタップして味わいを読む——あなたの数字がハイライトされています。' },
+    personalYear: { title: '9年の波', intro: '暦年における個人年サイクルの位置。', hint: '人生マップの10年タイムラインで十年全体を見られます。' },
+    expression: { title: '名前の振動', intro: '表示名とローマ字表記がどう違って読めるか。', nativeLabel: '表示名', latinLabel: 'ローマ字', hint: '違う数字はレンズ——どちらが正しいかの勝負ではありません。' },
+    sun: { title: 'サイン一覧', intro: '十二宮のサイン——タップして探ってみて。' },
+    moonTrait: { title: '出生月相', intro: '四つの月相タイプ——感情のリズムを読む。' },
+    zodiac: { title: '十二支', intro: '年の十二支サイクル。' },
+    sixty: { title: '六十干支', intro: '六十干支サイクル上のあなたの位置。' },
+    kyusei: { title: '九星マップ', intro: '九つの本命星——タップして性質を読む。' },
+    gogyou: { title: '五行', intro: '木・火・土・金・水——それぞれの気をタップ。' },
+    animal: { title: '動物タイプ', intro: '六十分類の十二動物。' },
+    celtic: { title: 'ケルトの樹', intro: '十三の聖なる樹——タップして探る。' },
+    maya: { title: 'マヤの紋章', intro: 'ツォルキン260日の二十の太陽の紋章。' },
+    tarotBirth: { title: '大アルカナ', intro: '二十二枚の魂のカード——番号をタップ。' },
+    tarotDaily: { title: '7日間のカード', intro: '名前と日付から引かれるカード——日をタップ。' },
+    birthstone: { title: '誕生石カレンダー', intro: '十二ヶ月、十二の守護石。' },
+    birthflower: { title: '誕生花カレンダー', intro: '十二の花——タップして読む。' },
     unified: {
       eyebrow: '拡張リーディング',
       title: '統合マスターリーディング',
@@ -269,6 +285,15 @@ export const ui = {
     scrollMoon: '月カレンダーへジャンプ ↑',
     scrollBio: '90日予測へジャンプ ↑',
     scrollTimeline: '10年タイムラインへジャンプ ↑',
+    scrollExt: 'インタラクティブへジャンプ ↑',
+    scrollExpression: '名前探索へジャンプ ↑',
+    scrollMoonTrait: '月相へジャンプ ↑',
+    scrollSixty: '六十干支へジャンプ ↑',
+    scrollAnimal: '動物マップへジャンプ ↑',
+    scrollCeltic: '樹の輪へジャンプ ↑',
+    scrollTarotDaily: '7日カードへジャンプ ↑',
+    scrollBirthstone: '誕生石へジャンプ ↑',
+    scrollBirthflower: '誕生花へジャンプ ↑',
     prompts: {
       forChapter: (cardKey, index) => {
         const generic = [
@@ -367,7 +392,21 @@ export const ui = {
         water: { direction: '西 · 水', season: '冬の深さは内側を呼ぶことがあります——決める前に感じる。', ritual: '温かい風呂、月を見る、涙を物語なしで歓迎する。' },
         wood: { direction: '東 · 木', season: '成長の季節は種まきに向きます——小さく始め、よく世話する。', ritual: '緑の植物、29日続く小さな習慣。' },
         metal: { direction: '西 · 金', season: '秋の澄みわたりは整える助けになります——鈍くなったものを手放す。', ritual: '引き出し一つを空に、白い服、吐く息を長く。' }
-      }
+      },
+      houses: [
+        { short: 'I', text: '自己・生命力・第一印象。' },
+        { short: 'II', text: '資源・価値観・蓄えるもの。' },
+        { short: 'III', text: 'コミュニケーション・近い旅・言葉。' },
+        { short: 'IV', text: '家庭・根・内なる感情の土台。' },
+        { short: 'V', text: '創造・喜び・恋・生み出すもの。' },
+        { short: 'VI', text: '日々のリズム・奉仕・身体のケア。' },
+        { short: 'VII', text: 'パートナーシップ・契約・対話。' },
+        { short: 'VIII', text: '共有・変容・手放しと統合。' },
+        { short: 'IX', text: '意味・旅・哲学・地平の向こう。' },
+        { short: 'X', text: '天職・評判・外から見える道。' },
+        { short: 'XI', text: '共同体・希望・視野を広げる友人。' },
+        { short: 'XII', text: '夢・孤独・意識の下で働くもの。' }
+      ]
     },
     kyusei: {
       cyclePhase: (n) => ({
@@ -380,24 +419,82 @@ export const ui = {
         7: '7年目：内省——学び、休息、スピリチュアルな手入れ。',
         8: '8年目：収穫——成果と認知が表に出やすい。',
         9: '9年目：完成——手放し、次の9年へ備える。'
-      })[n] || '9年周期のひとつの地点です。'
+      })[n] || '9年周期のひとつの地点です。',
+      honmeiLabel: '本命星',
+      monthLabel: '月命星',
+      dayLabel: '日命星',
+      directionLabel: 'ラッキーカラー'
     },
     tarot: {
       light: '光の顔',
       shadow: '影の顔',
       lightText: (name) => `${name} の正位置：魂のギフトがいちばん澄んで現れる向き——カードの最高の表現を体現する勇気。`,
-      shadowText: (name) => `${name} の逆位置：罰ではなく統合の依頼——どこで重く感じますか？その重さは、変容がノックしているサインかもしれません。`
+      shadowText: (name) => `${name} の逆位置：罰ではなく統合の依頼——どこで重く感じますか？その重さは、変容がノックしているサインかもしれません。`,
+      suits: [
+        { id: 'wands', label: 'ワンド', text: '火 · 行動 · 意志' },
+        { id: 'cups', label: 'カップ', text: '水 · 感情 · 絆' },
+        { id: 'swords', label: 'ソード', text: '風 · 思考 · 真実' },
+        { id: 'pentacles', label: 'ペンタクル', text: '土 · 身体 · 技' }
+      ]
     },
     gogyou: {
-      hint: '生まれ年には五行のうち一つの気が宿るとされます——タップして味わいを探ってみて。'
+      hint: '生まれ年には五行のうち一つの気が宿るとされます——タップして味わいを探ってみて。',
+      balanceHint: '簡易スナップショット——生年の元素がいちばん強く感じられることがあります。',
+      relationLabels: { same: '同じ', generate: '生む', overcome: '克す', generated: '生まれる', overcame: '克される', neutral: '中立' }
     },
     maya: {
       kin: 'KIN',
       tone: '銀河の音',
-      seal: '太陽の紋章'
+      seal: '太陽の紋章',
+      guideLabel: 'ガイドKIN',
+      antipodeLabel: 'アンチポッドKIN',
+      occultLabel: 'オカルトKIN',
+      signatureHint: '紋章・音・数字が合わさった、あなたの銀河署名。'
     },
     zodiac: {
-      hint: '十二支をタップすると、伝統的な性格のイメージが読めます。'
+      hint: '十二支をタップすると、伝統的な性格のイメージが読めます。',
+      relationLabels: { liuhe: '六合', sanhe: '三合', chong: '冲', neutral: '中立' }
+    },
+    sixty: { stem: '天干', branch: '地支', cycle: '周期', decadeHint: '十年ごとに柱のエネルギーの色合いが変わることがあります。' },
+    animal: {
+      sixtyHint: '性格数は60日で一周——あなたの数字がハイライトされています。',
+      sixtyBody: (n) => `性格数 ${n}——動物タイプの中の、より細かな色合い。`,
+      groups: [
+        { id: 'moon', label: '月グループ', text: '夢見るタイプ——直感と想像が先に動く。' },
+        { id: 'earth', label: '地グループ', text: '現実派——堅実さと実務的な思いやり。' },
+        { id: 'sun', label: '太陽グループ', text: '感受性タイプ——温かさと表現豊かな感情。' }
+      ],
+      hiddenIntro: 'プレッシャーの下では、別の原型が顔を出すことがあります——間違いではなく、第二の声。'
+    },
+    celtic: {
+      seasons: [
+        { label: '春', ritual: '白樺や柳のそばで願いを一粒——始まりをやさしく祝う。' },
+        { label: '夏', ritual: '橡やホーリーの日光の中で——力を認める。' },
+        { label: '秋', ritual: '樹の葉を一枚——感謝と手放しをセットで。' },
+        { label: '冬', ritual: 'エルダーやリードの前で静かな呼吸——急がない知恵。' }
+      ]
+    },
+    moon: {
+      personalBody: (birth, today) => `出生時の相: ${birth}。今夜: ${today}。リズムが重なるとき、何が繰り返されるか観察してみて。`,
+      personalHint: '正確な月星座ではなく、やさしい月の気分マップです。',
+      rituals: [
+        { id: 'new', label: '新月', text: '意図を一つ書く。29日続けられる小さな始まりを。' },
+        { id: 'full', label: '満月', text: '感謝を三つ。もう合わない物語を一つ手放す。' }
+      ]
+    },
+    moonTrait: {
+      rituals: [
+        { id: 'new', label: '新月の儀式', text: '始まりを祝う——一ページ、一粒、正直な一文。' },
+        { id: 'full', label: '満月の儀式', text: '完成を祝う——感謝、涙歓迎、断定なし。' }
+      ]
+    },
+    biorhythm: { noCritical: '今後90日にクリティカルデーはありません——比較的穏やかな流れ。', criticalNote: '波がゼロを横切る日——ゆるやかに、決断は二重チェックを。' },
+    birthstone: { colorHint: 'ラッキーコンパスからの元素カラー。', rituals: ['石を胸に当て三呼吸。', '招きたい性質を一つ名づける。', '必要なとき肌に近づけて。'] },
+    birthflower: { essences: ['やさしさ', '明晰さ', '勇気', '喜び', '忍耐', '献身'] },
+    tarotDaily: { spreadPositions: ['過去', '現在', '未来', '課題', '頂点', '根', '助言'] },
+    lifeStage: {
+      pastTags: (lp) => ['土台', `パス${lp}`, '統合'],
+      futureTags: (py) => ['種', `年${py}`, '収穫']
     }
   },
   share: {

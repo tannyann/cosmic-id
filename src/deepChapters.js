@@ -6,6 +6,7 @@ import {
   personalYearMonthCalendar, kyuseiCycleYear, normalizeElementKey, luckyCompass
 } from './calculations.js';
 import { getContent, getUI, getBundle } from './i18n/index.js';
+import { renderExtraChapter, bindCardInteractives } from './cardInteractives.js';
 
 function esc(s) {
   return String(s ?? '').replace(/[&<>"]/g, (c) => (
@@ -96,7 +97,7 @@ function renderInteractiveChapter(cardKey, ctx, index) {
     default:
       break;
   }
-  return null;
+  return renderExtraChapter(cardKey, ctx, index);
 }
 
 function renderScrollToWidget(selectorClass, label) {
@@ -444,4 +445,6 @@ export function bindDeepChapters(root, cardKey, ctx) {
       });
     });
   }
+
+  bindCardInteractives(root, cardKey, ctx);
 }

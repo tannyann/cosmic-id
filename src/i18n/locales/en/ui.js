@@ -205,6 +205,22 @@ export const ui = {
           ? 'A day that may favor rest, protection, and quiet consolidation.'
           : 'A transitional day — neither peak nor trough. Move gently.'
     },
+    lifepath: { title: 'Life path explorer', intro: 'Tap a number to explore its mood — your path is highlighted.' },
+    personalYear: { title: '9-year wave', intro: 'Where you are in your personal year cycle this calendar year.', hint: 'Open the 10-year timeline in Life Map for the full decade.' },
+    expression: { title: 'Name vibrations', intro: 'How your display name and optional Roman spelling may read differently.', nativeLabel: 'Display name', latinLabel: 'Roman / Latin', hint: 'Different numbers are lenses — not a contest for which is correct.' },
+    sun: { title: 'Sun sign map', intro: 'Twelve signs of the zodiac — tap to explore each mood.' },
+    moonTrait: { title: 'Birth moon phases', intro: 'Four phase families — tap to read emotional rhythm.' },
+    zodiac: { title: 'Chinese zodiac wheel', intro: 'Twelve animals of the year cycle.' },
+    sixty: { title: '60-year pillar cycle', intro: 'Your position in the sexagenary cycle — scroll and tap.' },
+    kyusei: { title: 'Nine Star Ki map', intro: 'Nine honmei stars — tap to explore each quality.' },
+    gogyou: { title: 'Five elements', intro: 'Wood, fire, earth, metal, water — tap each mood.' },
+    animal: { title: 'Animal archetypes', intro: 'Twelve animal types in the 60-day personality cycle.' },
+    celtic: { title: 'Celtic tree wheel', intro: 'Thirteen sacred trees — tap to explore.' },
+    maya: { title: 'Maya seals', intro: 'Twenty solar seals on the 260-day Tzolk\'in.' },
+    tarotBirth: { title: 'Major Arcana', intro: 'Twenty-two soul cards — tap a number.' },
+    tarotDaily: { title: 'Seven-day card strip', intro: 'Cards drawn from your name and each date — tap a day.' },
+    birthstone: { title: 'Birthstone calendar', intro: 'Twelve months, twelve guardian gems.' },
+    birthflower: { title: 'Birth flower calendar', intro: 'Twelve blooms — tap to explore.' },
     unified: {
       eyebrow: 'Extended reading',
       title: 'Unified Master Reading',
@@ -262,6 +278,15 @@ export const ui = {
     scrollMoon: 'Jump to moon calendar ↑',
     scrollBio: 'Jump to 90-day forecast ↑',
     scrollTimeline: 'Jump to 10-year timeline ↑',
+    scrollExt: 'Jump to interactive explorer ↑',
+    scrollExpression: 'Jump to name explorer ↑',
+    scrollMoonTrait: 'Jump to moon phases ↑',
+    scrollSixty: 'Jump to 60-year cycle ↑',
+    scrollAnimal: 'Jump to animal map ↑',
+    scrollCeltic: 'Jump to tree wheel ↑',
+    scrollTarotDaily: 'Jump to 7-day cards ↑',
+    scrollBirthstone: 'Jump to stone calendar ↑',
+    scrollBirthflower: 'Jump to flower calendar ↑',
     prompts: {
       forChapter: (cardKey, index) => {
         const generic = [
@@ -360,7 +385,21 @@ export const ui = {
         water: { direction: 'West · Water', season: 'Winter depths may call you inward — feel before deciding.', ritual: 'Warm bath, moon gazing, tears welcomed without story.' },
         wood: { direction: 'East · Wood', season: 'Growth seasons favor planting — start small, tend often.', ritual: 'Green plant nearby, one habit seeded for 29 days.' },
         metal: { direction: 'West · Metal', season: 'Autumn clarity may help you refine — release what dulls.', ritual: 'Declutter one drawer, white clothing, breath to exhale longer than inhale.' }
-      }
+      },
+      houses: [
+        { short: 'I', text: 'Self, vitality, first impressions — how you enter a room.' },
+        { short: 'II', text: 'Resources, values, what you build and hold.' },
+        { short: 'III', text: 'Communication, siblings, short journeys of the mind.' },
+        { short: 'IV', text: 'Home, roots, private emotional ground.' },
+        { short: 'V', text: 'Creativity, joy, romance, what you birth into the world.' },
+        { short: 'VI', text: 'Daily rhythm, service, body care, small useful acts.' },
+        { short: 'VII', text: 'Partnership, mirrors, contracts and open dialogue.' },
+        { short: 'VIII', text: 'Shared depth, transformation, what is merged or released.' },
+        { short: 'IX', text: 'Meaning, travel, philosophy, horizons beyond the familiar.' },
+        { short: 'X', text: 'Vocation, reputation, the path others can see.' },
+        { short: 'XI', text: 'Community, hopes, friends who stretch your vision.' },
+        { short: 'XII', text: 'Dreams, solitude, what works quietly beneath awareness.' }
+      ]
     },
     kyusei: {
       cyclePhase: (n) => ({
@@ -373,25 +412,83 @@ export const ui = {
         7: 'Year 7: introspection — study, rest, spiritual tending.',
         8: 'Year 8: harvest — results and recognition may surface.',
         9: 'Year 9: completion — release and prepare for a new 9-year round.'
-      })[n] || 'A point in your 9-year honmei cycle.'
+      })[n] || 'A point in your 9-year honmei cycle.',
+      honmeiLabel: 'Honmei star',
+      monthLabel: 'Month star',
+      dayLabel: 'Day star',
+      directionLabel: 'Lucky tones'
     },
     tarot: {
       light: 'Light face',
       shadow: 'Shadow face',
       lightText: (name) => `${name} upright: your soul's gift in its clearest form — courage to embody the card's highest expression.`,
-      shadowText: (name) => `${name} reversed: not punishment — the card asking for integration. Where does its lesson feel heavy? That weight may be transformation knocking.`
+      shadowText: (name) => `${name} reversed: not punishment — the card asking for integration. Where does its lesson feel heavy? That weight may be transformation knocking.`,
+      suits: [
+        { id: 'wands', label: 'Wands', text: 'Fire · action · will — how you move and initiate.' },
+        { id: 'cups', label: 'Cups', text: 'Water · feeling · bonds — how you love and receive.' },
+        { id: 'swords', label: 'Swords', text: 'Air · thought · truth — how you name and decide.' },
+        { id: 'pentacles', label: 'Pentacles', text: 'Earth · body · craft — how you build and tend.' }
+      ]
     },
     gogyou: {
-      hint: 'Each birth year carries one of five elemental moods — tap to explore.'
+      hint: 'Each birth year carries one of five elemental moods — tap to explore.',
+      balanceHint: 'A simplified snapshot — your birth year element may feel strongest.',
+      relationLabels: { same: 'Same', generate: 'Supports', overcome: 'Shapes', generated: 'Fed by', overcame: 'Tempered by', neutral: 'Neutral' }
     },
     maya: {
       kin: 'KIN',
       tone: 'Galactic tone',
-      seal: 'Solar seal'
+      seal: 'Solar seal',
+      guideLabel: 'Guide KIN',
+      antipodeLabel: 'Antipode KIN',
+      occultLabel: 'Occult KIN',
+      signatureHint: 'Seal, tone, and number together — your galactic signature in brief.'
     },
     zodiac: {
-      hint: 'Tap an animal to read its traditional mood.'
-    }
+      hint: 'Tap an animal to read its traditional mood.',
+      relationLabels: { liuhe: 'Liuhe bond', sanhe: 'Sanhe harmony', chong: 'Chong spark', neutral: 'Neutral' }
+    },
+    sixty: { stem: 'Heavenly stem', branch: 'Earthly branch', cycle: 'Cycle position', decadeHint: 'Each decade may carry a different shade of your pillar energy.' },
+    animal: {
+      sixtyHint: 'Personality numbers cycle every 60 days — yours is highlighted.',
+      sixtyBody: (n) => `Personality number ${n} — a finer shade within your animal type.`,
+      groups: [
+        { id: 'moon', label: 'Moon group', text: 'Dreamer types — intuition and imagination may lead.' },
+        { id: 'earth', label: 'Earth group', text: 'Realist types — steadiness and practical care.' },
+        { id: 'sun', label: 'Sun group', text: 'Sensitive types — warmth and expressive feeling.' }
+      ],
+      hiddenIntro: 'Under stress, another archetype may surface — not wrong, just a second voice.'
+    },
+    celtic: {
+      seasons: [
+        { label: 'Spring', ritual: 'Plant a wish with birch or willow nearby — beginnings honored gently.' },
+        { label: 'Summer', ritual: 'Stand in sunlight at oak or holly — strength acknowledged without force.' },
+        { label: 'Autumn', ritual: 'Gather one leaf from your tree — release named with gratitude.' },
+        { label: 'Winter', ritual: 'Quiet breath before elder or reed — wisdom without hurry.' }
+      ]
+    },
+    moon: {
+      personalBody: (birth, today) => `Birth phase: ${birth}. Tonight: ${today}. Notice what repeats when these rhythms meet.`,
+      personalHint: 'Not exact moon sign — a gentle lunar mood map.',
+      rituals: [
+        { id: 'new', label: 'New moon', text: 'Write one intention. Begin something small you can tend for 29 days.' },
+        { id: 'full', label: 'Full moon', text: 'Name three gratitudes. Release one story that no longer fits.' }
+      ]
+    },
+    moonTrait: {
+      rituals: [
+        { id: 'new', label: 'New moon ritual', text: 'Honor beginnings — one page, one seed, one honest sentence.' },
+        { id: 'full', label: 'Full moon ritual', text: 'Honor completion — gratitude, tears welcome, no verdict required.' }
+      ]
+    },
+    biorhythm: { noCritical: 'No critical days in the next 90 days — a relatively smooth stretch.', criticalNote: 'Wave crossing zero — move gently, double-check decisions.' },
+    birthstone: { colorHint: 'Element color from your lucky compass.', rituals: ['Three breaths with stone at heart.', 'Name one quality to invite.', 'Wear close to skin when you need anchoring.'] },
+    birthflower: { essences: ['Gentleness', 'Clarity', 'Courage', 'Joy', 'Patience', 'Devotion'] },
+    tarotDaily: { spreadPositions: ['Past', 'Present', 'Future', 'Challenge', 'Crown', 'Root', 'Advice'] },
+    lifeStage: {
+      pastTags: (lp) => ['Foundation', `Path-${lp}`, 'Integration'],
+      futureTags: (py) => ['Seed', `Year-${py}`, 'Harvest']
+    },
   },
   share: {
     panelTitle: 'Share card',
