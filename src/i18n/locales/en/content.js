@@ -349,6 +349,11 @@ export const ALL_FREE_HIGHLIGHTS = [
     icon: '☽',
     title: '30-day cycle planner',
     desc: 'Personal month, lunar phase, biorhythm, and Kyusei day star — 30 days ahead.'
+  },
+  {
+    icon: '❋',
+    title: 'AI unified narrative',
+    desc: 'Nineteen systems woven into one story — with an Instagram-ready share card.'
   }
 ];
 
@@ -425,8 +430,8 @@ export const PREMIUM_PITCH_LINES = [
 
 /** Premium roadmap (idea shelf · outside free scope) */
 export const PREMIUM_ROADMAP = [
-  { phase: 'Available free', items: ['All 19 systems & deep chapters', '10-year timeline', 'Love & compatibility', 'Moon calendar', '30-day cycle planner'] },
-  { phase: 'In development', items: ['AI unified narrative', 'Account profiles & family saves'] },
+  { phase: 'Available free', items: ['All 19 systems & deep chapters', '10-year timeline', 'Love & compatibility', 'Moon calendar', '30-day cycle planner', 'AI unified narrative'] },
+  { phase: 'In development', items: ['Cloud AI API', 'Account profiles & family saves'] },
   { phase: 'Concept', items: ['Push reminders', 'PDF handbook', 'Premium billing'] }
 ];
 

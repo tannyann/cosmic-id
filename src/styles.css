@@ -3992,7 +3992,205 @@ html[dir="rtl"] .share-actions {
   .cycles-detail-grid { grid-template-columns: 1fr; }
 }
 
+.share-btn-instagram {
+  background: linear-gradient(135deg, rgba(180, 90, 130, 0.25), rgba(166, 127, 216, 0.2));
+  border-color: rgba(212, 121, 154, 0.45);
+}
+
+/* ===== 統合ナラティブ ===== */
+.narrative-panel {
+  margin: 32px 0;
+  padding: 32px 28px 28px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: linear-gradient(165deg, rgba(22, 18, 42, 0.65), rgba(8, 7, 20, 0.9));
+  box-shadow: var(--shadow-glow);
+}
+
+.narrative-head {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.narrative-badge {
+  display: inline-block;
+  font-size: 10px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--gold-champagne);
+  border: 1px solid var(--gold-dim);
+  border-radius: 999px;
+  padding: 4px 12px;
+  margin-bottom: 12px;
+}
+
+.narrative-title {
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 4vw, 1.85rem);
+  font-weight: 400;
+  color: var(--gold-bright);
+  margin-bottom: 10px;
+}
+
+.narrative-lead {
+  font-size: 14px;
+  color: var(--text-muted);
+  line-height: 1.75;
+  max-width: 36em;
+  margin: 0 auto;
+}
+
+.narrative-status {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  padding: 40px 20px;
+  color: var(--text-muted);
+  font-size: 14px;
+}
+
+.narrative-spinner {
+  width: 28px;
+  height: 28px;
+  border: 2px solid var(--border);
+  border-top-color: var(--gold);
+  border-radius: 50%;
+  animation: narrative-spin 0.9s linear infinite;
+}
+
+@keyframes narrative-spin {
+  to { transform: rotate(360deg); }
+}
+
+.narrative-source {
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent-teal);
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.narrative-hook {
+  font-family: var(--font-display);
+  font-size: clamp(1.1rem, 3vw, 1.35rem);
+  color: var(--gold-champagne);
+  text-align: center;
+  line-height: 1.65;
+  margin-bottom: 24px;
+  padding: 0 8px;
+}
+
+.narrative-paras {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.narrative-para {
+  font-size: 14px;
+  line-height: 1.85;
+  color: var(--cream);
+  padding: 14px 16px;
+  border-left: 2px solid var(--gold-dim);
+  background: rgba(12, 10, 26, 0.45);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  animation: narrative-fade-in 0.6s var(--ease-out) both;
+  animation-delay: var(--delay, 0s);
+}
+
+@keyframes narrative-fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.narrative-footnote {
+  font-size: 12px;
+  color: var(--text-muted);
+  text-align: center;
+  margin: 8px 0 28px;
+  font-style: italic;
+}
+
+.narrative-share {
+  margin-top: 28px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+  text-align: center;
+}
+
+.narrative-share-title {
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  color: var(--gold-bright);
+  margin-bottom: 8px;
+}
+
+.narrative-share-desc,
+.narrative-share-steps {
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1.65;
+  margin-bottom: 8px;
+}
+
+.narrative-share-preview-btn {
+  display: block;
+  width: min(216px, 70vw);
+  margin: 16px auto;
+  padding: 0;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-md);
+  background: rgba(8, 7, 18, 0.6);
+  cursor: pointer;
+  overflow: hidden;
+  position: relative;
+  transition: border-color 0.2s, transform 0.2s var(--ease-out);
+}
+
+.narrative-share-preview-btn:hover {
+  border-color: var(--gold);
+  transform: translateY(-2px);
+}
+
+.narrative-share-preview-img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.narrative-share-loading {
+  padding: 80px 20px;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.narrative-share-preview-hint {
+  display: block;
+  font-size: 11px;
+  color: var(--text-muted);
+  padding: 8px;
+  background: rgba(0, 0, 0, 0.35);
+}
+
+.narrative-share-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 12px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .narrative-spinner { animation: none; }
+  .narrative-para { animation: none; }
+}
+
 @media print {
+  .narrative-share,
+  .narrative-spinner,
   .aurora,
   .grain,
   .vignette,

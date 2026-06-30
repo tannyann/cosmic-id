@@ -519,6 +519,61 @@ export const ui = {
       futureTags: (py) => ['Seed', `Year-${py}`, 'Harvest']
     },
   },
+  narrative: {
+    badge: 'AI',
+    panelTitle: 'Unified Narrative',
+    panelLead: 'Nineteen systems woven into one story — from your birth date and name to this very moment.',
+    generating: 'Weaving your story…',
+    generateFail: 'Could not generate the narrative',
+    sourceLocal: 'Generated from nineteen systems · on your device',
+    sourceAi: 'AI-generated from your nineteen systems',
+    footnote: 'This is one possibility among many. You still choose what it means.',
+    hook: (name, lpLabel) => `${name} — a cosmology written for a soul walking as ${lpLabel}.`,
+    para1: (name, lpLabel, lpDesc) =>
+      `${name}, numerology may read you as Life Path ${lpLabel ? `"${lpLabel}"` : ''}. ${lpDesc} This is less a fixed personality label than a theme that may return in different costumes across your life.`,
+    para2: (sun, sunEl, zodiac, kyusei, gogyou) =>
+      `Your sun sign ${sun} (${sunEl}) may show where consciousness likes to shine. In the East, ${zodiac}, Kyusei star ${kyusei}, and Five Elements ${gogyou} — the same soul spoken in different tongues.`,
+    para3: (animal, celtic, kin, seal, sixty) =>
+      `Animal fortune ${animal}, Celtic tree ${celtic}, Maya KIN ${kin} (seal ${seal}), and stem-branch ${sixty} — character and sacred symbols as mirrors for instinct and daily rhythm.`,
+    para4: (tarotBirth, tarotDaily, birthstone, birthflower) =>
+      `Tarot birth card "${tarotBirth}" holds a soul theme; today's card "${tarotDaily}" reflects the wind right now. Birthstone ${birthstone} and flower ${birthflower} may anchor you in nature's symbols.`,
+    para5: (year, py, pyTheme) =>
+      `Personal Year ${py} in ${year}: ${pyTheme} You may move more easily when you ride the year's tempo rather than fight it.`,
+    para6: (moonTonight, bioAvg, moonTrait) => {
+      const bio = bioAvg > 0.25 ? 'energy may lean upward overall' : bioAvg < -0.25 ? 'rest and reflection may serve you best' : 'a balanced middle phase';
+      return `Tonight's moon is ${moonTonight}. Your birth moon phase "${moonTrait}" colors emotional rhythm. Biorhythm suggests ${bio} right now.`;
+    },
+    para7: (sunEl, lp, expr) => {
+      const exprBit = expr ? `Expression number ${expr} may add another layer to how you appear in the world. ` : '';
+      return `In love, ${sunEl} warmth and Life Path ${lp} themes of giving and receiving may intertwine. In work, purpose often matters more than output alone. ${exprBit}`;
+    },
+    para8: (color, day, name) =>
+      `Your lucky compass may suggest ${color} tones and small steps on ${day}. ${name}, these nineteen stories are only part of the map — you write the next line.`,
+    instagramCaption: (name, hook, excerpt) =>
+      `${hook}\n\n${excerpt}\n\n— COSMIC ID\n#COSMICID #cosmology #spirituality #selfdiscovery #astrology #numerology #tarot\n${name}'s nineteen stories`
+  },
+  narrativeShare: {
+    panelTitle: 'Share on Instagram',
+    panelDesc: 'Your unified narrative as a 4:5 image card — ready for feed or story.',
+    instagramSteps: '① Save image → ② Copy caption → ③ Post on Instagram',
+    previewHint: 'Tap to save image',
+    saveInstagram: 'Save for Instagram',
+    copyCaption: 'Copy caption',
+    shareNative: 'Share to Instagram…',
+    loading: 'Creating card…',
+    loadFail: 'Failed',
+    saved: 'Image saved',
+    captionCopied: 'Caption copied',
+    copyFail: 'Could not copy',
+    shareFail: 'Could not share',
+    nativeUnsupported: 'Save the image, then open Instagram',
+    imageFail: 'Could not generate share image',
+    canvasEyebrow: 'Unified Narrative',
+    canvasFooter: 'You write your story',
+    nameSuffix: '',
+    statsLine: (ctx) =>
+      `Life Path ${ctx.lp} · ${ctx.sun.symbol} ${ctx.sun.name} · ${ctx.cz.char} · ${ctx.ks.name} · KIN ${ctx.my.kin}`
+  },
   share: {
     panelTitle: 'Share card',
     panelDesc: 'Share your nineteen stories as an image or text',

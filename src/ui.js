@@ -16,6 +16,7 @@ import { bindLoveMode } from './love-ui.js';
 import { bindCompatMode } from './compat-ui.js';
 import { renderCyclesPlanner, bindCyclesPlanner } from './cyclesCalendar.js';
 import { saveProfile } from './profileStorage.js';
+import { mountNarrativePanel } from './narrative-ui.js';
 import {
   renderExtendedWidget, renderUnifiedModal, bindExtendedReading
 } from './extendedReading.js';
@@ -369,6 +370,7 @@ export function render(name, nameRoman, y, m, d) {
   r.classList.add('active');
   bindResultCards(r);
   bindCyclesPlanner(r, currentContext);
+  mountNarrativePanel(currentContext).catch(err => console.error('Narrative panel:', err));
   mountSharePanel(currentContext).catch(err => console.error('Share panel:', err));
   bindLoveMode();
   bindCompatMode();

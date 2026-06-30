@@ -526,6 +526,61 @@ export const ui = {
       futureTags: (py) => ['種', `年${py}`, '収穫']
     }
   },
+  narrative: {
+    badge: 'AI',
+    panelTitle: '統合ナラティブ',
+    panelLead: '十九の体系を一本の物語に。あなたの生年月日と名前から、今この瞬間までを編み上げます。',
+    generating: '物語を編んでいます…',
+    generateFail: 'ナラティブの生成に失敗しました',
+    sourceLocal: '十九の体系から生成 · 端末内で完結',
+    sourceAi: 'AI が十九の体系をもとに生成',
+    footnote: 'ここにあるのは可能性のひとつ。意味を選ぶのは、いまでもあなたです。',
+    hook: (name, lpLabel) => `${name}さん——${lpLabel}として歩む、あなただけの宇宙の物語。`,
+    para1: (name, lpLabel, lpDesc) =>
+      `${name}さん。数秘術は、あなたをライフパス${lpLabel ? `「${lpLabel}」` : ''}として読むとされます。${lpDesc} これは性格のラベルではなく、人生のテーマが何度も別の形で戻ってくるとき、最初に目を向けてみたい方向かもしれません。`,
+    para2: (sun, sunEl, zodiac, kyusei, gogyou) =>
+      `西洋占星術の太陽${sun}（${sunEl}）は、意識が光を当てやすい領域を示すとされます。東洋では${zodiac}、九星気学では${kyusei}、五行では${gogyou}の性質——同じ魂を、異なる言語が重ねて語っているようなイメージです。`,
+    para3: (animal, celtic, kin, seal, sixty) =>
+      `動物占いの${animal}、ケルト樹木の${celtic}、マヤ暦 KIN ${kin}（紋章・${seal}）、六十干支の${sixty}——キャラクターと神聖な記号は、日常の振る舞いや直感の癖を別角度から映し出す鏡のような存在とされます。`,
+    para4: (tarotBirth, tarotDaily, birthstone, birthflower) =>
+      `タロットのバースカード「${tarotBirth}」は魂の大きなテーマ、今日のカード「${tarotDaily}」は今この瞬間の風向き。誕生石${birthstone}、誕生花${birthflower}は、自然のシンボルがあなたのリズムに寄り添う印として読まれることがあります。`,
+    para5: (year, py, pyTheme) =>
+      `${year}年の個人年は${py}。${pyTheme} 年の波は、計画を急ぐより、そのテンポに身を預けるほうが流れに乗りやすいとされることがあります。`,
+    para6: (moonTonight, bioAvg, moonTrait) => {
+      const bio = bioAvg > 0.25 ? '全体的にエネルギーが上向きのフェーズに近い' : bioAvg < -0.25 ? '休息と内省が効きやすいフェーズに近い' : 'バランスを保ちやすい中庸のフェーズ';
+      return `今夜の月は${moonTonight}。出生時の月相は「${moonTrait}」——感情のリズムの土台として。バイオリズムは今、${bio}かもしれません。`;
+    },
+    para7: (sunEl, lp, expr) => {
+      const exprBit = expr ? `名前の波動${expr}は、世にどう見えるかのもう一層として響くとされます。` : '';
+      return `恋愛やつながりでは、${sunEl}の温かさとライフパス${lp}の与え方・受け取り方のテーマが重なることがあります。仕事では「生産」より「目的」——何のために動くかが、満足感の鍵になりやすいとされます。${exprBit}`;
+    },
+    para8: (color, day, name) =>
+      `ラッキーコンパスは、${color}の色合いや${day}に小さな一歩を試すことを示唆することがあります。${name}さん、十九の物語はここまでが地図の一部にすぎません。次の一行は、いつもあなたが書くのです。`,
+    instagramCaption: (name, hook, excerpt) =>
+      `${hook}\n\n${excerpt}\n\n— COSMIC ID\n#COSMICID #占い #スピリチュアル #自己理解 #星座 #数秘術 #マヤ暦 #タロット\n${name}さんの十九の物語`
+  },
+  narrativeShare: {
+    panelTitle: 'Instagram でシェア',
+    panelDesc: '統合ナラティブを 4:5 の画像カードに。ストーリー・フィードどちらにも使えます。',
+    instagramSteps: '① 画像を保存 → ② キャプションをコピー → ③ Instagram で投稿',
+    previewHint: 'タップで画像を保存',
+    saveInstagram: 'Instagram用に保存',
+    copyCaption: 'キャプションをコピー',
+    shareNative: 'Instagram などで共有…',
+    loading: 'カード生成中…',
+    loadFail: '生成に失敗',
+    saved: '画像を保存しました',
+    captionCopied: 'キャプションをコピーしました',
+    copyFail: 'コピーできませんでした',
+    shareFail: '共有できませんでした',
+    nativeUnsupported: '保存してから Instagram を開いてください',
+    imageFail: 'シェア画像の生成に失敗しました',
+    canvasEyebrow: 'Unified Narrative',
+    canvasFooter: 'あなたの物語はあなたが書く',
+    nameSuffix: 'さん',
+    statsLine: (ctx) =>
+      `ライフパス ${ctx.lp} · ${ctx.sun.symbol} ${ctx.sun.name} · ${ctx.cz.char} · ${ctx.ks.name} · KIN ${ctx.my.kin}`
+  },
   share: {
     panelTitle: 'シェアカード',
     panelDesc: '十九の物語を、画像やテキストで共有できます',
