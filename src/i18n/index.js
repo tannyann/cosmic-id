@@ -16,6 +16,9 @@ import { ui as heUi } from './locales/he/ui.js';
 import { ui as arUi } from './locales/ar/ui.js';
 
 import { createDateFormatters } from './dateFormat.js';
+import { getLocaleContent } from './localeContent.js';
+import { getLocaleDeeper } from './localeDeeper.js';
+import { UI_EXTRAS } from './localeUiExtras.js';
 
 const STORAGE_KEY = 'cosmic-id-locale';
 
@@ -39,24 +42,26 @@ function deepMerge(base, override) {
   return out;
 }
 
-/** UI のみ翻訳・占術コンテンツは英語にフォールバック */
-function uiLocale(ui, code, htmlLang, dir = 'ltr') {
+/** UI + ロケール別 content / deeper を束ねる */
+function buildLocaleBundle(ui, code, htmlLang, dir = 'ltr') {
+  const extras = UI_EXTRAS[code] || {};
   return {
-    ...en,
-    ui: deepMerge(en.ui, ui),
+    content: getLocaleContent(code),
+    ui: deepMerge(deepMerge(en.ui, ui), extras),
+    deeper: getLocaleDeeper(code),
     meta: { code, label: ui.meta.label, htmlLang, dir }
   };
 }
 
-const zh = uiLocale(zhUi, 'zh', 'zh-Hans');
-const ko = uiLocale(koUi, 'ko', 'ko');
-const es = uiLocale(esUi, 'es', 'es');
-const fr = uiLocale(frUi, 'fr', 'fr');
-const it = uiLocale(itUi, 'it', 'it');
-const de = uiLocale(deUi, 'de', 'de');
-const tr = uiLocale(trUi, 'tr', 'tr');
-const he = uiLocale(heUi, 'he', 'he', 'rtl');
-const ar = uiLocale(arUi, 'ar', 'ar', 'rtl');
+const zh = buildLocaleBundle(zhUi, 'zh', 'zh-Hans');
+const ko = buildLocaleBundle(koUi, 'ko', 'ko');
+const es = buildLocaleBundle(esUi, 'es', 'es');
+const fr = buildLocaleBundle(frUi, 'fr', 'fr');
+const it = buildLocaleBundle(itUi, 'it', 'it');
+const de = buildLocaleBundle(deUi, 'de', 'de');
+const tr = buildLocaleBundle(trUi, 'tr', 'tr');
+const he = buildLocaleBundle(heUi, 'he', 'he', 'rtl');
+const ar = buildLocaleBundle(arUi, 'ar', 'ar', 'rtl');
 
 ja.meta = { code: 'ja', label: ja.ui.meta.label, htmlLang: 'ja', dir: 'ltr' };
 en.meta = { code: 'en', label: en.ui.meta.label, htmlLang: 'en', dir: 'ltr' };

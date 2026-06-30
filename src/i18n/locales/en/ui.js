@@ -261,6 +261,7 @@ export const ui = {
   deep: {
     scrollMoon: 'Jump to moon calendar ↑',
     scrollBio: 'Jump to 90-day forecast ↑',
+    scrollTimeline: 'Jump to 10-year timeline ↑',
     prompts: {
       forChapter: (cardKey, index) => {
         const generic = [
@@ -379,6 +380,17 @@ export const ui = {
       shadow: 'Shadow face',
       lightText: (name) => `${name} upright: your soul's gift in its clearest form — courage to embody the card's highest expression.`,
       shadowText: (name) => `${name} reversed: not punishment — the card asking for integration. Where does its lesson feel heavy? That weight may be transformation knocking.`
+    },
+    gogyou: {
+      hint: 'Each birth year carries one of five elemental moods — tap to explore.'
+    },
+    maya: {
+      kin: 'KIN',
+      tone: 'Galactic tone',
+      seal: 'Solar seal'
+    },
+    zodiac: {
+      hint: 'Tap an animal to read its traditional mood.'
     }
   },
   share: {
@@ -468,5 +480,9 @@ export const ui = {
     allFreeTitle: 'Also included — no subscription',
     allFreeNote: 'Every feature on this page is free. Readings show possibilities; you write your story.',
     ariaLabel: 'What\'s included'
+  },
+  gloss: {
+    stripTitle: 'Quick glossary — tap ? on any card',
+    tipAria: (term) => `What does “${term}” mean?`
   }
 };

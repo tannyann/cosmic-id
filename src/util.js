@@ -2,6 +2,29 @@
  * 複数モジュールで使う DOM / ブラウザ向けユーティリティ。
  */
 
+/** 五行・西洋元素名を LUCKY_COMPASS / deep.elementMap のキーに正規化 */
+export function normalizeElementKey(element) {
+  if (!element) return 'earth';
+  const map = {
+    Fire: 'fire', Earth: 'earth', Air: 'air', Water: 'water', Wood: 'wood', Metal: 'metal',
+    火: 'fire', 土: 'earth', 金: 'metal', 水: 'water', 木: 'wood', 风: 'air', 風: 'air',
+    불: 'fire', 땅: 'earth', 공기: 'air', 물: 'water', 나무: 'wood', 금: 'metal',
+    Fuego: 'fire', Tierra: 'earth', Aire: 'air', Agua: 'water', Madera: 'wood',
+    Feu: 'fire', Terre: 'earth', Eau: 'water', Bois: 'wood', Métal: 'metal',
+    Erde: 'earth', Luft: 'air', Wasser: 'water', Holz: 'wood', Metall: 'metal',
+    Fuoco: 'fire', Terra: 'earth', Aria: 'air', Acqua: 'water', Legno: 'wood', Metallo: 'metal',
+    Ateş: 'fire', Toprak: 'earth', Hava: 'air', Su: 'water', Ağaç: 'wood',
+    אש: 'fire', אדמה: 'earth', אוויר: 'air', מים: 'water', עץ: 'wood', מתכת: 'metal',
+    نار: 'fire', تراب: 'earth', هواء: 'air', ماء: 'water', خشب: 'wood', معدن: 'metal'
+  };
+  if (map[element]) return map[element];
+  const lower = String(element).toLowerCase();
+  const byLower = {
+    fire: 'fire', earth: 'earth', air: 'air', water: 'water', wood: 'wood', metal: 'metal'
+  };
+  return byLower[lower] || 'earth';
+}
+
 export function escapeHtml(s) {
   return s.replace(/[&<>"']/g, c => ({
     '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'

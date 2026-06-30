@@ -471,3 +471,115 @@ export const COMPAT_AXIS_HINTS = {
     low: '勢いの方向が交差する関係。お互いの「間」を尊ぶこと。'
   }
 };
+
+export const CARD_GLOSS_KEYS = {
+  lifepath: 'lifePath',
+  personalYear: 'personalYear',
+  expression: 'expression',
+  sun: 'sunSign',
+  moonTrait: 'moonTrait',
+  zodiac: 'chineseZodiac',
+  sixty: 'sixtyCycle',
+  kyusei: 'kyusei',
+  gogyou: 'gogyou',
+  animal: 'animalType',
+  celtic: 'celticTree',
+  maya: 'mayaKin',
+  tarotBirth: 'tarotBirth',
+  tarotDaily: 'tarotDaily',
+  birthstone: 'birthstone',
+  birthflower: 'birthflower',
+  biorhythm: 'biorhythm',
+  moon: 'moonPhase',
+  lifeStagePrev: 'lifeMilestone',
+  lifeStageNext: 'lifeMilestone',
+  timeline: 'timeline',
+  unified: 'unifiedReading'
+};
+
+export const TERM_GLOSSARY = {
+  lifePath: {
+    term: 'ライフパスナンバー',
+    hint: '生年月日から出る1桁の数字。人生の「よく出てくるテーマ」のヒント。決まった運命ではありません。'
+  },
+  personalYear: {
+    term: '個人年',
+    hint: '9年周期のうち今年が何年目か（1〜9）。今年の雰囲気や向き合い方の目安です。'
+  },
+  expression: {
+    term: '名前の数字',
+    hint: '普段使う名前から読む振動。ライフパスとは別軸で、「呼ばれる自分」の出方を示します。'
+  },
+  sunSign: {
+    term: '太陽星座',
+    hint: '西洋占星術の誕生日星座。自我の核や表現のスタイルとして読まれることが多いです。'
+  },
+  moonTrait: {
+    term: '月の傾向',
+    hint: '生まれた頃の月の位相からの気質。正確な月星座には出生時刻が必要で、ここは簡易版です。'
+  },
+  chineseZodiac: {
+    term: '十二支（干支）',
+    hint: '生年の動物（子・丑・寅…）。性格やタイミングの比喩として楽しむ占術です。'
+  },
+  sixtyCycle: {
+    term: '六十干支',
+    hint: '生年の「干支」組み合わせ。60年で一巡する東アジアの暦の印です。'
+  },
+  kyusei: {
+    term: '本命星（九星気学）',
+    hint: '生年から出す九星気学の本命星。9種類の星と9年周期の運気リズムがあります。'
+  },
+  gogyou: {
+    term: '五行',
+    hint: '木・火・土・金・水の5つの元素。生年に芯となる元素がある、という見方です。'
+  },
+  animalType: {
+    term: '動物占い',
+    hint: '生年月日から60分類し、12の動物キャラに分ける人気占術。恋愛や仕事の癖のヒントに。'
+  },
+  celticTree: {
+    term: 'ケルトの樹',
+    hint: '誕生日に対応する13の聖なる木。自然の象徴として強みや季節を読みます。'
+  },
+  mayaKin: {
+    term: 'マヤ暦 KIN',
+    hint: '260日聖暦でのあなたの1日。紋章＝本質、音＝リズムの組み合わせです。'
+  },
+  tarotBirth: {
+    term: 'タロット誕生カード',
+    hint: '生年月日に結びつく大アルカナ1枚。象徴の鏡であり、未来の断定ではありません。'
+  },
+  tarotDaily: {
+    term: '今日のカード',
+    hint: '今日のあなたへのメッセージカード。日替わりの内省のきっかけです。'
+  },
+  birthstone: {
+    term: '誕生石',
+    hint: '誕生月にまつわる宝石。お守りや自分を整えるアイテムとして親しまれます。'
+  },
+  birthflower: {
+    term: '誕生花',
+    hint: '誕生月の花の象徴。気分やセルフケアの比喩として使われます。'
+  },
+  biorhythm: {
+    term: 'バイオリズム',
+    hint: '出生からの日数で身体・感情・知性・直感の波を見る占術。医学的診断ではありません。'
+  },
+  moonPhase: {
+    term: '月相',
+    hint: '今夜の月の満ち欠け。始まり・手放しなど、多くの伝統で心のリズムと結びつきます。'
+  },
+  lifeMilestone: {
+    term: '人生の節目',
+    hint: '人生のテーマが変わりやすい年齢の目安。期限ではなく、地図のマーカーです。'
+  },
+  timeline: {
+    term: '10年タイムライン',
+    hint: 'これから10年の個人年の流れ。年をタップするとテーマと節目を読めます。'
+  },
+  unifiedReading: {
+    term: '統合マスターリーディング',
+    hint: '複数の体系を1つの物語にまとめた読み解き。本質・今年・愛・仕事・影・ラッキー要素。'
+  }
+};

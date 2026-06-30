@@ -268,6 +268,7 @@ export const ui = {
   deep: {
     scrollMoon: '月カレンダーへジャンプ ↑',
     scrollBio: '90日予測へジャンプ ↑',
+    scrollTimeline: '10年タイムラインへジャンプ ↑',
     prompts: {
       forChapter: (cardKey, index) => {
         const generic = [
@@ -386,6 +387,17 @@ export const ui = {
       shadow: '影の顔',
       lightText: (name) => `${name} の正位置：魂のギフトがいちばん澄んで現れる向き——カードの最高の表現を体現する勇気。`,
       shadowText: (name) => `${name} の逆位置：罰ではなく統合の依頼——どこで重く感じますか？その重さは、変容がノックしているサインかもしれません。`
+    },
+    gogyou: {
+      hint: '生まれ年には五行のうち一つの気が宿るとされます——タップして味わいを探ってみて。'
+    },
+    maya: {
+      kin: 'KIN',
+      tone: '銀河の音',
+      seal: '太陽の紋章'
+    },
+    zodiac: {
+      hint: '十二支をタップすると、伝統的な性格のイメージが読めます。'
     }
   },
   share: {
@@ -475,5 +487,9 @@ export const ui = {
     allFreeTitle: 'これも無料 — 登録不要',
     allFreeNote: 'このページの機能はすべて無料です。解釈は可能性の一つ。物語はあなたが書きます。',
     ariaLabel: '含まれる機能'
+  },
+  gloss: {
+    stripTitle: '用語のヒント — カードの ? をタップ',
+    tipAria: (term) => `「${term}」とは？`
   }
 };

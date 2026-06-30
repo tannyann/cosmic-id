@@ -10,7 +10,7 @@ import {
   birthstone, birthflower, biorhythm, moonPhaseToday, lifeStage, lifeTimeline
 } from './calculations.js';
 
-import { getContent, getUI, getDeeper, isJapaneseLocale } from './i18n/index.js';
+import { getContent, getUI, getDeeper, getLocale, isJapaneseLocale } from './i18n/index.js';
 import { mountSharePanel } from './share.js';
 import { bindLoveMode } from './love-ui.js';
 import { bindCompatMode } from './compat-ui.js';
@@ -18,6 +18,9 @@ import {
   renderExtendedWidget, renderUnifiedModal, bindExtendedReading
 } from './extendedReading.js';
 import { renderDeepChapterBody, bindDeepChapters } from './deepChapters.js';
+import {
+  cardSystemHtml, renderGlossStrip, bindTermGloss
+} from './termGloss.js';
 import {
   escapeHtml, prefersReducedMotion
 } from './util.js';
@@ -124,6 +127,7 @@ export function generateSummary(name, results) {
     <p>${u.fmt.summaryP2(sun.name, sun.element, cz.name, ks.name, gy.element, an.name, ct.name, my, tb.name)}</p>
     <p>${u.fmt.summaryP3(currentYear, py, bioState, mt.name, mp.name, nextHtml)}</p>
     <p class="summary-hint">${u.fmt.summaryHint}</p>
+    ${renderGlossStrip()}
   `;
 }
 
@@ -133,7 +137,7 @@ export function card(key, system, value, label, desc) {
   const aria = u.fmt.cardAria(system, safeValue);
   return `
     <div class="card" data-key="${key}" role="button" tabindex="0" aria-label="${escapeHtml(aria)}${u.fmt.cardMoreAria}">
-      <div class="card-system">${system}</div>
+      <div class="card-system">${cardSystemHtml(key, system)}</div>
       <div class="card-value">${value}</div>
       <div class="card-label">${label}</div>
       <div class="card-desc">${desc}</div>
@@ -191,18 +195,25 @@ export function moonSvg(phase) {
 
 function bindResultCards(container) {
   container.querySelectorAll('.card[data-key]').forEach(el => {
-    const open = () => openModal(el.dataset.key);
+    const open = (e) => {
+      if (e?.target?.closest?.('.term-gloss')) return;
+      openModal(el.dataset.key);
+    };
     el.addEventListener('click', open);
     el.addEventListener('keydown', e => {
       if (e.key === 'Enter' || e.key === ' ') {
         e.preventDefault();
-        open();
+        open(e);
       }
     });
   });
+  bindTermGloss(container);
 }
 
 function sectionHeading(title, en) {
+  if (getLocale() !== 'en') {
+    return `<h2 class="section-title">${title}</h2>`;
+  }
   return `<h2 class="section-title">${title}<span class="section-en">${en}</span></h2>`;
 }
 
@@ -264,7 +275,7 @@ export function render(name, nameRoman, y, m, d) {
 
     <div class="grid">
       <div class="card card-wide card-unified" data-key="unified" role="button" tabindex="0" aria-label="${escapeHtml(u.cards.unified)}${u.fmt.cardMoreAria}">
-        <div class="card-system">${escapeHtml(u.extended?.unified?.eyebrow ?? u.cards.unified)}</div>
+        <div class="card-system">${cardSystemHtml('unified', u.extended?.unified?.eyebrow ?? u.cards.unified)}</div>
         <div class="card-value card-unified-value">${escapeHtml(u.cards.unified)}</div>
         <div class="card-desc">${escapeHtml(u.cards.unifiedDesc)}</div>
         <div class="card-more">${u.fmt.cardMore}</div>
@@ -314,7 +325,7 @@ export function render(name, nameRoman, y, m, d) {
     ${sectionHeading(...u.sections.cycles)}
     <div class="grid">
       <div class="card card-wide" data-key="biorhythm" role="button" tabindex="0" aria-label="${u.cards.biorhythm}${u.fmt.cardMoreAria}">
-        <div class="card-system">${u.fmt.biorhythmDays(bio.days)}</div>
+        <div class="card-system">${cardSystemHtml('biorhythm', u.fmt.biorhythmDays(bio.days))}</div>
         ${bioBar(u.bio.physical, bio.physical)}
         ${bioBar(u.bio.emotional, bio.emotional)}
         ${bioBar(u.bio.intellectual, bio.intellectual)}
@@ -325,7 +336,7 @@ export function render(name, nameRoman, y, m, d) {
         <div class="moon-card-inner">
           <div class="moon">${moonSvg(mp.phase)}</div>
           <div>
-            <div class="card-system">${u.cards.moonTonight}</div>
+            <div class="card-system">${cardSystemHtml('moon', u.cards.moonTonight)}</div>
             <div class="card-value">${mp.name}</div>
             <div class="card-desc">${u.fmt.moonPhasePct((mp.phase * 100).toFixed(1))}</div>
           </div>
@@ -341,7 +352,7 @@ export function render(name, nameRoman, y, m, d) {
     </div>
     <div class="grid">
       <div class="card card-wide card-timeline" data-key="timeline" role="button" tabindex="0" aria-label="${escapeHtml(u.cards.timeline)}${u.fmt.cardMoreAria}">
-        <div class="card-system">${u.cards.timeline}</div>
+        <div class="card-system">${cardSystemHtml('timeline', u.cards.timeline)}</div>
         <div class="card-value card-timeline-value">${u.timeline.subtitle}</div>
         <div class="card-desc">${u.cards.timelineDesc}</div>
         <div class="card-more">${u.fmt.cardMore}</div>
@@ -650,6 +661,7 @@ function bindModalInteractions(root, cardKey) {
     bindExtendedReading(root, cardKey, currentContext);
     bindDeepChapters(root, cardKey, currentContext);
   }
+  bindTermGloss(root);
 }
 
 export function renderPremiumShowcase() {

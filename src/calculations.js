@@ -5,6 +5,9 @@
 
 import { getContent } from './i18n/index.js';
 import { hasKana, kanaToHepburn } from './kanaHepburn.js';
+import { normalizeElementKey } from './util.js';
+
+export { normalizeElementKey };
 
 // ============ ユーティリティ ============
 /** 桁数を1桁まで詰める。keepMasterがtrueなら11/22/33は止める。 */
@@ -441,16 +444,6 @@ export function biorhythmForecast(y, m, d, span = 90, startOffset = 0) {
     prevN = intuitive;
   }
   return rows;
-}
-
-/** 五行・西洋元素名を LUCKY_COMPASS のキーに正規化 */
-export function normalizeElementKey(element) {
-  const map = {
-    Fire: 'fire', Earth: 'earth', Air: 'air', Water: 'water',
-    Wood: 'wood', Metal: 'metal',
-    火: 'fire', 土: 'earth', 金: 'metal', 水: 'water', 木: 'wood'
-  };
-  return map[element] || 'earth';
 }
 
 /**

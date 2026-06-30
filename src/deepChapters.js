@@ -78,6 +78,21 @@ function renderInteractiveChapter(cardKey, ctx, index) {
     case 'biorhythm':
       if (index === 0) return renderScrollToWidget('bio-forecast', getUI().deep.scrollBio);
       break;
+    case 'gogyou':
+      if (index === 0) return renderGogyouCycle(ctx);
+      break;
+    case 'maya':
+      if (index === 0) return renderMayaKin(ctx);
+      break;
+    case 'zodiac':
+      if (index === 0) return renderZodiacGrid(ctx);
+      break;
+    case 'lifeStagePrev':
+    case 'lifeStageNext':
+      if (index === 0) {
+        return renderScrollToWidget('timeline-section', getUI().deep.scrollTimeline ?? getUI().deep.scrollMoon);
+      }
+      break;
     default:
       break;
   }
@@ -85,7 +100,55 @@ function renderInteractiveChapter(cardKey, ctx, index) {
 }
 
 function renderScrollToWidget(selectorClass, label) {
+  if (!label) return null;
   return `<button type="button" class="deep-scroll-btn" data-deep-scroll=".${selectorClass}">${esc(label)}</button>`;
+}
+
+function renderGogyouCycle(ctx) {
+  const { FIVE_ELEMENTS, GOGYOU_DESCS } = getContent();
+  const el = ctx.gy.element;
+  const hint = getUI().deep?.gogyou?.hint ?? '';
+  const cells = FIVE_ELEMENTS.map(e => {
+    const isYou = e === el;
+    return `<button type="button" class="gogy-cycle-node${isYou ? ' is-you' : ''}"
+      data-gy-el="${esc(e)}" aria-pressed="${isYou ? 'true' : 'false'}">${esc(e)}</button>`;
+  }).join('');
+  return `
+    <div class="gogy-cycle-track" role="group">${cells}</div>
+    <div class="gogy-cycle-detail" id="gogy-cycle-detail">${esc(GOGYOU_DESCS[el] ?? '')}</div>
+    ${hint ? `<p class="deep-hint">${esc(hint)}</p>` : ''}`;
+}
+
+function renderMayaKin(ctx) {
+  const my = ctx.my;
+  const d = getUI().deep?.maya ?? {};
+  return `
+    <div class="maya-kin-display">
+      <div class="maya-kin-num">
+        <span class="maya-kin-label">${esc(d.kin ?? 'KIN')}</span> ${my.kin}
+      </div>
+      <div class="maya-kin-row"><span>${esc(d.tone ?? 'Tone')}</span> ${esc(my.tone)}</div>
+      <div class="maya-kin-row"><span>${esc(d.seal ?? 'Seal')}</span> ${esc(my.seal)}</div>
+    </div>`;
+}
+
+function renderZodiacGrid(ctx) {
+  const { CHINESE_ZODIAC } = getContent();
+  const idx = ((ctx.y - 4) % 12 + 12) % 12;
+  const hint = getUI().deep?.zodiac?.hint ?? '';
+  const cells = CHINESE_ZODIAC.map((z, i) => {
+    const isYou = i === idx;
+    const shortName = z.name.split(/[\s(]/)[0];
+    return `<button type="button" class="zodiac-grid-cell${isYou ? ' is-you' : ''}"
+      data-zodiac-idx="${i}" aria-pressed="${isYou ? 'true' : 'false'}">
+      <span class="zodiac-grid-char">${esc(z.char)}</span>
+      <span class="zodiac-grid-name">${esc(shortName)}</span>
+    </button>`;
+  }).join('');
+  return `
+    <div class="zodiac-grid" role="group">${cells}</div>
+    <div class="zodiac-grid-detail" id="zodiac-grid-detail">${esc(CHINESE_ZODIAC[idx].desc)}</div>
+    ${hint ? `<p class="deep-hint">${esc(hint)}</p>` : ''}`;
 }
 
 /* --- personalYear --- */
@@ -348,6 +411,36 @@ export function bindDeepChapters(root, cardKey, ctx) {
         if (body) {
           body.textContent = side === 'light' ? d.lightText(ctx.tb.name) : d.shadowText(ctx.tb.name);
         }
+      });
+    });
+  }
+
+  if (cardKey === 'gogyou') {
+    const { GOGYOU_DESCS } = getContent();
+    const detail = root.querySelector('#gogy-cycle-detail');
+    root.querySelectorAll('[data-gy-el]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const el = btn.dataset.gyEl;
+        root.querySelectorAll('[data-gy-el]').forEach(b => {
+          b.classList.toggle('is-you', b === btn);
+          b.setAttribute('aria-pressed', b === btn ? 'true' : 'false');
+        });
+        if (detail) detail.textContent = GOGYOU_DESCS[el] ?? '';
+      });
+    });
+  }
+
+  if (cardKey === 'zodiac') {
+    const { CHINESE_ZODIAC } = getContent();
+    const detail = root.querySelector('#zodiac-grid-detail');
+    root.querySelectorAll('[data-zodiac-idx]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const i = Number(btn.dataset.zodiacIdx);
+        root.querySelectorAll('[data-zodiac-idx]').forEach(b => {
+          b.classList.toggle('is-you', b === btn);
+          b.setAttribute('aria-pressed', b === btn ? 'true' : 'false');
+        });
+        if (detail) detail.textContent = CHINESE_ZODIAC[i]?.desc ?? '';
       });
     });
   }

@@ -470,3 +470,117 @@ export const COMPAT_AXIS_HINTS = {
     low: 'Crossing energies — honor each other\'s pace.'
   }
 };
+
+/** カード見出し → 用語キー */
+export const CARD_GLOSS_KEYS = {
+  lifepath: 'lifePath',
+  personalYear: 'personalYear',
+  expression: 'expression',
+  sun: 'sunSign',
+  moonTrait: 'moonTrait',
+  zodiac: 'chineseZodiac',
+  sixty: 'sixtyCycle',
+  kyusei: 'kyusei',
+  gogyou: 'gogyou',
+  animal: 'animalType',
+  celtic: 'celticTree',
+  maya: 'mayaKin',
+  tarotBirth: 'tarotBirth',
+  tarotDaily: 'tarotDaily',
+  birthstone: 'birthstone',
+  birthflower: 'birthflower',
+  biorhythm: 'biorhythm',
+  moon: 'moonPhase',
+  lifeStagePrev: 'lifeMilestone',
+  lifeStageNext: 'lifeMilestone',
+  timeline: 'timeline',
+  unified: 'unifiedReading'
+};
+
+/** 難しい用語のやさしい解説 */
+export const TERM_GLOSSARY = {
+  lifePath: {
+    term: 'Life Path',
+    hint: 'A single-digit number from your birth date. Think of it as a recurring theme in your life story — not a fixed fate.'
+  },
+  personalYear: {
+    term: 'Personal Year',
+    hint: 'Where you are in a 9-year cycle (years 1–9). Each year has a different mood — like seasons for your goals and relationships.'
+  },
+  expression: {
+    term: 'Name Number',
+    hint: 'The vibration of the name you use. Different from Life Path: it reflects how you show up when people call your name.'
+  },
+  sunSign: {
+    term: 'Sun Sign',
+    hint: 'Western zodiac sign of your birthday. Often read as your core personality and how you express yourself.'
+  },
+  moonTrait: {
+    term: 'Moon Tendency',
+    hint: 'A mood linked to the moon phase when you were born. Exact moon sign needs birth time; this is a simpler lunar hint.'
+  },
+  chineseZodiac: {
+    term: 'Chinese Zodiac',
+    hint: 'Your animal year in the East Asian 12-year cycle (Rat, Ox, Tiger…). A playful archetype for timing and character.'
+  },
+  sixtyCycle: {
+    term: 'Year Pillar (60-cycle)',
+    hint: 'Stem-and-branch pair for your birth year in the 60-year cycle. Used in East Asian calendars and some fortune systems.'
+  },
+  kyusei: {
+    term: 'Kyusei Star',
+    hint: 'Japanese nine-star ki: your “life star” from birth year. Nine types linked to elements and a 9-year luck rhythm.'
+  },
+  gogyou: {
+    term: 'Five Elements',
+    hint: 'Wood, Fire, Earth, Metal, Water — five forces in East Asian thought. Your birth year highlights one as a core tone.'
+  },
+  animalType: {
+    term: 'Animal Archetype',
+    hint: 'A 60-type personality system from birth date, grouped into 12 animal characters. Popular in Japan for love and work style.'
+  },
+  celticTree: {
+    term: 'Celtic Tree',
+    hint: 'Which of 13 sacred trees matches your birth date in Celtic lore. A nature symbol for strengths and seasons.'
+  },
+  mayaKin: {
+    term: 'Maya KIN',
+    hint: 'Your day in the 260-day sacred Maya count. Seal = essence; tone = rhythm — like a cosmic “day sign.”'
+  },
+  tarotBirth: {
+    term: 'Birth Tarot Card',
+    hint: 'A major arcana card tied to your birth date. A symbolic mirror, not a prediction of fixed events.'
+  },
+  tarotDaily: {
+    term: 'Daily Card',
+    hint: 'A card drawn for today from your name and date. A prompt for reflection, refreshed each day.'
+  },
+  birthstone: {
+    term: 'Birthstone',
+    hint: 'Gemstone tradition for your birth month. Worn as a personal talisman in many cultures.'
+  },
+  birthflower: {
+    term: 'Birth Flower',
+    hint: 'Flower symbol for your birth month. A gentle nature metaphor for mood and self-care.'
+  },
+  biorhythm: {
+    term: 'Biorhythm',
+    hint: 'Waves for body, emotion, mind, and intuition from days since birth. A rhythm map — not medical science.'
+  },
+  moonPhase: {
+    term: 'Moon Phase',
+    hint: 'How full the moon is tonight. Many traditions link it to feelings, beginnings, and letting go.'
+  },
+  lifeMilestone: {
+    term: 'Life Milestone',
+    hint: 'Ages when life themes often shift (e.g. Saturn return). A map marker, not a deadline.'
+  },
+  timeline: {
+    term: '10-Year Timeline',
+    hint: 'Your personal-year numbers for the next decade. Tap each year to read its theme and milestones.'
+  },
+  unifiedReading: {
+    term: 'Unified Reading',
+    hint: 'One story woven from many systems — essence, this year, love, work, shadow, and lucky hints.'
+  }
+};
