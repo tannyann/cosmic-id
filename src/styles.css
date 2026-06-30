@@ -386,6 +386,18 @@ html:not([lang="ja"]) .form-row-names {
   text-align: center;
 }
 
+.profile-restored-hint {
+  margin: 10px 0 0;
+  font-size: 0.75rem;
+  line-height: 1.5;
+  color: var(--accent-teal);
+  text-align: center;
+}
+
+.profile-restored-hint[hidden] {
+  display: none !important;
+}
+
 .share-panel-steps {
   margin: 10px 0 0;
   font-size: 0.85rem;
@@ -3816,4 +3828,209 @@ html[dir="rtl"] .share-actions {
   grid-template-columns: repeat(auto-fill, minmax(64px, 1fr));
   gap: 6px;
   margin: 10px 0;
+}
+
+/* ===== 30日サイクルプランナー ===== */
+.cycles-planner {
+  margin: 36px 0 8px;
+  padding: 28px 24px 24px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: linear-gradient(165deg, rgba(20, 16, 38, 0.55), rgba(8, 7, 20, 0.82));
+}
+
+.cycles-planner-intro {
+  font-size: 14px;
+  color: var(--text-muted);
+  margin: 12px 0 6px;
+  line-height: 1.75;
+}
+
+.cycles-planner-hint {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-bottom: 16px;
+  opacity: 0.85;
+}
+
+.cycles-strip {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+}
+
+.cycles-day {
+  flex: 0 0 56px;
+  scroll-snap-align: start;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 8px 6px 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: rgba(12, 10, 26, 0.6);
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s, color 0.2s;
+}
+
+.cycles-day:hover { border-color: var(--border-strong); color: var(--cream); }
+
+.cycles-day.selected {
+  border-color: var(--gold);
+  background: rgba(184, 149, 46, 0.12);
+  color: var(--gold-champagne);
+}
+
+.cycles-day.is-today { box-shadow: 0 0 0 1px rgba(94, 184, 168, 0.35); }
+.cycles-day.is-lunar-new .cycles-day-moon,
+.cycles-day.is-lunar-full .cycles-day-moon { color: var(--gold-bright); }
+
+.cycles-day-dow { font-size: 10px; letter-spacing: 0.06em; opacity: 0.8; }
+.cycles-day-num { font-size: 16px; font-weight: 500; color: inherit; }
+.cycles-day-pm {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--accent-purple);
+}
+
+.cycles-day-bar {
+  display: block;
+  width: 4px;
+  height: 20px;
+  border-radius: 2px;
+  background: rgba(184, 149, 46, 0.15);
+  position: relative;
+  overflow: hidden;
+  margin-top: 2px;
+}
+
+.cycles-day-bar::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: var(--h, 50%);
+  background: linear-gradient(to top, var(--gold-dim), var(--gold-bright));
+  border-radius: inherit;
+}
+
+.cycles-day-moon {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  font-size: 8px;
+  opacity: 0.9;
+}
+
+.cycles-detail {
+  margin-top: 20px;
+  padding: 18px 16px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  background: rgba(8, 7, 18, 0.5);
+}
+
+.cycles-detail-date {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+  font-size: 15px;
+}
+
+.cycles-detail-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 14px;
+}
+
+.cycles-detail-item {
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  background: rgba(18, 14, 36, 0.45);
+  border: 1px solid rgba(184, 149, 46, 0.1);
+}
+
+.cycles-detail-label {
+  display: block;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+}
+
+.cycles-detail-value {
+  display: block;
+  font-size: 14px;
+  color: var(--gold-bright);
+  margin-bottom: 6px;
+}
+
+.cycles-detail-item p {
+  font-size: 12px;
+  line-height: 1.65;
+  color: var(--cream);
+  opacity: 0.9;
+}
+
+.cycles-lunar-tag {
+  font-size: 11px;
+  color: var(--accent-teal);
+  margin-top: 4px;
+}
+
+@media (max-width: 520px) {
+  .cycles-planner { padding: 20px 16px; }
+  .cycles-detail-grid { grid-template-columns: 1fr; }
+}
+
+@media print {
+  .aurora,
+  .grain,
+  .vignette,
+  .lang-toggle,
+  .form-card,
+  .modal-backdrop,
+  .share-modal-backdrop,
+  .premium-showcase,
+  footer .form-privacy {
+    display: none !important;
+  }
+
+  body {
+    background: #fff;
+    color: #111;
+  }
+
+  .container {
+    max-width: 100%;
+    padding: 0;
+  }
+
+  .results.active {
+    display: block !important;
+  }
+
+  .card,
+  .hero-card,
+  .summary-card,
+  .cycles-planner {
+    break-inside: avoid;
+    border-color: #ccc;
+    box-shadow: none;
+    background: #fff;
+  }
+
+  .card-more,
+  .cycles-planner-hint {
+    display: none;
+  }
 }

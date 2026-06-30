@@ -14,6 +14,8 @@ import { getContent, getUI, getDeeper, getLocale, isJapaneseLocale } from './i18
 import { mountSharePanel } from './share.js';
 import { bindLoveMode } from './love-ui.js';
 import { bindCompatMode } from './compat-ui.js';
+import { renderCyclesPlanner, bindCyclesPlanner } from './cyclesCalendar.js';
+import { saveProfile } from './profileStorage.js';
 import {
   renderExtendedWidget, renderUnifiedModal, bindExtendedReading
 } from './extendedReading.js';
@@ -345,6 +347,8 @@ export function render(name, nameRoman, y, m, d) {
       </div>
     </div>
 
+    ${renderCyclesPlanner(currentContext)}
+
     ${sectionHeading(...u.sections.lifeMap)}
     <div class="grid">
       ${ls.prev ? card('lifeStagePrev', u.cards.lifeStagePrev, u.fmt.ageYears(ls.prev.age), ls.prev.name, ls.prev.desc) : ''}
@@ -364,9 +368,12 @@ export function render(name, nameRoman, y, m, d) {
   r.innerHTML = html;
   r.classList.add('active');
   bindResultCards(r);
+  bindCyclesPlanner(r, currentContext);
   mountSharePanel(currentContext).catch(err => console.error('Share panel:', err));
   bindLoveMode();
   bindCompatMode();
+
+  saveProfile({ name, nameRoman: roman, y, m, d });
 
   const scrollOpts = prefersReducedMotion() ? { block: 'start' } : { behavior: 'smooth', block: 'start' };
   setTimeout(() => r.scrollIntoView(scrollOpts), 100);

@@ -554,3 +554,33 @@ export function lifeMilestonesAround(y, m, d, spanYears = 15) {
 export function biorhythmCriticalDays(y, m, d, span = 90) {
   return biorhythmForecast(y, m, d, span).filter(r => r.critical);
 }
+
+/** 月相が新月・満月に近いか（簡易判定） */
+export function lunarMilestoneType(phase) {
+  const p = ((phase % 1) + 1) % 1;
+  if (p < 0.04 || p > 0.96) return 'new';
+  if (p > 0.46 && p < 0.54) return 'full';
+  return null;
+}
+
+/**
+ * 統合サイクルプランナー用：個人月・月相・バイオ・九星日盤を日ごとに並べる。
+ * @returns {Array<ReturnType<typeof biorhythmForecast>[number] & { py:number, pm:number, moonPhase:number, moonName:string, lunar:'new'|'full'|null, ksIdx:number }>}
+ */
+export function cyclesDayPlan(y, m, d, days = 30, startOffset = 0) {
+  const bioRows = biorhythmForecast(y, m, d, days, startOffset);
+  return bioRows.map(bio => {
+    const py = personalYear(m, d, bio.y);
+    const pm = personalMonth(py, bio.mo);
+    const moon = moonPhaseAt(bio.date);
+    return {
+      ...bio,
+      py,
+      pm,
+      moonPhase: moon.phase,
+      moonName: moon.name,
+      lunar: lunarMilestoneType(moon.phase),
+      ksIdx: kyuseiDayStar(bio.day)
+    };
+  });
+}

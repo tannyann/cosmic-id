@@ -13,10 +13,11 @@ import {
   bindForm, bindModalEvents, bindPremiumToggle, closeModal,
   renderPremiumShowcase, rerenderIfNeeded
 } from './ui.js';
-import { bindShareModalEvents, closeShareModal } from './share.js';
+import { restoreProfileForm } from './profileStorage.js';
 
 initI18n();
 mountBirthDateField(MAIN_BIRTH_IDS);
+restoreProfileForm();
 renderPremiumShowcase();
 bindForm();
 bindModalEvents();

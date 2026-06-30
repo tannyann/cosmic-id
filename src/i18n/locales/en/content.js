@@ -319,7 +319,7 @@ export const FREE_INCLUDES = [
   {
     icon: '○',
     title: 'Tonight\'s moon · biorhythm',
-    desc: 'Check today\'s wave and the rhythm from your birth date.'
+    desc: 'Check today\'s wave and the rhythm from your birth date — plus a 30-day cycle planner ahead.'
   },
   {
     icon: '○',
@@ -344,6 +344,11 @@ export const ALL_FREE_HIGHLIGHTS = [
     icon: '◇',
     title: 'Compatibility reading',
     desc: 'Five-axis radar for you and someone else — partner, friend, or anyone.'
+  },
+  {
+    icon: '☽',
+    title: '30-day cycle planner',
+    desc: 'Personal month, lunar phase, biorhythm, and Kyusei day star — 30 days ahead.'
   }
 ];
 
@@ -420,9 +425,9 @@ export const PREMIUM_PITCH_LINES = [
 
 /** Premium roadmap (idea shelf · outside free scope) */
 export const PREMIUM_ROADMAP = [
-  { phase: 'In Premium', items: ['Deep card interpretations (demo available)'] },
-  { phase: 'In development', items: ['10-year timeline', 'Compatibility', 'Moon calendar'] },
-  { phase: 'Concept', items: ['AI unified narrative', 'Saved profiles'] }
+  { phase: 'Available free', items: ['All 19 systems & deep chapters', '10-year timeline', 'Love & compatibility', 'Moon calendar', '30-day cycle planner'] },
+  { phase: 'In development', items: ['AI unified narrative', 'Account profiles & family saves'] },
+  { phase: 'Concept', items: ['Push reminders', 'PDF handbook', 'Premium billing'] }
 ];
 
 /** Compatibility mode — axis labels, bands, hints */

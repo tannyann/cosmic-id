@@ -29,7 +29,8 @@ export const ui = {
     submit: '読み解く',
     freeBadge: 'すべて無料',
     premiumDemo: '深層解釈をプレビュー（デモ）',
-    premiumDemoTitle: '深層解釈のプレビュー（通常は無料のまま利用できます）'
+    premiumDemoTitle: '深層解釈のプレビュー（通常は無料のまま利用できます）',
+    profileRestored: '前回の入力を復元しました。この端末にのみ保存されます。'
   },
   footer: {
     line1: 'COSMIC ID — Personal Cosmology Prototype',
@@ -153,8 +154,36 @@ export const ui = {
       `マスタークラスのリーディングは ${n} つのセクションに広がります。10年運気、相性、職業適性、魂の課題、より精密な計算まで。`,
     close: '閉じる'
   },
-  toast: {
-    premiumDemo: 'デモでは「深層解釈をプレビュー」をONにすると Premium の中身が見られます'
+  cyclesPlanner: {
+    title: '30日サイクルプランナー',
+    titleEn: '30-Day Cycle Planner',
+    intro: '個人月・月相・バイオリズム・九星日盤を、これから30日分並べました。日付をタップして読み解いてください。',
+    tapHint: '気になる日をタップすると詳細が開きます。',
+    stripAria: 'これから30日',
+    today: '今日',
+    personalYearLabel: '個人年',
+    personalMonthLabel: '個人月',
+    moonLabel: '月相',
+    bioLabel: 'バイオリズム',
+    kyuseiDayLabel: '九星・日盤',
+    lunarNew: '新月',
+    lunarFull: '満月',
+    bioPeak: '高め',
+    bioLow: '低め',
+    bioMid: '中庸',
+    bioCross: 'ゼロ交差',
+    bioLabels: {
+      physical: '身体',
+      emotional: '感情',
+      intellectual: '知性',
+      intuitive: '直感'
+    },
+    bioHint: (key, val) => ({
+      physical: val > 0 ? '体を動かしやすい日かもしれません。' : '休息と整えの日として。',
+      emotional: val > 0 ? '感情の波が高まりやすい日。' : '内側を整える時間に。',
+      intellectual: val > 0 ? '頭が冴えやすい日。' : 'じっくり考えるより休む方が合うかも。',
+      intuitive: val > 0 ? 'ひらめきが開きやすい日。' : '論理より感覚を信頼して。'
+    })[key] ?? ''
   },
   timeline: {
     eyebrow: 'インタラクティブ・リーディング',

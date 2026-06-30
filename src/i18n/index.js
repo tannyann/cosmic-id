@@ -183,6 +183,10 @@ export function applyStaticPageCopy() {
   applyRomanNameFieldVisibility();
   setText('btn-submit', u.form.submit);
   setText('form-privacy', u.form.privacyNote);
+  const profileHint = document.getElementById('profile-restored-hint');
+  if (profileHint && u.form.profileRestored) {
+    profileHint.textContent = u.form.profileRestored;
+  }
 
   const shareClose = document.getElementById('share-modal-close');
   if (shareClose) shareClose.setAttribute('aria-label', u.modal.close);

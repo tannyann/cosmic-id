@@ -25,7 +25,8 @@ export const ui = {
     submit: 'Reveal',
     freeBadge: 'Everything is free',
     premiumDemo: 'Preview deep readings (demo)',
-    premiumDemoTitle: 'Preview Premium deep readings (core experience stays free)'
+    premiumDemoTitle: 'Preview Premium deep readings (core experience stays free)',
+    profileRestored: 'Restored your last entry. Saved on this device only.'
   },
   footer: {
     line1: 'COSMIC ID — Personal Cosmology Prototype',
@@ -146,8 +147,36 @@ export const ui = {
       `Master-class readings span ${n} sections: ten-year cycles, compatibility, vocation, soul themes, and finer calculations.`,
     close: 'Close'
   },
-  toast: {
-    premiumDemo: 'Turn on “Preview deep readings” in the form to see Premium content in this demo'
+  cyclesPlanner: {
+    title: '30-Day Cycle Planner',
+    titleEn: 'Cycles',
+    intro: 'Personal month, lunar phase, biorhythm, and Kyusei day star — the next 30 days at a glance. Tap a date to read more.',
+    tapHint: 'Tap any day for details.',
+    stripAria: 'Next 30 days',
+    today: 'Today',
+    personalYearLabel: 'Personal year',
+    personalMonthLabel: 'Personal month',
+    moonLabel: 'Moon phase',
+    bioLabel: 'Biorhythm',
+    kyuseiDayLabel: 'Kyusei day star',
+    lunarNew: 'New moon',
+    lunarFull: 'Full moon',
+    bioPeak: 'High',
+    bioLow: 'Low',
+    bioMid: 'Mid',
+    bioCross: 'Zero crossing',
+    bioLabels: {
+      physical: 'Physical',
+      emotional: 'Emotional',
+      intellectual: 'Intellectual',
+      intuitive: 'Intuitive'
+    },
+    bioHint: (key, val) => ({
+      physical: val > 0 ? 'A day when movement may feel natural.' : 'Rest and recovery may serve you better.',
+      emotional: val > 0 ? 'Emotional waves may run higher.' : 'A good day to tend your inner world.',
+      intellectual: val > 0 ? 'Mental clarity may peak.' : 'Deep thinking might wait — let the mind breathe.',
+      intuitive: val > 0 ? 'Insights may arrive easily.' : 'Trust feeling over logic for now.'
+    })[key] ?? ''
   },
   timeline: {
     eyebrow: 'Interactive reading',
