@@ -201,7 +201,52 @@ export const ui = {
       1: '始まり', 2: '忍耐と絆', 3: '表現と喜び',
       4: '土台づくり', 5: '変化と自由', 6: '責任と愛',
       7: '内省', 8: '収穫', 9: '完成と手放し'
-    })[py] ?? ''}`
+    })[py] ?? ''}`,
+    sectionTitle: '100 年のあなたの時刻表',
+    sectionLead: '個人年サイクル・人生の節目・バイオリズムを一枚にまとめました。',
+    today: 'TODAY',
+    legendPY: 'Personal Year',
+    legendMS: '人生の節目',
+    legendBio: 'バイオリズム(±60日)',
+    dateLabel: '日付',
+    saturnReturn1: 'サターンリターン(第一)',
+    saturnReturn2: 'サターンリターン(第二)',
+    saturnReturn3: 'サターンリターン(第三)',
+    jupiterReturn: '木星リターン',
+    midlife: '中年の入口',
+    chironReturn: 'カイロンリターン',
+    footnote: 'ドラッグで別の時期を見てみてください。'
+  },
+  depth: {
+    tabWhat: '意味',
+    tabHow: '計算',
+    tabWhere: '歴史',
+    tabWho: '響き合う人',
+    timelineTitle: '年表',
+    modernTitle: '現代における位置',
+    refsTitle: '参考文献',
+    emptyComputation: '計算過程は未収載です',
+    emptyHistory: '歴史は未収載です',
+    emptyFamous: '該当する人物はまだ登録されていません',
+    famousCaption: '{value} を共有する人たち'
+  },
+  whatif: {
+    title: 'もし別の日に生まれていたら?',
+    lead: '生年月日をずらしたら、19 体系の結果はどう変わる? 出生の偶発性を並べて見る。',
+    base: '元の日',
+    shifted: '仮の日',
+    antipode: '地球の裏側',
+    noDiff: 'この日付シフトでは、主要 14 軸に変化はありません。',
+    diffTemplate: '{n} 軸が変わりました'
+  },
+  starmap: {
+    ctaLabel: 'あなたの星図を見る',
+    close: '閉じる',
+    downloadSVG: 'SVG で保存',
+    downloadPNG: 'PNG で保存',
+    print: '印刷',
+    saved: '保存しました',
+    caption: 'あなただけの星図。壁に飾るか、SNS に貼るか。'
   },
   master: {
     title: 'マスターリーディング',

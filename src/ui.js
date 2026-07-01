@@ -18,6 +18,10 @@ import { renderCyclesPlanner, bindCyclesPlanner } from './cyclesCalendar.js';
 import { saveProfile } from './profileStorage.js';
 import { mountNarrativePanel } from './narrative-ui.js';
 import { generateNarrative } from './narrative.js';
+import { mountCardDepth } from './card-depth-ui.js';
+import { mountTimeline } from './timeline-ui.js';
+import { bindWhatIfMode } from './whatif-ui.js';
+import { bindStarMap } from './starmap-ui.js';
 import {
   renderExtendedWidget, renderUnifiedModal, bindExtendedReading
 } from './extendedReading.js';
@@ -376,6 +380,9 @@ export function render(name, nameRoman, y, m, d) {
   mountSharePanel(currentContext, { narrativePromise }).catch(err => console.error('Share panel:', err));
   bindLoveMode();
   bindCompatMode();
+  bindStarMap();
+  mountTimeline();
+  bindWhatIfMode();
 
   saveProfile({ name, nameRoman: roman, y, m, d });
 
@@ -418,6 +425,7 @@ export function openModal(cardKey) {
     if (!data) return;
     body.innerHTML = renderModalBody(data, cardKey, currentContext);
     bindModalInteractions(body, cardKey);
+    mountCardDepth(cardKey, currentContext);
   }
 
   modal.dataset.cardKey = cardKey;

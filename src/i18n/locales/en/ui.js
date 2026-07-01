@@ -194,7 +194,52 @@ export const ui = {
       1: 'New beginnings', 2: 'Patience & bonds', 3: 'Expression & joy',
       4: 'Building foundations', 5: 'Change & freedom', 6: 'Responsibility & love',
       7: 'Introspection', 8: 'Harvest', 9: 'Completion & release'
-    })[py] ?? ''}`
+    })[py] ?? ''}`,
+    sectionTitle: 'Your 100-year clock',
+    sectionLead: 'Personal Year cycles, life milestones, and biorhythm woven into one map.',
+    today: 'TODAY',
+    legendPY: 'Personal Year',
+    legendMS: 'Life Milestones',
+    legendBio: 'Biorhythm (±60 days)',
+    dateLabel: 'Date',
+    saturnReturn1: 'First Saturn Return',
+    saturnReturn2: 'Second Saturn Return',
+    saturnReturn3: 'Third Saturn Return',
+    jupiterReturn: 'Jupiter Return',
+    midlife: 'Midlife threshold',
+    chironReturn: 'Chiron Return',
+    footnote: 'Drag along the timeline to look at any moment.'
+  },
+  depth: {
+    tabWhat: 'Meaning',
+    tabHow: 'Computation',
+    tabWhere: 'History',
+    tabWho: 'Resonant lives',
+    timelineTitle: 'Timeline',
+    modernTitle: 'Today',
+    refsTitle: 'Further reading',
+    emptyComputation: 'No computation trace yet.',
+    emptyHistory: 'No history yet.',
+    emptyFamous: 'No matching entries yet.',
+    famousCaption: 'People who share {value}'
+  },
+  whatif: {
+    title: 'What if you were born on a different day?',
+    lead: 'Shift your birth date and see how the 19 systems shift with you. Read your own contingency.',
+    base: 'Actual day',
+    shifted: 'What-if day',
+    antipode: 'Other side of the Earth',
+    noDiff: 'This shift leaves the main 14 axes unchanged.',
+    diffTemplate: '{n} axes changed'
+  },
+  starmap: {
+    ctaLabel: 'Reveal your star map',
+    close: 'Close',
+    downloadSVG: 'Download SVG',
+    downloadPNG: 'Download PNG',
+    print: 'Print',
+    saved: 'Saved',
+    caption: 'Your personal star map. Frame it, share it.'
   },
   master: {
     title: 'Master reading',

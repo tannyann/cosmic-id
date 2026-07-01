@@ -596,3 +596,4 @@ export const TERM_GLOSSARY = {
 };
 
 export * from './love-content.js';
+export * from './depth-content.js';
