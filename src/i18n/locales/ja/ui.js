@@ -728,5 +728,99 @@ export const ui = {
   gloss: {
     stripTitle: '用語のヒント — カードの ? をタップ',
     tipAria: (term) => `「${term}」とは？`
+  },
+  yearlyWrap: {
+    bannerTitle: 'あなたの {year} の物語',
+    bannerSub: '1 分で振り返る、あなたのこの 1 年',
+    close: '閉じる',
+    eyebrow: 'YOUR YEAR IN',
+    tapNext: 'タップして始める →',
+    axisEyebrow: '今年の軸',
+    personalYearLabel: 'Personal Year',
+    axisLine: '{year} はあなたの Personal Year {py} でした。',
+    rhythmEyebrow: 'ピークと谷',
+    peakNote: 'があなたの高波でした',
+    dipNote: 'は少し休むタイミングでした',
+    milestoneEyebrow: '人生の節目',
+    noMilestones: '大きな星占的節目のない年 — 蓄える年でした',
+    ms_saturn_return_1: 'サターンリターン 第一',
+    ms_saturn_return_2: 'サターンリターン 第二',
+    ms_jupiter_return: '木星リターン',
+    ms_midlife: '中年の入口',
+    ms_chiron_return: 'カイロンリターン',
+    threeEyebrow: 'あなたの三つの顔',
+    threeSun: '太陽',
+    threeZodiac: '干支',
+    threeKyusei: '九星',
+    nextEyebrow: '来年を見る',
+    nextLine: '{year} はあなたの Personal Year {py}。{hint} の年になります。',
+    pyHints: {
+      1: '種を蒔く', 2: '繋がりを紡ぐ', 3: '表現する', 4: '土台を築く',
+      5: '変化を受け入れる', 6: '慈しむ', 7: '内省する', 8: '実らせる', 9: '手放す'
+    },
+    shareEyebrow: 'この年をシェア',
+    saveImage: '画像を保存',
+    copyText: 'テキストをコピー'
+  },
+  milestones: {
+    eyebrow: '未来の節目',
+    title: '人生の節目にお知らせします',
+    lead: 'サターンリターン、木星リターン、Personal Year 1 — 節目が近づいたらメールでご連絡します。',
+    emailLabel: 'メールアドレス',
+    prefMs: '人生の節目',
+    prefPY: 'Personal Year 切替',
+    prefMoon: '新月/満月(月2回)',
+    subscribe: '登録する',
+    privacy: 'あなたのアドレスを第三者と共有することはありません。いつでも解除できます。',
+    sending: '登録中…',
+    success: '完了 — 確認メールをご覧ください。',
+    error: '失敗しました。しばらくして再試行してください。',
+    daysToGo: '日後',
+    ms_saturn_return_1: 'サターンリターン 第一',
+    ms_saturn_return_2: 'サターンリターン 第二',
+    ms_jupiter_return: '木星リターン',
+    ms_midlife: '中年の入口',
+    ms_chiron_return: 'カイロンリターン',
+    noUpcoming: '今後 3 年間に大きな節目はありません。'
+  },
+  ambient: {
+    toggle: '環境音の切替',
+    mood: '雰囲気',
+    volume: '音量',
+    fire: '火',
+    earth: '地',
+    air: '風',
+    water: '水'
+  },
+  skyTonight: {
+    title: '今夜の空',
+    eyebrow: 'SKY TONIGHT',
+    yourLocation: 'あなたの位置',
+    defaultLocation: '東京(既定)',
+    illuminated: '{p}% 照らされています',
+    newIn: '新月まで',
+    fullIn: '満月まで',
+    planetsAbove: '地平線の上',
+    noVisible: '肉眼で見える主要惑星はありません。'
+  },
+  skeptic: {
+    toggle: 'サイエンスモード',
+    header: '批判的視座',
+    counter: '一方で'
+  },
+  comparative: {
+    eyebrow: 'IN MODERN FRAMES',
+    title: 'あなたを現代の語彙に翻訳する',
+    caveat: 'これらの対応は共通するテーマの翻訳で、厳密な科学的一致ではありません。'
+  },
+  museum: {
+    navLink: 'Museum',
+    eyebrow: 'MUSEUM',
+    title: '19 の物語の博物館',
+    lead: 'それぞれの体系が、いつ、どこで、誰から生まれたのか。',
+    empty: '展示は準備中です。',
+    back: '← COSMIC ID に戻る',
+    indexLink: '← 展示一覧',
+    refs: '参考文献'
   }
 };

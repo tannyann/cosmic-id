@@ -15,8 +15,14 @@ import {
 } from './ui.js';
 import { restoreProfileForm } from './profileStorage.js';
 import { bindShareModalEvents, closeShareModal } from './share.js';
+import { startAtmosphereWatcher } from './atmosphere.js';
+import { bindMuseum } from './museum-ui.js';
+import { bindSkepticToggle } from './skeptic.js';
 
 initI18n();
+startAtmosphereWatcher();
+bindMuseum();
+bindSkepticToggle();
 mountBirthDateField(MAIN_BIRTH_IDS);
 restoreProfileForm();
 renderPremiumShowcase();

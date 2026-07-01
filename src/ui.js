@@ -22,6 +22,12 @@ import { mountCardDepth } from './card-depth-ui.js';
 import { mountTimeline } from './timeline-ui.js';
 import { bindWhatIfMode } from './whatif-ui.js';
 import { bindStarMap } from './starmap-ui.js';
+import { bindYearlyWrap } from './yearly-wrap-ui.js';
+import { bindMilestoneCTA } from './milestone-cta.js';
+import { bindAmbient } from './ambient.js';
+import { bindSkyTonight } from './sky-tonight-ui.js';
+import { mountComparative } from './comparative.js';
+import { mountSkepticNote } from './skeptic.js';
 import {
   renderExtendedWidget, renderUnifiedModal, bindExtendedReading
 } from './extendedReading.js';
@@ -383,6 +389,10 @@ export function render(name, nameRoman, y, m, d) {
   bindStarMap();
   mountTimeline();
   bindWhatIfMode();
+  bindYearlyWrap();
+  bindSkyTonight();
+  bindMilestoneCTA();
+  bindAmbient();
 
   saveProfile({ name, nameRoman: roman, y, m, d });
 
@@ -426,6 +436,8 @@ export function openModal(cardKey) {
     body.innerHTML = renderModalBody(data, cardKey, currentContext);
     bindModalInteractions(body, cardKey);
     mountCardDepth(cardKey, currentContext);
+    mountComparative(cardKey, currentContext);
+    mountSkepticNote(cardKey);
   }
 
   modal.dataset.cardKey = cardKey;

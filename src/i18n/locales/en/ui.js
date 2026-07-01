@@ -721,5 +721,99 @@ export const ui = {
   gloss: {
     stripTitle: 'Quick glossary — tap ? on any card',
     tipAria: (term) => `What does “${term}” mean?`
+  },
+  yearlyWrap: {
+    bannerTitle: 'Your {year} story',
+    bannerSub: 'A one-minute look back at your year',
+    close: 'Close',
+    eyebrow: 'YOUR YEAR IN',
+    tapNext: 'Tap to begin →',
+    axisEyebrow: 'This year\'s axis',
+    personalYearLabel: 'Personal Year',
+    axisLine: '{year} was your Personal Year {py}.',
+    rhythmEyebrow: 'Peaks and valleys',
+    peakNote: 'was your high wave',
+    dipNote: 'was a time to rest',
+    milestoneEyebrow: 'Life milestones',
+    noMilestones: 'A year without major astrological thresholds — a year to gather strength',
+    ms_saturn_return_1: 'First Saturn Return',
+    ms_saturn_return_2: 'Second Saturn Return',
+    ms_jupiter_return: 'Jupiter Return',
+    ms_midlife: 'Midlife threshold',
+    ms_chiron_return: 'Chiron Return',
+    threeEyebrow: 'Your three faces',
+    threeSun: 'Sun',
+    threeZodiac: 'Zodiac',
+    threeKyusei: 'Kyusei',
+    nextEyebrow: 'Looking ahead',
+    nextLine: '{year} brings Personal Year {py} — a year to {hint}.',
+    pyHints: {
+      1: 'plant seeds', 2: 'weave bonds', 3: 'express', 4: 'build foundations',
+      5: 'embrace change', 6: 'nurture', 7: 'turn inward', 8: 'harvest', 9: 'release'
+    },
+    shareEyebrow: 'Share this year',
+    saveImage: 'Save image',
+    copyText: 'Copy text'
+  },
+  milestones: {
+    eyebrow: 'Milestones ahead',
+    title: 'Get notified for life\'s turning points',
+    lead: 'Saturn Return, Jupiter Return, Personal Year 1 — we\'ll email you when they draw near.',
+    emailLabel: 'Email address',
+    prefMs: 'Life milestones',
+    prefPY: 'Personal Year transitions',
+    prefMoon: 'New/Full Moon (twice a month)',
+    subscribe: 'Subscribe',
+    privacy: 'We never share your address. Unsubscribe anytime.',
+    sending: 'Signing you up…',
+    success: 'Done — check your inbox for confirmation.',
+    error: 'Something went wrong. Try again later.',
+    daysToGo: 'days to go',
+    ms_saturn_return_1: 'First Saturn Return',
+    ms_saturn_return_2: 'Second Saturn Return',
+    ms_jupiter_return: 'Jupiter Return',
+    ms_midlife: 'Midlife threshold',
+    ms_chiron_return: 'Chiron Return',
+    noUpcoming: 'No major milestone in the next 3 years.'
+  },
+  ambient: {
+    toggle: 'Ambient sound',
+    mood: 'Mood',
+    volume: 'Volume',
+    fire: 'Fire',
+    earth: 'Earth',
+    air: 'Air',
+    water: 'Water'
+  },
+  skyTonight: {
+    title: 'Sky tonight',
+    eyebrow: 'SKY TONIGHT',
+    yourLocation: 'Your location',
+    defaultLocation: 'Tokyo (default)',
+    illuminated: '{p}% illuminated',
+    newIn: 'New in',
+    fullIn: 'Full in',
+    planetsAbove: 'Above the horizon',
+    noVisible: 'No major planets visible to the naked eye.'
+  },
+  skeptic: {
+    toggle: 'Science mode',
+    header: 'Skeptic note',
+    counter: 'On the other hand'
+  },
+  comparative: {
+    eyebrow: 'IN MODERN FRAMES',
+    title: 'You, translated into today\'s vocabulary',
+    caveat: 'These mappings translate shared themes, not exact scientific correspondence.'
+  },
+  museum: {
+    navLink: 'Museum',
+    eyebrow: 'MUSEUM',
+    title: 'Museum of 19 stories',
+    lead: 'When, where, and from whom each system was born.',
+    empty: 'This exhibit is being prepared.',
+    back: '← Back to COSMIC ID',
+    indexLink: '← All exhibits',
+    refs: 'References'
   }
 };
