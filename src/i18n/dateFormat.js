@@ -36,7 +36,7 @@ export function createDateFormatters(meta) {
 
   const birthDate = (y, m, d) => {
     if (code === 'ja') return `${y}年${m}月${d}日`;
-    return intlNumeric(htmlLang, y, m, d);
+    return intlLong(htmlLang, y, m, d);
   };
 
   const bornOn = (y, m, d) => {

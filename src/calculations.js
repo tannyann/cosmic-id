@@ -202,8 +202,11 @@ export function chineseZodiac(year) {
 export function sixtyJikkan(year) {
   const { HEAVENLY_STEMS, EARTHLY_BRANCHES, FIVE_ELEMENTS, YIN_YANG } = getContent();
   const idx = ((year - 4) % 60 + 60) % 60;
+  const stem = HEAVENLY_STEMS[idx % 10];
+  const branch = EARTHLY_BRANCHES[idx % 12];
+  const glue = (stem.length > 1 || branch.length > 1) ? ' ' : '';
   return {
-    name: HEAVENLY_STEMS[idx % 10] + EARTHLY_BRANCHES[idx % 12],
+    name: stem + glue + branch,
     element: FIVE_ELEMENTS[Math.floor((idx % 10) / 2)],
     yinyang: YIN_YANG[(idx % 10) % 2]
   };

@@ -14,6 +14,7 @@ import {
   renderPremiumShowcase, rerenderIfNeeded
 } from './ui.js';
 import { restoreProfileForm } from './profileStorage.js';
+import { bindShareModalEvents, closeShareModal } from './share.js';
 
 initI18n();
 mountBirthDateField(MAIN_BIRTH_IDS);

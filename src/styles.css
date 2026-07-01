@@ -1848,6 +1848,38 @@ footer {
   line-height: 1.7;
 }
 
+.share-panel-block {
+  margin-top: 8px;
+}
+
+.share-block-title {
+  font-family: var(--font-display);
+  font-size: 15px;
+  letter-spacing: 0.14em;
+  color: var(--gold-bright);
+  font-weight: 400;
+  margin-bottom: 16px;
+}
+
+.share-panel-divider {
+  height: 1px;
+  margin: 28px 0 24px;
+  background: linear-gradient(90deg, transparent, var(--gold-dim), transparent);
+}
+
+.share-panel .narrative-share {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: none;
+  text-align: center;
+}
+
+.share-panel .share-block-title,
+.share-panel .narrative-share-desc,
+.share-panel .narrative-share-steps {
+  text-align: center;
+}
+
 .share-preview-btn {
   display: block;
   width: 100%;
@@ -4115,17 +4147,7 @@ html[dir="rtl"] .share-actions {
 }
 
 .narrative-share {
-  margin-top: 28px;
-  padding-top: 24px;
-  border-top: 1px solid var(--border);
   text-align: center;
-}
-
-.narrative-share-title {
-  font-family: var(--font-display);
-  font-size: 1.2rem;
-  color: var(--gold-bright);
-  margin-bottom: 8px;
 }
 
 .narrative-share-desc,

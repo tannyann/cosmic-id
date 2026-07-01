@@ -4,7 +4,6 @@
 import { generateNarrative } from './narrative.js';
 import { getUI } from './i18n/index.js';
 import { escapeHtml, showToast } from './util.js';
-import { mountNarrativeShareActions, renderNarrativeShareHtml } from './narrativeShare.js';
 
 function esc(s) {
   return escapeHtml(String(s ?? ''));
@@ -13,7 +12,11 @@ function esc(s) {
 /**
  * @param {object} ctx — render() の currentContext
  */
-export async function mountNarrativePanel(ctx) {
+/**
+ * @param {object} ctx
+ * @param {Promise<import('./narrative.js').NarrativeResult>|undefined} narrativePromise
+ */
+export async function mountNarrativePanel(ctx, narrativePromise) {
   document.getElementById('narrative-panel')?.remove();
 
   const u = getUI().narrative;
@@ -40,18 +43,18 @@ export async function mountNarrativePanel(ctx) {
 
   let narrative;
   try {
-    narrative = await generateNarrative(ctx);
+    narrative = await (narrativePromise ?? generateNarrative(ctx));
   } catch (err) {
     console.error('Narrative generation failed:', err);
     const status = panel.querySelector('#narrative-status');
     if (status) status.innerHTML = `<p class="narrative-error">${esc(u.generateFail)}</p>`;
     showToast(u.generateFail);
-    return;
+    return null;
   }
 
   const status = panel.querySelector('#narrative-status');
   const body = panel.querySelector('#narrative-body');
-  if (!body) return;
+  if (!body) return null;
 
   const sourceNote = narrative.source === 'ai' ? u.sourceAi : u.sourceLocal;
   const hookHtml = `<p class="narrative-hook">${esc(narrative.hook)}</p>`;
@@ -64,11 +67,10 @@ export async function mountNarrativePanel(ctx) {
     ${hookHtml}
     <div class="narrative-paras">${parasHtml}</div>
     <p class="narrative-footnote">${esc(u.footnote)}</p>
-    ${renderNarrativeShareHtml(narrative)}
   `;
 
   if (status) status.hidden = true;
   body.hidden = false;
 
-  await mountNarrativeShareActions(body, ctx, narrative);
+  return narrative;
 }

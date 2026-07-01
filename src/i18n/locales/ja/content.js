@@ -593,3 +593,5 @@ export const TERM_GLOSSARY = {
     hint: '複数の体系を1つの物語にまとめた読み解き。本質・今年・愛・仕事・影・ラッキー要素。'
   }
 };
+
+export * from './love-content.js';

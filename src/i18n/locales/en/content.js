@@ -85,10 +85,10 @@ export const CHINESE_ZODIAC = [
   { name: 'Hai (Boar)',     char: 'Boar',    desc: 'Frank and courageous. Charges straight ahead.' }
 ];
 
-export const HEAVENLY_STEMS  = ['甲','乙','丙','丁','戊','己','庚','辛','壬','癸'];
-export const EARTHLY_BRANCHES = ['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'];
-export const FIVE_ELEMENTS    = ['木','火','土','金','水'];
-export const YIN_YANG         = ['陽','陰'];
+export const HEAVENLY_STEMS  = ['Jia', 'Yi', 'Bing', 'Ding', 'Wu', 'Ji', 'Geng', 'Xin', 'Ren', 'Gui'];
+export const EARTHLY_BRANCHES = ['Zi', 'Chou', 'Yin', 'Mao', 'Chen', 'Si', 'Wu', 'Wei', 'Shen', 'You', 'Xu', 'Hai'];
+export const FIVE_ELEMENTS    = ['Wood', 'Fire', 'Earth', 'Metal', 'Water'];
+export const YIN_YANG         = ['Yang', 'Yin'];
 
 export const KYUSEI_STARS = [
   null,
@@ -104,11 +104,11 @@ export const KYUSEI_STARS = [
 ];
 
 export const GOGYOU_DESCS = {
-  '木': 'The power to grow. Forward-looking, like a morning of fresh green.',
-  '火': 'Burning passion. Illuminates those around with light and warmth.',
-  '土': 'The power to receive. Sits firmly at the center.',
-  '金': 'The power to refine. Cool, beautiful, blade-sharp intellect.',
-  '水': 'The power to flow. Moves deeply and flexibly through all things.'
+  'Wood': 'Growing outward. A pioneering, generative energy.',
+  'Fire': 'Radiating warmth. Passion and expression.',
+  'Earth': 'Grounding and nurturing. Stability and care.',
+  'Metal': 'Refining and structuring. Clarity and boundaries.',
+  'Water': 'Flowing deep. Intuition and adaptability.'
 };
 
 // ============ Animal Fortune ============
@@ -280,9 +280,9 @@ export const LUCKY_COMPASS = {
 
 // ============ Free / Premium positioning (copy) ============
 export const PRODUCT_PHILOSOPHY = {
-  freeBadge: 'Everything is free',
-  freeHeadline: 'Nineteen stories, open to everyone',
-  freeLead: 'With just your birth date and name, you get cross-system results, a summary, card readings, love and compatibility — all at no cost.',
+  freeBadge: 'Free forever',
+  freeHeadline: 'Everything, no sign-up required',
+  freeLead: 'This whole page is free. Every reading is one possibility — you write the story.',
   premiumHeadline: 'Go deeper, still free',
   premiumLead: 'Extended chapters in every card modal are unlocked for everyone.'
 };
@@ -290,8 +290,8 @@ export const PRODUCT_PHILOSOPHY = {
 /** @deprecated Billing not used — kept for reference */
 export const PREMIUM_COMING_SOON = {
   badge: 'Coming soon',
-  headline: 'Premium is coming soon',
-  lead: 'Deeper readings, longer timelines, compatibility — we\'re preparing it now. Until then, enjoy all nineteen systems for free.',
+  headline: 'Premium — coming soon',
+  lead: 'We\'re thinking about a light Premium tier for the deepest cross-readings. Nothing hidden yet.',
   teasers: [
     'Master readings for all 19 systems',
     '10-year fortune timeline',
@@ -309,22 +309,22 @@ export const FREE_INCLUDES = [
   {
     icon: '○',
     title: 'All nineteen systems',
-    desc: 'Numerology, Western astrology, Nine Star Ki, animal fortune… one input, a full overview and story summary.'
+    desc: 'Numerology · Western astrology · Nine Stars · Chinese zodiac · animal reading and more — one input reveals the full grid and a story summary.'
   },
   {
     icon: '○',
-    title: 'Card-by-card readings',
-    desc: 'Tap any system for free readings — including extended deep chapters in each modal.'
+    title: 'Deep reading per card',
+    desc: 'Tap any card to open its detailed reading. Every card, every extended chapter, is free.'
   },
   {
     icon: '○',
-    title: 'Tonight\'s moon · biorhythm',
-    desc: 'Check today\'s wave and the rhythm from your birth date — plus a 30-day cycle planner ahead.'
+    title: 'Tonight\'s moon & biorhythm',
+    desc: 'Today\'s wave and your birth rhythm, plus a 30-day cycle planner ahead.'
   },
   {
     icon: '○',
-    title: 'Share cards',
-    desc: 'Save results as an image or share them as text.'
+    title: 'Share card',
+    desc: 'Save your result as an image or copy it as text and share anywhere.'
   }
 ];
 
@@ -332,18 +332,18 @@ export const FREE_INCLUDES = [
 export const ALL_FREE_HIGHLIGHTS = [
   {
     icon: '✦',
-    title: 'Master deep readings',
-    desc: 'Every card opens extended chapters — timelines, shadows, and cross-system hints. No paywall.'
+    title: 'Deep master reading',
+    desc: 'Every card comes with an extended chapter. Timeline, shadow work, and cross-system hints — all without a paywall.'
   },
   {
     icon: '♡',
-    title: 'Love archetype',
-    desc: 'Your love type, phase, and tonight\'s small step — included free.'
+    title: 'Love reading',
+    desc: 'Your love archetype, current phase, and one small step for tonight. All free.'
   },
   {
     icon: '◇',
     title: 'Compatibility reading',
-    desc: 'Five-axis radar for you and someone else — partner, friend, or anyone.'
+    desc: 'A five-axis radar between two people. Lovers, friends, anyone.'
   },
   {
     icon: '☽',
@@ -594,3 +594,5 @@ export const TERM_GLOSSARY = {
     hint: 'One story woven from many systems — essence, this year, love, work, shadow, and lucky hints.'
   }
 };
+
+export * from './love-content.js';
