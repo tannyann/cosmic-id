@@ -17,6 +17,7 @@ import { bindCompatMode } from './compat-ui.js';
 import { renderCyclesPlanner, bindCyclesPlanner } from './cyclesCalendar.js';
 import { saveProfile } from './profileStorage.js';
 import { mountNarrativePanel } from './narrative-ui.js';
+import { generateNarrative } from './narrative.js';
 import {
   renderExtendedWidget, renderUnifiedModal, bindExtendedReading
 } from './extendedReading.js';
@@ -301,7 +302,7 @@ export function render(name, nameRoman, y, m, d) {
     ${sectionHeading(...u.sections.eastern)}
     <div class="grid">
       ${card('zodiac', u.cards.zodiac, cz.name, u.fmt.bornYearZodiac(cz.char), cz.desc)}
-      ${card('sixty', u.cards.sixty, sj.name, `${sj.yinyang}${sj.element}`, u.fmt.sixtyDesc(sj.element))}
+      ${card('sixty', u.cards.sixty, sj.name, `${sj.yinyang}${(sj.yinyang.length > 1 || sj.element.length > 1) ? ' ' : ''}${sj.element}`, u.fmt.sixtyDesc(sj.element))}
       ${card('kyusei', u.cards.kyusei, ks.name, u.fmt.kyuseiStar(ks.element), ks.desc)}
       ${card('gogyou', u.cards.gogyou, gy.element, u.cards.gogyouLabel || u.fmt.gogyouLabel, gy.desc)}
     </div>
@@ -370,8 +371,9 @@ export function render(name, nameRoman, y, m, d) {
   r.classList.add('active');
   bindResultCards(r);
   bindCyclesPlanner(r, currentContext);
-  mountNarrativePanel(currentContext).catch(err => console.error('Narrative panel:', err));
-  mountSharePanel(currentContext).catch(err => console.error('Share panel:', err));
+  const narrativePromise = generateNarrative(currentContext);
+  mountNarrativePanel(currentContext, narrativePromise).catch(err => console.error('Narrative panel:', err));
+  mountSharePanel(currentContext, { narrativePromise }).catch(err => console.error('Share panel:', err));
   bindLoveMode();
   bindCompatMode();
 

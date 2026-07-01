@@ -328,8 +328,9 @@ export async function nativeShareImage(canvas, snap) {
 /**
  * 結果表示後にシェア UI をマウント
  * @param {object} ctx — render() の currentContext
+ * @param {{ narrativePromise?: Promise<import('./narrative.js').NarrativeResult> }} [opts]
  */
-export async function mountSharePanel(ctx) {
+export async function mountSharePanel(ctx, opts = {}) {
   const prev = document.getElementById('share-panel');
   if (prev) prev.remove();
 
@@ -347,22 +348,26 @@ export async function mountSharePanel(ctx) {
       <p class="share-panel-desc">${s.panelDesc}</p>
       ${s.panelSteps ? `<p class="share-panel-steps">${s.panelSteps}</p>` : ''}
     </div>
-    <button type="button" class="share-preview-btn" id="share-preview-btn" aria-label="${s.previewAria}">
-      <div class="share-preview-loading" id="share-preview-loading" aria-hidden="true">${s.loading}</div>
-      <img id="share-preview-img" alt="${escapeHtml(s.previewAlt(ctx.name))}" width="270" height="338" loading="lazy" hidden>
-      <span class="share-preview-hint">${s.previewHint}</span>
-    </button>
-    <div class="share-actions">
-      <button type="button" class="share-btn share-btn-primary" data-share="save">
-        <span class="share-btn-icon" aria-hidden="true">↓</span>${s.save}
+    <div class="share-panel-block">
+      <h3 class="share-block-title">${escapeHtml(s.cardSectionTitle ?? s.panelTitle)}</h3>
+      <button type="button" class="share-preview-btn" id="share-preview-btn" aria-label="${s.previewAria}">
+        <div class="share-preview-loading" id="share-preview-loading" aria-hidden="true">${s.loading}</div>
+        <img id="share-preview-img" alt="${escapeHtml(s.previewAlt(ctx.name))}" width="270" height="338" loading="lazy" hidden>
+        <span class="share-preview-hint">${s.previewHint}</span>
       </button>
-      <button type="button" class="share-btn" data-share="native" id="share-native-btn" hidden>
-        ${s.shareNative}
-      </button>
-      <button type="button" class="share-btn" data-share="x">X</button>
-      <button type="button" class="share-btn" data-share="line">LINE</button>
-      <button type="button" class="share-btn" data-share="copy">${s.copy}</button>
+      <div class="share-actions">
+        <button type="button" class="share-btn share-btn-primary" data-share="save">
+          <span class="share-btn-icon" aria-hidden="true">↓</span>${s.save}
+        </button>
+        <button type="button" class="share-btn" data-share="native" id="share-native-btn" hidden>
+          ${s.shareNative}
+        </button>
+        <button type="button" class="share-btn" data-share="x">X</button>
+        <button type="button" class="share-btn" data-share="line">LINE</button>
+        <button type="button" class="share-btn" data-share="copy">${s.copy}</button>
+      </div>
     </div>
+    <div id="share-panel-instagram-mount"></div>
   `;
 
   const hero = document.querySelector('.hero-card');
@@ -430,6 +435,19 @@ export async function mountSharePanel(ctx) {
       }
     });
   });
+
+  const igMount = panel.querySelector('#share-panel-instagram-mount');
+  if (igMount && opts.narrativePromise) {
+    const { renderNarrativeShareHtml, mountNarrativeShareSection } = await import('./narrativeShare.js');
+    igMount.innerHTML = renderNarrativeShareHtml();
+    opts.narrativePromise
+      .then(narrative => mountNarrativeShareSection(panel, ctx, narrative))
+      .catch(err => {
+        console.error('Instagram share section:', err);
+        const loading = panel.querySelector('#narrative-share-loading');
+        if (loading) loading.textContent = getUI().narrativeShare.loadFail;
+      });
+  }
 }
 
 let shareModalTrigger = null;

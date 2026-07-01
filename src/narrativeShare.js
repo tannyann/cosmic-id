@@ -153,7 +153,7 @@ export async function shareNarrativeToInstagram(canvas, caption) {
   return false;
 }
 
-export async function mountNarrativeShareActions(panel, ctx, narrative) {
+export async function mountNarrativeShareSection(panel, ctx, narrative) {
   const s = getUI().narrativeShare;
   let canvasCache = null;
 
@@ -215,11 +215,12 @@ export async function mountNarrativeShareActions(panel, ctx, narrative) {
   });
 }
 
-export function renderNarrativeShareHtml(narrative) {
+export function renderNarrativeShareHtml() {
   const s = getUI().narrativeShare;
   return `
-    <div class="narrative-share" id="narrative-share">
-      <h3 class="narrative-share-title">${escapeHtml(s.panelTitle)}</h3>
+    <div class="share-panel-divider" aria-hidden="true"></div>
+    <div class="share-panel-block narrative-share" id="share-panel-instagram">
+      <h3 class="share-block-title">${escapeHtml(s.panelTitle)}</h3>
       <p class="narrative-share-desc">${escapeHtml(s.panelDesc)}</p>
       <p class="narrative-share-steps">${escapeHtml(s.instagramSteps)}</p>
       <button type="button" class="narrative-share-preview-btn" id="narrative-share-preview-btn">
