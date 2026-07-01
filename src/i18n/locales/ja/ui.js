@@ -822,5 +822,11 @@ export const ui = {
     back: '← COSMIC ID に戻る',
     indexLink: '← 展示一覧',
     refs: '参考文献'
+  },
+  deepChapters: {
+    eyebrow: '拡張リーディング · 無料',
+    title: 'より深く読み解く',
+    lead: 'すべて無料。断定ではなく、可能性として提示しています。',
+    readMore: 'もっと読む'
   }
 };

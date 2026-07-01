@@ -28,6 +28,7 @@ import { bindAmbient } from './ambient.js';
 import { bindSkyTonight } from './sky-tonight-ui.js';
 import { mountComparative } from './comparative.js';
 import { mountSkepticNote } from './skeptic.js';
+import { mountDeepChapters } from './deep-chapters-ui.js';
 import {
   renderExtendedWidget, renderUnifiedModal, bindExtendedReading
 } from './extendedReading.js';
@@ -436,6 +437,7 @@ export function openModal(cardKey) {
     body.innerHTML = renderModalBody(data, cardKey, currentContext);
     bindModalInteractions(body, cardKey);
     mountCardDepth(cardKey, currentContext);
+    mountDeepChapters(cardKey, currentContext);
     mountComparative(cardKey, currentContext);
     mountSkepticNote(cardKey);
   }

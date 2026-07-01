@@ -3,7 +3,7 @@
  *
  * Provides `buildDeep(cardKey, ctx)` returning detailed interpretation per divination card.
  * Return shape:
- *   { title, value, label, intro, free: [...], premium: [...] }
+ *   { title, value, label, intro, free: [...], premium: [] }
  *
  * - free: detailed interpretation shown for free (~3 items)
  * - premium: deeper content behind blur lock (3–5 items)
@@ -106,7 +106,7 @@ export function buildDeep(cardKey, ctx) {
         { t: 'Shadow side', d: 'When balance is lost, this side may show itself.' },
         { t: 'Life purpose', d: 'The meaning of choosing this path.' }
       ],
-      premium: premiumGeneric('Life Path', String(lp))
+      premium: []
     };
 
     case 'personalYear': return {
@@ -119,12 +119,7 @@ export function buildDeep(cardKey, ctx) {
         { t: 'Pitfalls this year', d: `Conversely, holding on to the previous wave—something like "${PERSONAL_YEAR_MEANINGS[personalYearPrev(py)]}"—may tend to bring stagnation.` },
         { t: 'Signs for next year', d: `Next year is Personal Year ${personalYearNext(py)}. ${PERSONAL_YEAR_MEANINGS[personalYearNext(py)] || 'A turning point toward a new cycle.'} This year\'s choices may become next year\'s starting point.` }
       ],
-      premium: [
-        { t: 'Monthly fortune calendar', d: 'Twelve months broken down by personal month and personal day. Identify when to act, when to wait, and when to decide.' },
-        { t: 'Keywords for this year', d: 'Three keywords given only to you for this year. A compass when judgment feels unclear.' },
-        { t: 'Encounters this year', d: 'The kinds of connections that may appear, the directions they may come from, and how to recognize them.' },
-        { t: 'Months to watch', d: 'Periods when health, money, or relationships may feel unstable—and rituals that may help restore balance.' }
-      ]
+      premium: []
     };
 
     case 'expression': {
@@ -176,7 +171,7 @@ export function buildDeep(cardKey, ctx) {
           },
           { t: 'Hints for renaming', d: 'If your current name feels heavy, a nickname or business name with a different number may invite another wavelength.' }
         ],
-        premium: premiumGeneric('Name Number', dual ? `${native}/${latin}` : String(native))
+        premium: []
       };
     }
 
@@ -190,13 +185,7 @@ export function buildDeep(cardKey, ctx) {
         { t: 'Moments of radiance', d: `${sun.name} may shine brightest in environments aligned with its element. Choose places where ${sun.element} qualities can be expressed.` },
         { t: 'Living with shadow', d: 'Every sign has light and shadow. Daily habits that keep choosing the light may change the quality of your life.' }
       ],
-      premium: [
-        { t: 'Moon sign and Ascendant', d: 'The Sun is not your only sign. From birth time and place, Moon and Rising may be calculated—a symphony of three stars.' },
-        { t: 'Full 12-house analysis', d: 'A complete view of how your sign may be placed across the 12 houses (life areas).' },
-        { t: 'Major transits', d: 'How outer planets may affect your chart over the next three years, month by month.' },
-        { t: 'Compatibility chart', d: 'Five-layer synastry analysis with partners or family.' },
-        { t: 'Past-life chart', d: 'Soul themes from past lives and this life\'s homework, read through the lunar nodes.' }
-      ]
+      premium: []
     };
 
     case 'moonTrait': return {
@@ -209,11 +198,7 @@ export function buildDeep(cardKey, ctx) {
         { t: 'How to relate to the Moon', d: 'On full moon nights, new moon nights, and first or last quarter days—you may discover what helps you feel restored.' },
         { t: 'Dream journaling', d: 'Those with strong lunar tendencies may find dreams carrying important messages. Try three minutes of morning recording.' }
       ],
-      premium: [
-        { t: 'Exact Moon sign', d: 'With birth time and place, another sign entirely may appear—your true emotional language.' },
-        { t: 'Moon phase fortune', d: 'Lucky actions by lunar phase for the next 12 months.' },
-        { t: 'Moon rituals', d: 'How to compose new moon and full moon ceremonies suited to you each month.' }
-      ]
+      premium: []
     };
 
     case 'zodiac': return {
@@ -226,11 +211,7 @@ export function buildDeep(cardKey, ctx) {
         { t: 'Benming year', d: 'Every 12 years your own zodiac year returns. Called the "benming year," it may become a life milestone.' },
         { t: 'Compatibility hints', d: 'Liuhe (strongest match), Sanhe (good bond), Chong (stimulating clash)—combinations in the zodiac may carry deep meaning.' }
       ],
-      premium: [
-        { t: 'Liuhe, Sanhe, and Chong map', d: 'A full relationship map between your sign and all others. Dynamics with family, lovers, and bosses may become visible.' },
-        { t: 'Hour pillar (birth-hour zodiac)', d: 'Not only birth year—birth hour may also hold a zodiac sign. This may be your inner zodiac.' },
-        { t: 'Twelve life stages', d: 'Where you may be among life\'s twelve stages: birth, growth, prosperity, decline, renewal…' }
-      ]
+      premium: []
     };
 
     case 'sixty': return {
@@ -243,11 +224,7 @@ export function buildDeep(cardKey, ctx) {
         { t: 'Your earthly branch', d: `The branch ${sj.name[1]} may show the flow of fate, returning to the same position every 12 years.` },
         { t: 'Traits of the same pillar', d: 'Because this imprint returns only every 60 years, you may share rare common ground across generations.' }
       ],
-      premium: [
-        { t: 'All four pillars', d: 'Not only the year pillar—month, day, and hour pillars calculated together may complete your Four Pillars chart.' },
-        { t: 'Ten Gods and Twelve Stages', d: 'The heart of Four Pillars astrology. Social life, wealth, family, and health may all come into view.' },
-        { t: 'Ten-year luck cycles', d: 'Major luck divided into 10-year periods. Which cycle you may be in now, and what may come next.' }
-      ]
+      premium: []
     };
 
     case 'kyusei': return {
@@ -260,12 +237,7 @@ export function buildDeep(cardKey, ctx) {
         { t: 'Nine-year cycle', d: 'Honmei star fortune may complete one round in 9 years—planting, nurturing, harvest, and clearing in rotation.' },
         { t: 'Basics of lucky directions', d: 'In Nine Star Ki, lucky directions may be determined by honmei and getsumei stars. Moving, travel, or career direction may shift fortune.' }
       ],
-      premium: [
-        { t: 'Getsumei and Nichimei stars', d: 'Beyond honmei—getsumei and nichimei calculated together may complete your Ki profile.' },
-        { t: 'Lucky directions this year and next', d: 'Your personal lucky-direction calendar, changing each year—down to the month of greatest fortune.' },
-        { t: 'Dokai and Hidokai years', d: 'Years when major turning points may arrive, and how to read their signs.' },
-        { t: 'Star compatibility', d: 'A five-layer compatibility table between honmei stars—for family, love, and work.' }
-      ]
+      premium: []
     };
 
     case 'gogyou': return {
@@ -278,11 +250,7 @@ export function buildDeep(cardKey, ctx) {
         { t: 'Generating (supporting) cycle', d: 'Wood feeds Fire, Fire creates Earth, Earth bears Metal, Metal collects Water, Water nourishes Wood. You may find people whose element supports yours.' },
         { t: 'Overcoming (restraining) cycle', d: 'Wood restrains Earth, Earth absorbs Water, Water extinguishes Fire, Fire melts Metal, Metal cuts Wood. Restraining relationships may create tension and growth.' }
       ],
-      premium: [
-        { t: 'Your Five Elements balance', d: 'Ratios calculated from birth date and time. What may be abundant and what may be lacking.' },
-        { t: 'How to supplement missing elements', d: 'A practical list—color, food, direction, stones, habits—to nourish what feels absent.' },
-        { t: 'Five Elements compatibility map', d: 'A full chart compared with another person\'s elements. Who may support you and who may drain you, at a glance.' }
-      ]
+      premium: []
     };
 
     case 'animal': return {
@@ -295,12 +263,7 @@ export function buildDeep(cardKey, ctx) {
         { t: 'Group classification', d: 'The 12 animals may divide into three groups: Moon (dreamer), Earth (realist), and Sun (sensitive).' },
         { t: 'Meaning of personality number', d: `Your personality number is ${an.num}. Its place among 60 may suggest finer shades of character.` }
       ],
-      premium: [
-        { t: 'Full 60-type profile', d: `Detailed reading for personality number ${an.num}. The same number may appear only once every 60 days.` },
-        { t: 'Leader type or supporter type', d: 'Even within the same animal, leader and supporter types may differ. Your true role in the group.' },
-        { t: 'Compatibility with all 12 animals', d: 'Complete mapping for love, work, and friendship across all 60×60 pairings.' },
-        { t: 'Hidden character', d: 'Another you beneath the surface—the animal that may emerge under stress.' }
-      ]
+      premium: []
     };
 
     case 'celtic': return {
@@ -313,12 +276,7 @@ export function buildDeep(cardKey, ctx) {
         { t: 'Druid wisdom', d: 'In the Celtic forest, every tree was said to hold a different spirit. Your tree may be the spirit your soul borrowed from the woods.' },
         { t: 'Rituals with your tree', d: 'Deep breathing before your guardian tree, picking up a single leaf—something in you may quietly settle.' }
       ],
-      premium: [
-        { t: 'Ogham letters', d: 'Ancient Celtic letters paired with each tree. Your personal symbol, ready to carve as a talisman.' },
-        { t: 'Guardian animal and stone', d: 'The animal and stone that may appear alongside your tree.' },
-        { t: 'Seasonal rituals', d: 'Ceremonies with your tree at the equinoxes and solstices—the four seasonal festivals.' },
-        { t: 'Compatible trees', d: 'Which trees in the Celtic forest may yield the richest fruit when paired with yours.' }
-      ]
+      premium: []
     };
 
     case 'maya': return {
@@ -331,12 +289,7 @@ export function buildDeep(cardKey, ctx) {
         { t: 'Meaning of galactic tone', d: `${my.tone} is one of 13 rhythmic tones—it may suggest the tempo of your life.` },
         { t: 'Uniqueness of KIN number', d: 'Someone with your exact KIN may be born only once every 260 days. Roughly 25 million kindred spirits may exist worldwide.' }
       ],
-      premium: [
-        { t: 'Guide, antipode, and analogous KIN', d: 'The KIN that may guide you, mirror you, and resonate with your energy—fully identified.' },
-        { t: '13-day wavespell', d: 'Your life\'s 13-day cycle. Where you may be now, and what wave may come next.' },
-        { t: 'Galactic signature', d: 'Your complete galactic name—KIN, seal, tone, castle, and chakra together.' },
-        { t: 'Daily KIN reading', d: 'A daily Mayan calendar interpreting how today\'s KIN relates to yours.' }
-      ]
+      premium: []
     };
 
     case 'tarotBirth': return {
@@ -349,12 +302,7 @@ export function buildDeep(cardKey, ctx) {
         { t: 'Symbolism of the number', d: `The number ${tb.num} may hold its own meaning in Tarot. Your life may be a journey woven by this number.` },
         { t: 'Shadow side', d: 'Every card holds light and shadow. When it feels heavy, it may reflect a process of change or letting go—not a verdict.' }
       ],
-      premium: [
-        { t: 'Personal Minor Arcana cards', d: 'Calculate the Minor Arcana suits (Swords, Cups, Wands, Pentacles) moving behind the Major Arcana.' },
-        { t: 'Theme card for this year', d: 'The card that changes each year—what you may be learning and what you may be releasing.' },
-        { t: 'Shadow card', d: 'Another you hidden in the shadow of your birth card—themes beneath awareness.' },
-        { t: 'Full seven-card spread', d: 'A life spread across past, present, future, obstacle, hope, unconscious, and outcome.' }
-      ]
+      premium: []
     };
 
     case 'tarotDaily': return {
@@ -367,11 +315,7 @@ export function buildDeep(cardKey, ctx) {
         { t: 'Why this card appeared', d: 'Cards may not appear by accident—they may arrive with the message needed at the needed moment.' },
         { t: 'How to spend today', d: 'When you align the day with this card\'s energy, things may surprisingly flow more smoothly.' }
       ],
-      premium: [
-        { t: 'Seven-day card reading', d: 'A seven-day spread from today—themes and actions to choose each day.' },
-        { t: 'Main card for this month', d: 'The one card that may symbolize your month—a monthly theme.' },
-        { t: 'Celtic Cross spread', d: 'The most classical reading—ten cards analyzing your situation from many angles.' }
-      ]
+      premium: []
     };
 
     case 'birthstone': return {
@@ -384,11 +328,7 @@ export function buildDeep(cardKey, ctx) {
         { t: 'How to wear it', d: 'Birthstones may work best when kept close to the skin—rings, necklaces, bracelets, and the like.' },
         { t: 'Cleansing methods', d: 'Stones may absorb energy too. Moonlight, crystal clusters, or sage smoke may help with regular cleansing.' }
       ],
-      premium: [
-        { t: 'Your top three guardian stones', d: 'Three supporting stones beyond your birthstone, derived from birth date and honmei star—combined for synergy.' },
-        { t: 'Science of gemstones', d: 'Crystal structure, wavelength, and energy—read from both spiritual and scientific angles.' },
-        { t: 'Gem rituals', d: 'Meditation with stones and crystal grids composed for different intentions.' }
-      ]
+      premium: []
     };
 
     case 'birthflower': return {
@@ -401,11 +341,7 @@ export function buildDeep(cardKey, ctx) {
         { t: 'Language of flowers', d: 'Every flower has its own language—the birth flower\'s meaning may function as a message for your life.' },
         { t: 'Living with flowers', d: 'A single birth flower on your desk—some days, that alone may be enough to set the tone.' }
       ],
-      premium: [
-        { t: 'Birth flower by date', d: 'Not only by month—365 birth flowers may be assigned by calendar date. Your very own bloom.' },
-        { t: 'Flower fortune calendar', d: 'A lucky flower each month—using blooms suited to you throughout the year.' },
-        { t: 'Flower remedies', d: 'From Bach flower remedies, a list of 38 essences aligned with your honmei star and numerology.' }
-      ]
+      premium: []
     };
 
     case 'biorhythm': return {
@@ -418,11 +354,7 @@ export function buildDeep(cardKey, ctx) {
         { t: 'Critical days', d: 'Days when a wave crosses zero are called "critical days"—judgment errors and accidents may be more likely.' },
         { t: 'Waves and action', d: 'Rising: advance; falling: protect; peak: showcase; trough: rest. Moving with the wave may reduce exhaustion.' }
       ],
-      premium: [
-        { t: '90-day forecast calendar', d: 'Four-wave forecast for the next 90 days—optimal dates for meetings, interviews, dates, moves, and more.' },
-        { t: 'Combined biorhythm for two', d: 'Overlay biorhythms with a partner or family to find days to move together and days to rest apart.' },
-        { t: 'Critical day alerts', d: 'Advance notice when critical days approach—perhaps the strongest accident-prevention measure.' }
-      ]
+      premium: []
     };
 
     case 'moon': return {
@@ -435,11 +367,7 @@ export function buildDeep(cardKey, ctx) {
         { t: 'Moon and emotion', d: 'Three days before and after full or new moon, feelings may move more easily—good timing for rituals to begin or end something.' },
         { t: 'Moon rituals', d: 'Write wishes at new moon, offer gratitude at full moon—a simple, ancient way to work with lunar energy.' }
       ],
-      premium: [
-        { t: '12-month new and full moon calendar', d: 'New and full moons for the next 12 months, their signs, and how they may affect you.' },
-        { t: 'Personal lunar cycle', d: 'How today\'s phase relates to your birth moon phase—turning points in life may appear here.' },
-        { t: 'Moonlight bathing ceremony', d: 'A monthly full-moon ritual just for you—strengthening wishes, releasing what no longer serves.' }
-      ]
+      premium: []
     };
 
     case 'lifeStagePrev': return {
@@ -452,11 +380,7 @@ export function buildDeep(cardKey, ctx) {
         { t: 'What may happen around then', d: 'At major life milestones, relationships, work, or home may often shift significantly.' },
         { t: 'Reflection questions', d: `At age ${ls.prev.age}, what was happening for you? Writing it out now may reveal patterns in your life.` }
       ] : [],
-      premium: [
-        { t: 'Analysis of all past milestones', d: 'A complete list of milestones from birth to today—what happened then, what changed.' },
-        { t: 'Hidden milestones', d: 'Important astrological transits not widely known—quiet turning points in your life.' },
-        { t: 'Milestone chain patterns', d: 'Themes that may repeat at your milestones. Preparation for what may come next.' }
-      ]
+      premium: []
     };
 
     case 'lifeStageNext': return {
@@ -469,11 +393,7 @@ export function buildDeep(cardKey, ctx) {
         { t: 'What to prepare', d: 'Signs may begin quietly several years before a major milestone. Listen to the inner voice.' },
         { t: 'Signs of opportunity', d: 'Around this milestone, new connections, places, or roles may be more likely to appear. Staying open may help.' }
       ] : [],
-      premium: [
-        { t: 'Complete ten-year timeline', d: 'Every milestone that may arrive in the next ten years, its meaning, and how best to prepare.' },
-        { t: 'Timing for marriage, birth, career change', d: 'Transit analysis to identify favorable timing for life\'s major decisions.' },
-        { t: 'Trial periods and how to meet them', d: 'Milestones may often bring trials. Knowing ahead may help the heart prepare.' }
-      ]
+      premium: []
     };
   }
   return null;

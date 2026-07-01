@@ -815,5 +815,11 @@ export const ui = {
     back: '← Back to COSMIC ID',
     indexLink: '← All exhibits',
     refs: 'References'
+  },
+  deepChapters: {
+    eyebrow: 'EXTENDED READING · FREE',
+    title: 'Read deeper',
+    lead: 'All free. Written as possibilities, not verdicts.',
+    readMore: 'Read more'
   }
 };
