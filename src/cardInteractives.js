@@ -10,6 +10,7 @@ import {
   lunarEventsAhead, birthMoonPhaseIndex, reduceDigit
 } from './calculations.js';
 import { getContent, getUI, getBundle } from './i18n/index.js';
+import { ANIMAL_EMOJI } from './util.js';
 
 function esc(s) {
   return String(s ?? '').replace(/[&<>"]/g, (c) => (
@@ -132,10 +133,11 @@ function renderExtSun(ctx) {
 function renderExtMoonTrait(ctx) {
   const u = getUI().extended?.moonTrait ?? {};
   const { MOON_TRAITS } = getContent();
+  const MOON_ICONS = ['🌑', '🌓', '🌕', '🌗'];
   const cells = MOON_TRAITS.map((t, i) => {
     const on = t.name === ctx.mt.name;
     return `<button type="button" class="moon-trait-cell${on ? ' is-you' : ''}" data-mt-idx="${i}"
-      aria-pressed="${on}">${esc(t.name.split(' ').slice(-2).join(' '))}</button>`;
+      aria-pressed="${on}"><span class="cell-emoji" aria-hidden="true">${MOON_ICONS[i]}</span><span class="cell-name">${esc(t.name.split(' ').slice(-2).join(' '))}</span></button>`;
   }).join('');
   return extWrap('moonTrait', u.title, u.intro, pickerGrid('moon-trait', cells, 'moon-trait-detail', esc(ctx.mt.desc)));
 }
@@ -201,7 +203,7 @@ function renderExtAnimal(ctx) {
   const cells = ANIMAL_NAMES.map((name, i) => {
     const on = name === ctx.an.name;
     return `<button type="button" class="animal-cell${on ? ' is-you' : ''}" data-animal-idx="${i}"
-      aria-pressed="${on}">${esc(name.split(' ')[0])}</button>`;
+      aria-pressed="${on}"><span class="cell-emoji" aria-hidden="true">${ANIMAL_EMOJI[i]}</span><span class="cell-name">${esc(name)}</span></button>`;
   }).join('');
   return extWrap('animal', u.title, u.intro, pickerGrid('animal', cells, 'animal-ext-detail', esc(ANIMAL_DESC[ctx.an.name] ?? '')));
 }
@@ -627,7 +629,7 @@ function renderAnimalCompat(ctx) {
   const myIdx = (ctx.an.num - 1) % 12;
   const cells = ANIMAL_NAMES.map((name, i) =>
     `<button type="button" class="animal-cell${i === myIdx ? ' is-you' : ''}" data-an-compat="${i}"
-      aria-pressed="${i === myIdx}">${esc(name.split(' ')[0])}</button>`
+      aria-pressed="${i === myIdx}"><span class="cell-emoji" aria-hidden="true">${ANIMAL_EMOJI[i]}</span><span class="cell-name">${esc(name)}</span></button>`
   ).join('');
   return pickerGrid('animal', cells, 'animal-compat-detail', esc(ANIMAL_DESC[ctx.an.name] ?? ''));
 }

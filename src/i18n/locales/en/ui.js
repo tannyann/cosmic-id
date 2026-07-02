@@ -805,7 +805,7 @@ export const ui = {
   comparative: {
     eyebrow: 'IN MODERN FRAMES',
     title: 'You, translated into today\'s vocabulary',
-    caveat: 'These mappings translate shared themes, not exact scientific correspondence.'
+    caveat: 'A birth date cannot determine your MBTI or Big Five profile. These are thematic parallels only (≒ means "close in theme") — take an official assessment for your actual type.'
   },
   museum: {
     navLink: 'Museum',

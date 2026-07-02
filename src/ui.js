@@ -37,8 +37,10 @@ import {
   cardSystemHtml, renderGlossStrip, bindTermGloss
 } from './termGloss.js';
 import {
-  escapeHtml, prefersReducedMotion
+  escapeHtml, prefersReducedMotion,
+  ANIMAL_EMOJI, ELEMENT_GLYPHS, ROMAN_NUMERALS
 } from './util.js';
+import { normalizeElementKey } from './calculations.js';
 
 let currentContext = null;
 let modalTrigger = null;
@@ -146,12 +148,16 @@ export function generateSummary(name, results) {
   `;
 }
 
-export function card(key, system, value, label, desc) {
+export function card(key, system, value, label, desc, glyph = '') {
   const u = getUI();
   const safeValue = String(value).replace(/"/g, '');
   const aria = u.fmt.cardAria(system, safeValue);
+  const glyphHtml = glyph
+    ? `<span class="card-glyph" aria-hidden="true">${glyph}</span>`
+    : '';
   return `
     <div class="card" data-key="${key}" role="button" tabindex="0" aria-label="${escapeHtml(aria)}${u.fmt.cardMoreAria}">
+      ${glyphHtml}
       <div class="card-system">${cardSystemHtml(key, system)}</div>
       <div class="card-value">${value}</div>
       <div class="card-label">${label}</div>
@@ -306,35 +312,35 @@ export function render(name, nameRoman, y, m, d) {
 
     ${sectionHeading(...u.sections.western)}
     <div class="grid">
-      ${card('sun', u.cards.sun, `${sun.symbol} ${sun.name}`, u.fmt.elementOf(sun.element), sun.desc)}
-      ${card('moonTrait', u.cards.moonTrait, mt.name, u.cards.moonTraitLabel, mt.desc + `<div class="note">${u.cards.moonTraitNote}</div>`)}
+      ${card('sun', u.cards.sun, `${sun.symbol} ${sun.name}`, u.fmt.elementOf(sun.element), sun.desc, sun.symbol)}
+      ${card('moonTrait', u.cards.moonTrait, mt.name, u.cards.moonTraitLabel, mt.desc + `<div class="note">${u.cards.moonTraitNote}</div>`, '☾')}
     </div>
 
     ${sectionHeading(...u.sections.eastern)}
     <div class="grid">
-      ${card('zodiac', u.cards.zodiac, cz.name, u.fmt.bornYearZodiac(cz.char), cz.desc)}
-      ${card('sixty', u.cards.sixty, sj.name, `${sj.yinyang}${(sj.yinyang.length > 1 || sj.element.length > 1) ? ' ' : ''}${sj.element}`, u.fmt.sixtyDesc(sj.element))}
-      ${card('kyusei', u.cards.kyusei, ks.name, u.fmt.kyuseiStar(ks.element), ks.desc)}
-      ${card('gogyou', u.cards.gogyou, gy.element, u.cards.gogyouLabel || u.fmt.gogyouLabel, gy.desc)}
+      ${card('zodiac', u.cards.zodiac, cz.name, u.fmt.bornYearZodiac(cz.char), cz.desc, cz.char)}
+      ${card('sixty', u.cards.sixty, sj.name, `${sj.yinyang}${(sj.yinyang.length > 1 || sj.element.length > 1) ? ' ' : ''}${sj.element}`, u.fmt.sixtyDesc(sj.element), ELEMENT_GLYPHS[normalizeElementKey(sj.element)])}
+      ${card('kyusei', u.cards.kyusei, ks.name, u.fmt.kyuseiStar(ks.element), ks.desc, ELEMENT_GLYPHS[normalizeElementKey(ks.element)])}
+      ${card('gogyou', u.cards.gogyou, gy.element, u.cards.gogyouLabel || u.fmt.gogyouLabel, gy.desc, ELEMENT_GLYPHS[normalizeElementKey(gy.element)])}
     </div>
 
     ${sectionHeading(...u.sections.characters)}
     <div class="grid">
-      ${card('animal', u.cards.animal, an.name, u.fmt.animalNum(an.num), ANIMAL_DESC[an.name] || u.fmt.animalFallback)}
-      ${card('celtic', u.cards.celtic, ct.name, u.fmt.celticLabel, ct.desc)}
+      ${card('animal', u.cards.animal, an.name, u.fmt.animalNum(an.num), ANIMAL_DESC[an.name] || u.fmt.animalFallback, ANIMAL_EMOJI[(an.num - 1) % 12])}
+      ${card('celtic', u.cards.celtic, ct.name, u.fmt.celticLabel, ct.desc, '❧')}
     </div>
 
     ${sectionHeading(...u.sections.sacred)}
     <div class="grid">
-      ${card('maya', u.cards.maya, `KIN ${my.kin}`, `${my.tone}${my.seal}`, u.fmt.mayaDesc)}
-      ${card('tarotBirth', u.cards.tarotBirth, tb.name, u.fmt.tarotMajor(tb.num), TAROT_MEANINGS[tb.name])}
+      ${card('maya', u.cards.maya, `KIN ${my.kin}`, `${my.tone}${my.seal}`, u.fmt.mayaDesc, '◈')}
+      ${card('tarotBirth', u.cards.tarotBirth, tb.name, u.fmt.tarotMajor(tb.num), TAROT_MEANINGS[tb.name], ROMAN_NUMERALS[tb.num] ?? '✦')}
       ${card('tarotDaily', u.cards.tarotDaily, dt.name, u.fmt.tarotDailyFor(today.getFullYear(), today.getMonth() + 1, today.getDate()), dt.desc)}
     </div>
 
     ${sectionHeading(...u.sections.nature)}
     <div class="grid">
-      ${card('birthstone', u.cards.birthstone, bs.name, u.fmt.monthStone(m), bs.meaning)}
-      ${card('birthflower', u.cards.birthflower, bf, u.fmt.monthFlower(m), u.fmt.birthflowerDesc)}
+      ${card('birthstone', u.cards.birthstone, bs.name, u.fmt.monthStone(m), bs.meaning, '❖')}
+      ${card('birthflower', u.cards.birthflower, bf, u.fmt.monthFlower(m), u.fmt.birthflowerDesc, '✿')}
     </div>
 
     ${sectionHeading(...u.sections.cycles)}

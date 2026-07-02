@@ -34,9 +34,13 @@ export function mountComparative(cardKey, ctx) {
       <button class="comp-key" data-comp-info="${escapeHtml(key)}">
         ${escapeHtml(info[key]?.name ?? key)}
       </button>
-      <span class="comp-value">${escapeHtml(String(value ?? '—'))}</span>
+      <span class="comp-value">≒ ${escapeHtml(String(value ?? '—'))}</span>
     </li>
   `).join('');
+
+  const noteHtml = mapping.note
+    ? `<p class="comp-note">${escapeHtml(mapping.note)}</p>`
+    : '';
 
   const section = document.createElement('details');
   section.className = 'comp-frame';
@@ -45,8 +49,9 @@ export function mountComparative(cardKey, ctx) {
       <span class="comp-summary-eyebrow">${escapeHtml(u.eyebrow ?? 'IN MODERN FRAMES')}</span>
       <span class="comp-summary-title">${escapeHtml(u.title ?? 'You, translated into today\'s vocabulary')}</span>
     </summary>
+    <p class="comp-caveat comp-caveat-top">${escapeHtml(u.caveat ?? 'These mappings translate shared themes, not exact scientific correspondence.')}</p>
     <ul class="comp-list">${rows}</ul>
-    <p class="comp-caveat">${escapeHtml(u.caveat ?? 'These mappings translate shared themes, not exact scientific correspondence.')}</p>
+    ${noteHtml}
     <div class="comp-info" id="comp-info" hidden></div>
   `;
   body.appendChild(section);

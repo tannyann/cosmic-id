@@ -5281,3 +5281,83 @@ html.mu-open body { overflow: hidden; }
 @media (prefers-reduced-motion: reduce) {
   .dc-chapter { animation: none; opacity: 1; transform: none; }
 }
+
+/* ============ 2026-07 改修: ピッカーグリッドの欠落CSS補完 ============ */
+/* これまで未定義だったコンテナにレイアウトを付与 */
+.animal-num-grid, .celtic-grid, .ky-compat-grid, .moon-trait-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 10px 0;
+}
+
+.zodiac-grid-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+  margin: 10px 0;
+}
+@media (max-width: 400px) {
+  .zodiac-grid-grid { grid-template-columns: repeat(3, 1fr); }
+}
+
+/* 動物・月相ピッカー: 絵文字 + 名前の縦組みセル */
+.animal-cell, .moon-trait-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  min-width: 64px;
+  padding: 10px 8px;
+  transition: border-color 0.25s, background 0.25s, transform 0.2s;
+}
+.animal-cell:hover, .moon-trait-cell:hover {
+  border-color: var(--gold-dim);
+  transform: translateY(-1px);
+}
+.animal-grid { gap: 8px; }
+.cell-emoji {
+  font-size: 20px;
+  line-height: 1;
+  filter: saturate(0.85);
+}
+.cell-name {
+  font-size: 10.5px;
+  line-height: 1.2;
+  text-align: center;
+}
+
+/* ============ 結果カードの装飾グリフ ============ */
+.card-glyph {
+  position: absolute;
+  top: 14px;
+  right: 18px;
+  font-size: 40px;
+  line-height: 1;
+  opacity: 0.16;
+  pointer-events: none;
+  user-select: none;
+  color: var(--gold-bright, #f0d878);
+  transition: opacity 0.3s, transform 0.3s;
+}
+.card:hover .card-glyph {
+  opacity: 0.34;
+  transform: scale(1.08) rotate(4deg);
+}
+
+/* ============ 現代枠組み(MBTI等)の注意書きを上部へ ============ */
+.comp-caveat-top {
+  margin: 10px 0 6px;
+  padding: 8px 12px;
+  border-left: 2px solid var(--gold-dim);
+  background: rgba(184, 149, 46, 0.07);
+  font-size: 12px;
+  line-height: 1.7;
+  color: var(--text-muted);
+}
+.comp-note {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-top: 6px;
+  font-style: italic;
+}

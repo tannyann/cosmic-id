@@ -812,7 +812,7 @@ export const ui = {
   comparative: {
     eyebrow: 'IN MODERN FRAMES',
     title: 'あなたを現代の語彙に翻訳する',
-    caveat: 'これらの対応は共通するテーマの翻訳で、厳密な科学的一致ではありません。'
+    caveat: '生年月日から MBTI や Big Five を判定することはできません。ここに並ぶのは各体系に共通するテーマの「参考対訳」です（≒ は近縁を示します）。実際のタイプは公式の診断でお確かめください。'
   },
   museum: {
     navLink: 'Museum',

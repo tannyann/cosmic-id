@@ -113,23 +113,23 @@ export const GOGYOU_DESCS = {
 
 // ============ Animal Fortune ============
 export const ANIMAL_NAMES = [
-  'Black Panther','Pegasus','Monkey','Koala Bear','Tiger','Tanuki',
-  'Koala','Elephant','Cheetah','Lion','Wolf','Sheep'
+  'Wolf','Fawn','Monkey','Cheetah','Black Panther','Lion',
+  'Tiger','Tanuki','Koala','Elephant','Sheep','Pegasus'
 ];
 
 export const ANIMAL_DESC = {
-  'Black Panther': 'A keen eye for beauty and novelty. Cool, effortless charisma.',
-  'Pegasus':       'A free-spirited genius. Ideas take wing.',
+  'Wolf':          'Thinks deeply alone. Holds a world of their own.',
+  'Fawn':          'Pure-hearted, cautious yet affectionate. Devoted once trust is earned.',
   'Monkey':        'Service-minded and curious. Reads the room like a master.',
-  'Koala Bear':    'Thoughtful with strong preferences. A researcher at heart.',
+  'Cheetah':       'Burst speed and solo action. Runs straight through.',
+  'Black Panther': 'A keen eye for beauty and novelty. Cool, effortless charisma.',
+  'Lion':          'Pride and dignity. Born under a star that draws the spotlight.',
   'Tiger':         'Magnanimous presence. A king who moves at an unhurried pace.',
   'Tanuki':        'Warm and approachable. A gentle wisdom-keeper.',
-  'Koala':         'Soothing and observant. Moves at their own rhythm.',
+  'Koala':         'Thoughtful with strong preferences. A soothing observer.',
   'Elephant':      'Hardworking and powerful. Strength through persistence.',
-  'Cheetah':       'Burst speed and solo action. Runs straight through.',
-  'Lion':          'Pride and dignity. Born under a star that draws the spotlight.',
-  'Wolf':          'Thinks deeply alone. Holds a world of their own.',
-  'Sheep':         'Warm-hearted and cooperative. Shines when moving with others.'
+  'Sheep':         'Warm-hearted and cooperative. Shines when moving with others.',
+  'Pegasus':       'A free-spirited genius. Ideas take wing.'
 };
 
 // ============ Maya Calendar ============

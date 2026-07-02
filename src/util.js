@@ -83,3 +83,20 @@ export function showToast(message, durationMs = 2800) {
   clearTimeout(showToast._timer);
   showToast._timer = setTimeout(() => el.classList.remove('visible'), durationMs);
 }
+
+
+/** 動物占い 12動物の絵文字（ANIMAL_NAMES と同順・ロケール共通） */
+export const ANIMAL_EMOJI = ['🐺','🦌','🐒','🐆','🐈‍⬛','🦁','🐯','🦝','🐨','🐘','🐑','🦄'];
+
+/** 五行・四元素の漢字グリフ（normalizeElementKey のキーに対応） */
+export const ELEMENT_GLYPHS = { wood: '木', fire: '火', earth: '土', metal: '金', water: '水', air: '風' };
+
+/** タロット大アルカナのローマ数字（0=愚者 〜 22） */
+export const ROMAN_NUMERALS = ['0','Ⅰ','Ⅱ','Ⅲ','Ⅳ','Ⅴ','Ⅵ','Ⅶ','Ⅷ','Ⅸ','Ⅹ','Ⅺ','Ⅻ','ⅩⅢ','ⅩⅣ','ⅩⅤ','ⅩⅥ','ⅩⅦ','ⅩⅧ','ⅩⅨ','ⅩⅩ','ⅩⅪ','ⅩⅫ'];
+
+/** 月相 0–1 を月の絵文字にマップ */
+export function moonEmojiForPhase(phase) {
+  const p = ((phase % 1) + 1) % 1;
+  const icons = ['🌑','🌒','🌓','🌔','🌕','🌖','🌗','🌘'];
+  return icons[Math.round(p * 8) % 8];
+}

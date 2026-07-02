@@ -4,7 +4,7 @@
  */
 
 import { getContent, getUI } from './i18n/index.js';
-import { escapeHtml, copyToClipboard, showToast } from './util.js';
+import { escapeHtml, copyToClipboard, showToast, ANIMAL_EMOJI } from './util.js';
 
 const CARD_W = 1080;
 const CARD_H = 1350;
@@ -47,6 +47,9 @@ export function buildShareSnapshot(ctx) {
     tarot: ctx.tb.name,
     personalYear: ctx.py,
     moon: ctx.mp.name,
+    moonPhase: ctx.mp.phase,
+    sunSymbol: ctx.sun.symbol,
+    animalEmoji: ANIMAL_EMOJI[(ctx.an.num - 1) % 12],
     year: ctx.currentYear,
     url: typeof window !== 'undefined' ? window.location.href.split('#')[0] : ''
   };
@@ -113,14 +116,109 @@ function drawBackground(ctx) {
 
   const stars = [
     [0.12, 0.18], [0.34, 0.42], [0.55, 0.12], [0.78, 0.28],
-    [0.88, 0.55], [0.22, 0.72], [0.48, 0.85], [0.65, 0.38], [0.08, 0.48]
+    [0.88, 0.55], [0.22, 0.72], [0.48, 0.85], [0.65, 0.38], [0.08, 0.48],
+    [0.42, 0.06], [0.7, 0.08], [0.93, 0.15], [0.05, 0.3], [0.16, 0.58],
+    [0.3, 0.9], [0.6, 0.93], [0.82, 0.78], [0.94, 0.9], [0.5, 0.55]
   ];
+
+  // 星座線(手前の星たちを淡く結ぶ)
+  const constellations = [
+    [[0.12, 0.18], [0.34, 0.42], [0.55, 0.12], [0.78, 0.28], [0.93, 0.15]],
+    [[0.22, 0.72], [0.48, 0.85], [0.65, 0.38], [0.88, 0.55]]
+  ];
+  ctx.strokeStyle = 'rgba(240, 216, 120, 0.14)';
+  ctx.lineWidth = 1;
+  constellations.forEach(line => {
+    ctx.beginPath();
+    line.forEach(([sx, sy], i) => {
+      const px = sx * CARD_W;
+      const py = sy * CARD_H;
+      if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+    });
+    ctx.stroke();
+  });
+
   stars.forEach(([sx, sy], i) => {
     ctx.beginPath();
     ctx.arc(sx * CARD_W, sy * CARD_H, i % 3 === 0 ? 2.2 : 1.2, 0, Math.PI * 2);
     ctx.fillStyle = i % 4 === 0 ? COLORS.gold : 'rgba(255,255,255,0.75)';
     ctx.fill();
   });
+
+  // 四隅の飾り星
+  [[86, 92], [CARD_W - 86, 92], [86, CARD_H - 92], [CARD_W - 86, CARD_H - 92]].forEach(([px, py]) => {
+    ctx.font = '22px serif';
+    ctx.textAlign = 'center';
+    ctx.fillStyle = 'rgba(240, 216, 120, 0.45)';
+    ctx.fillText('✦', px, py + 8);
+  });
+}
+
+/** 月相を描く(offset円合成の近似)。phase: 0=新月, 0.5=満月 */
+function drawMoonPhase(ctx, x, y, r, phase) {
+  const p = ((phase % 1) + 1) % 1;
+  const ill = (1 - Math.cos(p * 2 * Math.PI)) / 2; // 照度 0–1
+  const waxing = p < 0.5;
+  const shift = 2 * r * (1 - ill) * (waxing ? 1 : -1);
+
+  ctx.save();
+  ctx.beginPath();
+  ctx.arc(x, y, r, 0, Math.PI * 2);
+  ctx.clip();
+  ctx.fillStyle = 'rgba(24, 20, 46, 0.95)';
+  ctx.fillRect(x - r, y - r, r * 2, r * 2);
+  if (ill > 0.01) {
+    ctx.beginPath();
+    ctx.arc(x + shift, y, r, 0, Math.PI * 2);
+    const lg = ctx.createRadialGradient(x + shift, y, 0, x + shift, y, r);
+    lg.addColorStop(0, '#f2ead2');
+    lg.addColorStop(1, '#d9ceac');
+    ctx.fillStyle = lg;
+    ctx.fill();
+  }
+  ctx.restore();
+
+  ctx.beginPath();
+  ctx.arc(x, y, r, 0, Math.PI * 2);
+  ctx.strokeStyle = 'rgba(240, 216, 120, 0.5)';
+  ctx.lineWidth = 1.5;
+  ctx.stroke();
+}
+
+/** ライフパスのメダリオン(二重円 + 大きな数字) */
+function drawLifePathMedallion(ctx, x, y, r, lp, label) {
+  ctx.beginPath();
+  ctx.arc(x, y, r, 0, Math.PI * 2);
+  ctx.strokeStyle = COLORS.gold;
+  ctx.lineWidth = 1.5;
+  ctx.stroke();
+
+  ctx.beginPath();
+  ctx.setLineDash([3, 6]);
+  ctx.arc(x, y, r - 9, 0, Math.PI * 2);
+  ctx.strokeStyle = 'rgba(240, 216, 120, 0.45)';
+  ctx.lineWidth = 1;
+  ctx.stroke();
+  ctx.setLineDash([]);
+
+  // 放射する小さな目盛り
+  for (let i = 0; i < 12; i++) {
+    const a = (i / 12) * Math.PI * 2;
+    ctx.beginPath();
+    ctx.moveTo(x + Math.cos(a) * (r + 6), y + Math.sin(a) * (r + 6));
+    ctx.lineTo(x + Math.cos(a) * (r + 12), y + Math.sin(a) * (r + 12));
+    ctx.strokeStyle = 'rgba(240, 216, 120, 0.35)';
+    ctx.stroke();
+  }
+
+  ctx.textAlign = 'center';
+  ctx.font = `300 ${String(lp).length > 1 ? 58 : 68}px ${FONT_DISPLAY}`;
+  ctx.fillStyle = COLORS.gold;
+  ctx.fillText(String(lp), x, y + (String(lp).length > 1 ? 20 : 24));
+
+  ctx.font = `400 26px ${FONT_SERIF}`;
+  ctx.fillStyle = COLORS.cream;
+  ctx.fillText(label, x, y + r + 44);
 }
 
 function drawFrame(ctx) {
@@ -148,6 +246,17 @@ function drawStatBox(ctx, x, y, w, h, label, value, sub) {
   ctx.strokeStyle = 'rgba(201, 162, 39, 0.2)';
   ctx.lineWidth = 1;
   roundRect(ctx, x, y, w, h, 16);
+  ctx.stroke();
+
+  // 上辺のゴールドアクセント
+  const accent = ctx.createLinearGradient(x, y, x + w, y);
+  accent.addColorStop(0, 'transparent');
+  accent.addColorStop(0.5, 'rgba(240, 216, 120, 0.6)');
+  accent.addColorStop(1, 'transparent');
+  ctx.strokeStyle = accent;
+  ctx.beginPath();
+  ctx.moveTo(x + 20, y);
+  ctx.lineTo(x + w - 20, y);
   ctx.stroke();
 
   ctx.font = `400 22px ${FONT_SERIF}`;
@@ -203,6 +312,19 @@ export async function renderShareCardCanvas(snap) {
   drawBackground(ctx);
   drawFrame(ctx);
 
+  // 太陽星座の巨大ウォーターマーク
+  if (snap.sunSymbol) {
+    ctx.textAlign = 'center';
+    ctx.font = `300 560px ${FONT_DISPLAY}`;
+    ctx.fillStyle = 'rgba(155, 111, 212, 0.08)';
+    ctx.fillText(snap.sunSymbol, CARD_W / 2, CARD_H * 0.72);
+  }
+
+  // 今夜の月相(右上)
+  if (typeof snap.moonPhase === 'number') {
+    drawMoonPhase(ctx, CARD_W - 156, 164, 42, snap.moonPhase);
+  }
+
   ctx.textAlign = 'center';
 
   ctx.font = `400 28px ${FONT_DISPLAY}`;
@@ -226,20 +348,20 @@ export async function renderShareCardCanvas(snap) {
   ctx.fillStyle = COLORS.muted;
   ctx.fillText(s.bornLine(snap.birth, snap.age), CARD_W / 2, 320 + nameOffset);
 
-  ctx.font = `400 34px ${FONT_SERIF}`;
-  ctx.fillStyle = COLORS.gold;
-  ctx.fillText(s.lifePathLine(snap.lp, snap.lpLabel), CARD_W / 2, 400 + nameOffset);
+  // ライフパス・メダリオン
+  const medY = 428 + nameOffset;
+  drawLifePathMedallion(ctx, CARD_W / 2, medY, 58, snap.lp, snap.lpLabel);
 
-  const gridY = 480 + nameOffset;
+  const gridY = medY + 128;
   const colW = 440;
-  const rowH = 168;
-  const gap = 24;
+  const rowH = 156;
+  const gap = 22;
   const left = 80;
   const stats = [
     [s.stats.sun, snap.sun, s.statPersonalYear(snap.year, snap.personalYear)],
     [s.stats.zodiac, snap.zodiac, ''],
     [s.stats.kyusei, snap.kyusei, ''],
-    [s.stats.animal, snap.animal, ''],
+    [s.stats.animal, `${snap.animalEmoji ?? ''} ${snap.animal}`.trim(), ''],
     [s.stats.tarot, snap.tarot, s.statBirthCard],
     [s.stats.moon, snap.moon, '']
   ];
