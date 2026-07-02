@@ -175,6 +175,8 @@ export function applyStaticPageCopy() {
   setText('form-free-badge', u.form.freeBadge);
   setText('footer-line1', u.footer.line1);
   setText('footer-line2', u.footer.line2);
+  const footerLegal = document.getElementById('footer-legal');
+  if (footerLegal && u.footer.legal) footerLegal.textContent = u.footer.legal;
   setAttr('name', 'placeholder', u.form.namePlaceholder);
   if (u.form.nameRomanPlaceholder) {
     setAttr('name-roman', 'placeholder', u.form.nameRomanPlaceholder);

@@ -30,7 +30,8 @@ export const ui = {
   },
   footer: {
     line1: 'COSMIC ID — Personal Cosmology Prototype',
-    line2: 'Every reading is one possibility. You write your story.'
+    line2: 'Every reading is one possibility. You write your story.',
+    legal: 'Legal'
   },
   lang: { label: 'Language' },
   sections: {
@@ -137,7 +138,7 @@ export const ui = {
   bio: { physical: 'Physical', emotional: 'Emotional', intellectual: 'Intellectual', intuitive: 'Intuitive' },
   modal: {
     deepRead: 'Read deeper',
-    premiumBadge: 'Extended reading (free)',
+    premiumBadge: 'Extended reading',
     premiumPitch: 'Go deeper',
     premiumSub: (line0, line1, chapters) =>
       `${line0} ${line1} (<strong>${chapters} chapters</strong> in this card).`,
@@ -711,11 +712,11 @@ export const ui = {
   },
   premiumShowcase: {
     roadmapSummary: 'See Premium roadmap',
-    note: 'All readings are free — tap any card to explore deeper chapters.',
+    note: 'Core experience stays free. Extended chapters: chapter 1 free, continue with Premium.',
     optionalEyebrow: 'Included free',
     freeIncludesTitle: 'Included free',
-    allFreeTitle: 'Also included — no subscription',
-    allFreeNote: 'Every feature on this page is free. Readings show possibilities; you write your story.',
+    allFreeTitle: 'Also included — no sign-up',
+    allFreeNote: 'Nineteen systems, love, compatibility, and sharing stay free. Deeper chapters unlock with Premium.',
     ariaLabel: 'What\'s included'
   },
   gloss: {
@@ -817,9 +818,25 @@ export const ui = {
     refs: 'References'
   },
   deepChapters: {
-    eyebrow: 'EXTENDED READING · FREE',
+    eyebrow: 'EXTENDED READING',
     title: 'Read deeper',
-    lead: 'All free. Written as possibilities, not verdicts.',
+    lead: 'Chapter 1 is free. Chapters 2+ unlock with Premium. Written as possibilities, not verdicts.',
     readMore: 'Read more'
+  },
+  premiumGate: {
+    eyebrow: 'Premium',
+    title: 'Continue the deep reading',
+    lead: 'Chapters 2 and beyond unlock with Premium — a one-time purchase on this device.',
+    buyCta: 'Get Premium',
+    alreadyPurchased: 'Already purchased?',
+    codeLabel: 'Unlock code',
+    codePlaceholder: 'COSMIC-XXXX-XXXX',
+    unlockCta: 'Unlock with code',
+    unlockNote: 'Enter the code from your purchase confirmation email.',
+    chapterLocked: 'Premium',
+    tapToUnlock: 'Tap to see how to unlock',
+    checkoutPreparing: 'Checkout is being set up. Please check back soon.',
+    unlocked: 'Premium unlocked',
+    invalidCode: 'That code didn\'t work'
   }
 };

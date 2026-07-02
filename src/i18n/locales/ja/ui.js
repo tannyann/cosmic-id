@@ -27,14 +27,15 @@ export const ui = {
     birthDayPlaceholder: '日',
     birthYearPlaceholder: '年',
     submit: '読み解く',
-    freeBadge: 'すべて無料',
+    freeBadge: '基本はずっと無料',
     premiumDemo: '深層解釈をプレビュー（デモ）',
     premiumDemoTitle: '深層解釈のプレビュー（通常は無料のまま利用できます）',
     profileRestored: '前回の入力を復元しました。この端末にのみ保存されます。'
   },
   footer: {
     line1: 'COSMIC ID — Personal Cosmology Prototype',
-    line2: 'すべての解釈は一つの可能性。あなたの物語はあなたが書く。'
+    line2: 'すべての解釈は一つの可能性。あなたの物語はあなたが書く。',
+    legal: '法務情報'
   },
   lang: { label: '言語' },
   sections: {
@@ -144,7 +145,7 @@ export const ui = {
   bio: { physical: '身体', emotional: '感情', intellectual: '知性', intuitive: '直感' },
   modal: {
     deepRead: '深く読み解く',
-    premiumBadge: '拡張リーディング（無料）',
+    premiumBadge: '拡張リーディング',
     premiumPitch: 'さらに深く読む',
     premiumSub: (line0, line1, chapters) =>
       `${line0}。${line1}（全 <strong>${chapters} 章</strong>）。`,
@@ -718,11 +719,11 @@ export const ui = {
   },
   premiumShowcase: {
     roadmapSummary: 'Premium の開発予定を見る',
-    note: 'すべての機能が無料です。各カードから深層チャプターをお読みください。',
+    note: 'コア体験は無料。深層チャプターは1章目まで無料、続きは Premium。',
     optionalEyebrow: '無料で含まれる',
     freeIncludesTitle: '無料でできること',
     allFreeTitle: 'これも無料 — 登録不要',
-    allFreeNote: 'このページの機能はすべて無料です。解釈は可能性の一つ。物語はあなたが書きます。',
+    allFreeNote: '十九体系・恋愛・相性・シェアなどコア機能は無料です。深層の続きは Premium。',
     ariaLabel: '含まれる機能'
   },
   gloss: {
@@ -824,9 +825,25 @@ export const ui = {
     refs: '参考文献'
   },
   deepChapters: {
-    eyebrow: '拡張リーディング · 無料',
+    eyebrow: '拡張リーディング',
     title: 'より深く読み解く',
-    lead: 'すべて無料。断定ではなく、可能性として提示しています。',
+    lead: '1章目は無料。2章目以降は Premium で解放。断定ではなく、可能性として提示しています。',
     readMore: 'もっと読む'
+  },
+  premiumGate: {
+    eyebrow: 'Premium',
+    title: '深層リーディングの続きを読む',
+    lead: '拡張チャプターの2章目以降は Premium で解放できます。買い切りで、この端末からお読みいただけます。',
+    buyCta: 'Premium を購入する',
+    alreadyPurchased: '購入済みの方はこちら',
+    codeLabel: 'アンロックコード',
+    codePlaceholder: 'COSMIC-XXXX-XXXX',
+    unlockCta: 'コードで解放',
+    unlockNote: '決済完了メールに記載のコードを入力してください。',
+    chapterLocked: 'Premium',
+    tapToUnlock: 'タップして解放方法を見る',
+    checkoutPreparing: '決済の準備中です。しばらくお待ちください。',
+    unlocked: 'Premium を解放しました',
+    invalidCode: 'コードが正しくありません'
   }
 };

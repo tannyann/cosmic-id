@@ -18,8 +18,10 @@ import { bindShareModalEvents, closeShareModal } from './share.js';
 import { startAtmosphereWatcher } from './atmosphere.js';
 import { bindMuseum } from './museum-ui.js';
 import { bindSkepticToggle } from './skeptic.js';
+import { initPremium } from './premium.js';
 
 initI18n();
+initPremium();
 startAtmosphereWatcher();
 bindMuseum();
 bindSkepticToggle();

@@ -727,6 +727,11 @@ export function renderPremiumShowcase() {
       </div>
 
       ${renderAllFreeHighlights()}
+
+      <div class="premium-tier">
+        <span class="premium-showcase-eyebrow">${escapeHtml(phil.premiumHeadline)}</span>
+        <p class="premium-showcase-lead">${escapeHtml(phil.premiumLead)}</p>
+      </div>
     </div>
   `;
 }

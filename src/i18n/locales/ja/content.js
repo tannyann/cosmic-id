@@ -280,11 +280,11 @@ export const LUCKY_COMPASS = {
 
 // ============ 無料 / プレミアムの位置づけ（文言） ============
 export const PRODUCT_PHILOSOPHY = {
-  freeBadge: 'すべて無料',
+  freeBadge: '基本はずっと無料',
   freeHeadline: '十九の物語は、誰でも読める',
-  freeLead: '生年月日と名前だけで、十九体系の結果・サマリー・各カードの解釈、恋愛診断・相性診断まで。すべて無料です。',
-  premiumHeadline: 'さらに深く、それも無料',
-  premiumLead: '各カードの深層リーディングも、誰でもそのままお読みいただけます。'
+  freeLead: '生年月日と名前だけで、十九体系の結果・サマリー・各カードの解釈、恋愛診断・相性診断まで。コア体験は無料です。',
+  premiumHeadline: 'さらに深く知りたい方へ',
+  premiumLead: '各カードの拡張リーディングは1章目まで無料。2章目以降は Premium で解放できます。'
 };
 
 /** @deprecated 課金未使用 — 参照用に残置 */
@@ -315,7 +315,7 @@ export const FREE_INCLUDES = [
   {
     icon: '○',
     title: 'カードごとの解釈',
-    desc: '各体系をタップすると無料で「深く読み解く」が開きます。拡張チャプターも含めてすべて無料。'
+    desc: '各体系をタップすると「深く読み解く」が開きます。1章目は無料、続きは Premium。'
   },
   {
     icon: '○',
@@ -334,7 +334,7 @@ export const ALL_FREE_HIGHLIGHTS = [
   {
     icon: '✦',
     title: '深層マスターリーディング',
-    desc: '全カードで拡張チャプターを開放。時間軸・シャドウ・横断ヒントまで、課金なしで読めます。'
+    desc: '全カードで拡張チャプター。1章目は無料、2章目以降は Premium でさらに深く読めます。'
   },
   {
     icon: '♡',

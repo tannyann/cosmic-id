@@ -280,11 +280,11 @@ export const LUCKY_COMPASS = {
 
 // ============ Free / Premium positioning (copy) ============
 export const PRODUCT_PHILOSOPHY = {
-  freeBadge: 'Free forever',
-  freeHeadline: 'Everything, no sign-up required',
-  freeLead: 'This whole page is free. Every reading is one possibility — you write the story.',
-  premiumHeadline: 'Go deeper, still free',
-  premiumLead: 'Extended chapters in every card modal are unlocked for everyone.'
+  freeBadge: 'Free to use — always',
+  freeHeadline: 'Nineteen stories, open to everyone',
+  freeLead: 'Birth date and name unlock all nineteen systems, summaries, card readings, love and compatibility — the core experience stays free.',
+  premiumHeadline: 'Go deeper with Premium',
+  premiumLead: 'Extended reading chapters: chapter 1 is free; chapters 2+ unlock with Premium.'
 };
 
 /** @deprecated Billing not used — kept for reference */
@@ -314,7 +314,7 @@ export const FREE_INCLUDES = [
   {
     icon: '○',
     title: 'Deep reading per card',
-    desc: 'Tap any card to open its detailed reading. Every card, every extended chapter, is free.'
+    desc: 'Tap any card for a deeper read. Chapter 1 is free; continue with Premium.'
   },
   {
     icon: '○',
@@ -333,7 +333,7 @@ export const ALL_FREE_HIGHLIGHTS = [
   {
     icon: '✦',
     title: 'Deep master reading',
-    desc: 'Every card comes with an extended chapter. Timeline, shadow work, and cross-system hints — all without a paywall.'
+    desc: 'Extended chapters on every card. Chapter 1 is free; go deeper with Premium from chapter 2.'
   },
   {
     icon: '♡',
