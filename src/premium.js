@@ -6,8 +6,8 @@ import { showToast } from './util.js';
 import { getUI } from './i18n/index.js';
 
 export const PREMIUM_CONFIG = {
-  /** false にすると従来どおり全章無料 */
-  enabled: true,
+  /** false にすると従来どおり全章無料（公開時は false） */
+  enabled: false,
   checkoutUrl: import.meta.env?.VITE_STRIPE_PAYMENT_LINK || '',
   freeChapterCount: 1,
   storageKey: 'cosmic-id-premium-v1'
