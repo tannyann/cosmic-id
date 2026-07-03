@@ -1883,7 +1883,7 @@ footer {
 .share-preview-btn {
   display: block;
   width: 100%;
-  max-width: 270px;
+  max-width: 216px;
   margin: 0 auto 24px;
   padding: 0;
   border: none;
@@ -1893,6 +1893,9 @@ footer {
   border-radius: var(--radius-md);
   transition: transform 0.3s var(--ease-out), box-shadow 0.3s;
 }
+.share-preview-btn--tall {
+  aspect-ratio: 9 / 16;
+}
 .share-preview-btn:hover {
   transform: translateY(-3px);
   box-shadow: 0 16px 48px rgba(0, 0, 0, 0.45);
@@ -1900,7 +1903,8 @@ footer {
 
 .share-preview-btn img {
   width: 100%;
-  height: auto;
+  height: 100%;
+  object-fit: cover;
   display: block;
   border-radius: var(--radius-md);
   border: 1px solid var(--border-strong);
@@ -1911,7 +1915,7 @@ footer {
   position: absolute;
   inset: 0;
   z-index: 2;
-  aspect-ratio: 1080 / 1350;
+  aspect-ratio: 9 / 16;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -2038,10 +2042,13 @@ footer {
 
 .share-modal-img {
   width: 100%;
+  max-width: min(320px, 88vw);
+  max-height: min(72vh, 640px);
   height: auto;
+  object-fit: contain;
   display: block;
   border-radius: var(--radius-sm);
-  margin-bottom: 20px;
+  margin: 0 auto 20px;
 }
 
 .share-modal-actions {

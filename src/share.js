@@ -1,72 +1,62 @@
 /**
- * SNS シェア用カードの生成と共有アクション。
- * 計算結果のスナップショットから画像・テキストを作る。
+ * SNS シェア用カード — Tree of Life ビジュアル。
+ * ベース画像の上にライフパス番号と名前を重ねる。
  */
 
 import { getContent, getUI } from './i18n/index.js';
-import { escapeHtml, copyToClipboard, showToast, ANIMAL_EMOJI } from './util.js';
+import { escapeHtml, copyToClipboard, showToast } from './util.js';
 
+/** ベース画像と同じ 9:16 */
 const CARD_W = 1080;
-const CARD_H = 1350;
+const CARD_H = 1920;
 
-const COLORS = {
-  bg0: '#06050f',
-  bg1: '#14102a',
-  bg2: '#221838',
-  gold: '#f0d878',
-  goldDim: '#c9a227',
-  cream: '#ede4d4',
-  muted: '#9a8fb8',
-  purple: '#9b6fd4',
-  rose: '#d4799a',
-  border: 'rgba(201, 162, 39, 0.35)'
-};
-
-/* Canvas はクロスオリジン Web フォントで汚染されるためシステムフォントのみ */
 const FONT_SERIF = '"Hiragino Mincho ProN", "Yu Mincho", "Noto Serif JP", serif';
 const FONT_DISPLAY = '"Hiragino Mincho ProN", "Yu Mincho", serif';
 
+/** 576×1024 基準 → 1080×1920 へのレイアウト定数 */
+const LAYOUT = {
+  numeral: { cx: 540, cy: 598, coverRx: 210, coverRy: 195 },
+  name: { cx: 540, cy: 1788, coverRx: 500, coverRy: 72 }
+};
+
+let baseImagePromise = null;
+
+function assetUrl(file) {
+  const base = import.meta.env.BASE_URL || './';
+  return `${base}${file}`;
+}
+
+function loadBaseImage() {
+  if (!baseImagePromise) {
+    baseImagePromise = new Promise((resolve, reject) => {
+      const img = new Image();
+      img.onload = () => resolve(img);
+      img.onerror = () => reject(new Error('share-card-base'));
+      img.src = assetUrl('share-card-base.png');
+    });
+  }
+  return baseImagePromise;
+}
+
 /**
- * シェア用に要約したデータ
  * @param {object} ctx — render() の currentContext
  */
 export function buildShareSnapshot(ctx) {
   const { LIFE_PATH_MEANINGS } = getContent();
-  const s = getUI().share;
   const lpInfo = LIFE_PATH_MEANINGS[ctx.lp];
   return {
     name: ctx.name,
-    birth: s.birthDate(ctx.y, ctx.m, ctx.d),
-    age: ctx.ls.years.toFixed(1),
     lp: ctx.lp,
-    lpLabel: lpInfo.label,
-    sun: `${ctx.sun.symbol} ${ctx.sun.name}`,
-    zodiac: `${ctx.cz.char} ${ctx.cz.name}`,
-    kyusei: ctx.ks.name,
-    animal: ctx.an.name,
-    tarot: ctx.tb.name,
-    personalYear: ctx.py,
-    moon: ctx.mp.name,
-    moonPhase: ctx.mp.phase,
-    sunSymbol: ctx.sun.symbol,
-    animalEmoji: ANIMAL_EMOJI[(ctx.an.num - 1) % 12],
-    year: ctx.currentYear,
+    lpLabel: lpInfo?.label ?? '',
     url: typeof window !== 'undefined' ? window.location.href.split('#')[0] : ''
   };
 }
 
 export function getShareTweetText(snap) {
   const s = getUI().share;
-  const sep = s.tweetSep || ' | ';
   const lines = [
-    s.tweetHeader,
-    '',
     s.tweetStories(snap.name),
-    `${s.tweetLifePath(snap.lp, snap.lpLabel)}${sep}${snap.sun}`,
-    `${snap.zodiac}${sep}${snap.kyusei}${sep}${snap.animal}`,
-    s.tweetTarot(snap.tarot),
-    '',
-    `${s.tweetPersonalYear(snap.year, snap.personalYear)}${sep}${s.tonightMoon(snap.moon)}`,
+    s.tweetLifePath(snap.lp, snap.lpLabel),
     '',
     s.tweetFooter,
     '#COSMICID'
@@ -83,7 +73,57 @@ function waitForFonts(timeoutMs = 2500) {
   return timeout;
 }
 
-function roundRect(ctx, x, y, w, h, r) {
+/** テンプレートの数字・名前を隠すソフトマスク */
+function paintCover(ctx, cx, cy, rx, ry) {
+  const g = ctx.createRadialGradient(cx, cy, 0, cx, cy, Math.max(rx, ry));
+  g.addColorStop(0, 'rgba(7, 10, 20, 0.97)');
+  g.addColorStop(0.55, 'rgba(7, 10, 20, 0.88)');
+  g.addColorStop(1, 'rgba(7, 10, 20, 0)');
+  ctx.fillStyle = g;
+  ctx.beginPath();
+  ctx.ellipse(cx, cy, rx, ry, 0, 0, Math.PI * 2);
+  ctx.fill();
+}
+
+/** 参照画像の「7」スタイルに近い単一数字 */
+function drawStylizedSeven(ctx, cx, cy) {
+  const scale = 1.15;
+  ctx.save();
+  ctx.translate(cx, cy);
+  ctx.scale(scale, scale);
+
+  // 上の横棒（白）
+  ctx.fillStyle = '#f5f3ee';
+  roundRectPath(ctx, -52, -78, 104, 18, 4);
+  ctx.fill();
+
+  // 縦の細い軸
+  ctx.strokeStyle = '#f5f3ee';
+  ctx.lineWidth = 2.2;
+  ctx.lineCap = 'round';
+  ctx.beginPath();
+  ctx.moveTo(38, -68);
+  ctx.quadraticCurveTo(18, 10, 0, 62);
+  ctx.stroke();
+
+  // 先端の金色の滴
+  ctx.beginPath();
+  ctx.moveTo(0, 62);
+  ctx.bezierCurveTo(-10, 78, 10, 78, 0, 62);
+  ctx.fillStyle = '#d4af5a';
+  ctx.fill();
+  ctx.beginPath();
+  ctx.arc(0, 72, 7, 0, Math.PI * 2);
+  const drop = ctx.createRadialGradient(0, 68, 0, 0, 72, 10);
+  drop.addColorStop(0, '#f0d878');
+  drop.addColorStop(1, '#b8922e');
+  ctx.fillStyle = drop;
+  ctx.fill();
+
+  ctx.restore();
+}
+
+function roundRectPath(ctx, x, y, w, h, r) {
   const rad = Math.min(r, w / 2, h / 2);
   ctx.beginPath();
   ctx.moveTo(x + rad, y);
@@ -94,206 +134,89 @@ function roundRect(ctx, x, y, w, h, r) {
   ctx.closePath();
 }
 
-function drawBackground(ctx) {
-  const g = ctx.createLinearGradient(0, 0, CARD_W, CARD_H);
-  g.addColorStop(0, COLORS.bg0);
-  g.addColorStop(0.45, COLORS.bg1);
-  g.addColorStop(1, COLORS.bg2);
-  ctx.fillStyle = g;
-  ctx.fillRect(0, 0, CARD_W, CARD_H);
+/** 円形ハロー + ライフパス数字 */
+function drawNumeralCrown(ctx, cx, cy, lp) {
+  const lpStr = String(lp);
+  const r = 112;
 
-  const aurora = ctx.createRadialGradient(CARD_W * 0.2, 0, 0, CARD_W * 0.2, 0, CARD_W * 0.9);
-  aurora.addColorStop(0, 'rgba(155, 111, 212, 0.22)');
-  aurora.addColorStop(1, 'transparent');
-  ctx.fillStyle = aurora;
-  ctx.fillRect(0, 0, CARD_W, CARD_H);
+  const halo = ctx.createRadialGradient(cx, cy, r * 0.15, cx, cy, r * 1.25);
+  halo.addColorStop(0, 'rgba(28, 24, 48, 0.55)');
+  halo.addColorStop(0.6, 'rgba(12, 16, 32, 0.35)');
+  halo.addColorStop(1, 'rgba(8, 12, 24, 0)');
+  ctx.fillStyle = halo;
+  ctx.beginPath();
+  ctx.arc(cx, cy, r * 1.2, 0, Math.PI * 2);
+  ctx.fill();
 
-  const aurora2 = ctx.createRadialGradient(CARD_W * 0.85, CARD_H, 0, CARD_W * 0.85, CARD_H, CARD_W * 0.7);
-  aurora2.addColorStop(0, 'rgba(212, 121, 154, 0.14)');
-  aurora2.addColorStop(1, 'transparent');
-  ctx.fillStyle = aurora2;
-  ctx.fillRect(0, 0, CARD_W, CARD_H);
-
-  const stars = [
-    [0.12, 0.18], [0.34, 0.42], [0.55, 0.12], [0.78, 0.28],
-    [0.88, 0.55], [0.22, 0.72], [0.48, 0.85], [0.65, 0.38], [0.08, 0.48],
-    [0.42, 0.06], [0.7, 0.08], [0.93, 0.15], [0.05, 0.3], [0.16, 0.58],
-    [0.3, 0.9], [0.6, 0.93], [0.82, 0.78], [0.94, 0.9], [0.5, 0.55]
-  ];
-
-  // 星座線(手前の星たちを淡く結ぶ)
-  const constellations = [
-    [[0.12, 0.18], [0.34, 0.42], [0.55, 0.12], [0.78, 0.28], [0.93, 0.15]],
-    [[0.22, 0.72], [0.48, 0.85], [0.65, 0.38], [0.88, 0.55]]
-  ];
-  ctx.strokeStyle = 'rgba(240, 216, 120, 0.14)';
+  ctx.strokeStyle = 'rgba(255, 255, 255, 0.14)';
   ctx.lineWidth = 1;
-  constellations.forEach(line => {
-    ctx.beginPath();
-    line.forEach(([sx, sy], i) => {
-      const px = sx * CARD_W;
-      const py = sy * CARD_H;
-      if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
-    });
-    ctx.stroke();
-  });
-
-  stars.forEach(([sx, sy], i) => {
-    ctx.beginPath();
-    ctx.arc(sx * CARD_W, sy * CARD_H, i % 3 === 0 ? 2.2 : 1.2, 0, Math.PI * 2);
-    ctx.fillStyle = i % 4 === 0 ? COLORS.gold : 'rgba(255,255,255,0.75)';
-    ctx.fill();
-  });
-
-  // 四隅の飾り星
-  [[86, 92], [CARD_W - 86, 92], [86, CARD_H - 92], [CARD_W - 86, CARD_H - 92]].forEach(([px, py]) => {
-    ctx.font = '22px serif';
-    ctx.textAlign = 'center';
-    ctx.fillStyle = 'rgba(240, 216, 120, 0.45)';
-    ctx.fillText('✦', px, py + 8);
-  });
-}
-
-/** 月相を描く(offset円合成の近似)。phase: 0=新月, 0.5=満月 */
-function drawMoonPhase(ctx, x, y, r, phase) {
-  const p = ((phase % 1) + 1) % 1;
-  const ill = (1 - Math.cos(p * 2 * Math.PI)) / 2; // 照度 0–1
-  const waxing = p < 0.5;
-  const shift = 2 * r * (1 - ill) * (waxing ? 1 : -1);
-
-  ctx.save();
   ctx.beginPath();
-  ctx.arc(x, y, r, 0, Math.PI * 2);
-  ctx.clip();
-  ctx.fillStyle = 'rgba(24, 20, 46, 0.95)';
-  ctx.fillRect(x - r, y - r, r * 2, r * 2);
-  if (ill > 0.01) {
-    ctx.beginPath();
-    ctx.arc(x + shift, y, r, 0, Math.PI * 2);
-    const lg = ctx.createRadialGradient(x + shift, y, 0, x + shift, y, r);
-    lg.addColorStop(0, '#f2ead2');
-    lg.addColorStop(1, '#d9ceac');
-    ctx.fillStyle = lg;
-    ctx.fill();
-  }
-  ctx.restore();
-
-  ctx.beginPath();
-  ctx.arc(x, y, r, 0, Math.PI * 2);
-  ctx.strokeStyle = 'rgba(240, 216, 120, 0.5)';
-  ctx.lineWidth = 1.5;
+  ctx.arc(cx, cy, r, 0, Math.PI * 2);
   ctx.stroke();
-}
-
-/** ライフパスのメダリオン(二重円 + 大きな数字) */
-function drawLifePathMedallion(ctx, x, y, r, lp, label) {
   ctx.beginPath();
-  ctx.arc(x, y, r, 0, Math.PI * 2);
-  ctx.strokeStyle = COLORS.gold;
-  ctx.lineWidth = 1.5;
+  ctx.arc(cx, cy, r - 10, 0, Math.PI * 2);
   ctx.stroke();
 
-  ctx.beginPath();
-  ctx.setLineDash([3, 6]);
-  ctx.arc(x, y, r - 9, 0, Math.PI * 2);
-  ctx.strokeStyle = 'rgba(240, 216, 120, 0.45)';
-  ctx.lineWidth = 1;
-  ctx.stroke();
-  ctx.setLineDash([]);
-
-  // 放射する小さな目盛り
-  for (let i = 0; i < 12; i++) {
-    const a = (i / 12) * Math.PI * 2;
-    ctx.beginPath();
-    ctx.moveTo(x + Math.cos(a) * (r + 6), y + Math.sin(a) * (r + 6));
-    ctx.lineTo(x + Math.cos(a) * (r + 12), y + Math.sin(a) * (r + 12));
-    ctx.strokeStyle = 'rgba(240, 216, 120, 0.35)';
-    ctx.stroke();
+  if (lpStr === '7') {
+    drawStylizedSeven(ctx, cx, cy + 6);
+    return;
   }
 
   ctx.textAlign = 'center';
-  ctx.font = `300 ${String(lp).length > 1 ? 58 : 68}px ${FONT_DISPLAY}`;
-  ctx.fillStyle = COLORS.gold;
-  ctx.fillText(String(lp), x, y + (String(lp).length > 1 ? 20 : 24));
+  ctx.textBaseline = 'middle';
+  const size = lpStr.length > 1 ? 86 : 118;
+  ctx.font = `300 ${size}px ${FONT_DISPLAY}`;
+  ctx.fillStyle = '#f5f3ee';
+  ctx.fillText(lpStr, cx, cy + 6);
 
-  ctx.font = `400 26px ${FONT_SERIF}`;
-  ctx.fillStyle = COLORS.cream;
-  ctx.fillText(label, x, y + r + 44);
-}
-
-function drawFrame(ctx) {
-  ctx.strokeStyle = COLORS.border;
-  ctx.lineWidth = 2;
-  roundRect(ctx, 48, 48, CARD_W - 96, CARD_H - 96, 28);
-  ctx.stroke();
-
-  const lg = ctx.createLinearGradient(48, 48, CARD_W - 48, 48);
-  lg.addColorStop(0, 'transparent');
-  lg.addColorStop(0.5, COLORS.gold);
-  lg.addColorStop(1, 'transparent');
-  ctx.strokeStyle = lg;
-  ctx.lineWidth = 1;
   ctx.beginPath();
-  ctx.moveTo(120, 48);
-  ctx.lineTo(CARD_W - 120, 48);
-  ctx.stroke();
-}
-
-function drawStatBox(ctx, x, y, w, h, label, value, sub) {
-  ctx.fillStyle = 'rgba(22, 18, 42, 0.72)';
-  roundRect(ctx, x, y, w, h, 16);
+  ctx.arc(cx, cy + (lpStr.length > 1 ? 52 : 58), 5, 0, Math.PI * 2);
+  const dot = ctx.createRadialGradient(cx, cy + 54, 0, cx, cy + 56, 8);
+  dot.addColorStop(0, '#f0d878');
+  dot.addColorStop(1, '#b8922e');
+  ctx.fillStyle = dot;
   ctx.fill();
-  ctx.strokeStyle = 'rgba(201, 162, 39, 0.2)';
-  ctx.lineWidth = 1;
-  roundRect(ctx, x, y, w, h, 16);
-  ctx.stroke();
-
-  // 上辺のゴールドアクセント
-  const accent = ctx.createLinearGradient(x, y, x + w, y);
-  accent.addColorStop(0, 'transparent');
-  accent.addColorStop(0.5, 'rgba(240, 216, 120, 0.6)');
-  accent.addColorStop(1, 'transparent');
-  ctx.strokeStyle = accent;
-  ctx.beginPath();
-  ctx.moveTo(x + 20, y);
-  ctx.lineTo(x + w - 20, y);
-  ctx.stroke();
-
-  ctx.font = `400 22px ${FONT_SERIF}`;
-  ctx.fillStyle = COLORS.muted;
-  ctx.textAlign = 'left';
-  ctx.fillText(label, x + 24, y + 44);
-
-  ctx.font = `500 36px ${FONT_SERIF}`;
-  ctx.fillStyle = COLORS.gold;
-  const valueLines = wrapText(ctx, value, w - 48, 36);
-  valueLines.slice(0, 2).forEach((line, i) => {
-    ctx.fillText(line, x + 24, y + 92 + i * 42);
-  });
-
-  if (sub) {
-    ctx.font = `300 24px ${FONT_SERIF}`;
-    ctx.fillStyle = COLORS.purple;
-    ctx.fillText(sub, x + 24, y + h - 28);
-  }
 }
 
-function wrapText(ctx, text, maxWidth, size) {
-  ctx.font = `500 ${size}px ${FONT_SERIF}`;
-  const chars = [...text];
-  const lines = [];
-  let line = '';
-  for (const ch of chars) {
-    const test = line + ch;
-    if (ctx.measureText(test).width > maxWidth && line) {
-      lines.push(line);
-      line = ch;
-    } else {
-      line = test;
-    }
+/** 底部の名前 — ラテンは字間広げ、CJK はそのまま */
+function drawShareName(ctx, cx, y, name) {
+  const trimmed = String(name).trim();
+  const isLatin = /^[\x00-\x7F\s'.-]+$/.test(trimmed);
+
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+
+  if (isLatin) {
+    const spaced = trimmed.toUpperCase().split('').join('  ');
+    ctx.font = `300 46px ${FONT_DISPLAY}`;
+    ctx.fillStyle = 'rgba(245, 243, 238, 0.94)';
+    ctx.fillText(spaced, cx, y);
+    return;
   }
-  if (line) lines.push(line);
-  return lines;
+
+  ctx.font = `400 54px ${FONT_SERIF}`;
+  ctx.fillStyle = 'rgba(245, 243, 238, 0.94)';
+  ctx.fillText(trimmed, cx, y);
+}
+
+function drawProceduralFallback(ctx) {
+  const g = ctx.createLinearGradient(0, 0, 0, CARD_H);
+  g.addColorStop(0, '#060a14');
+  g.addColorStop(0.5, '#0c1224');
+  g.addColorStop(1, '#080c18');
+  ctx.fillStyle = g;
+  ctx.fillRect(0, 0, CARD_W, CARD_H);
+
+  const stars = [
+    [0.12, 0.08], [0.34, 0.15], [0.55, 0.06], [0.78, 0.12],
+    [0.88, 0.22], [0.22, 0.28], [0.48, 0.18], [0.65, 0.1]
+  ];
+  stars.forEach(([sx, sy], i) => {
+    ctx.beginPath();
+    ctx.arc(sx * CARD_W, sy * CARD_H, i % 2 ? 1.5 : 2.2, 0, Math.PI * 2);
+    ctx.fillStyle = i % 3 === 0 ? 'rgba(240, 216, 120, 0.8)' : 'rgba(255,255,255,0.6)';
+    ctx.fill();
+  });
 }
 
 /**
@@ -302,97 +225,25 @@ function wrapText(ctx, text, maxWidth, size) {
  */
 export async function renderShareCardCanvas(snap) {
   await waitForFonts();
-  const s = getUI().share;
 
   const canvas = document.createElement('canvas');
   canvas.width = CARD_W;
   canvas.height = CARD_H;
   const ctx = canvas.getContext('2d');
 
-  drawBackground(ctx);
-  drawFrame(ctx);
-
-  // 太陽星座の巨大ウォーターマーク
-  if (snap.sunSymbol) {
-    ctx.textAlign = 'center';
-    ctx.font = `300 560px ${FONT_DISPLAY}`;
-    ctx.fillStyle = 'rgba(155, 111, 212, 0.08)';
-    ctx.fillText(snap.sunSymbol, CARD_W / 2, CARD_H * 0.72);
-  }
-
-  // 今夜の月相(右上)
-  if (typeof snap.moonPhase === 'number') {
-    drawMoonPhase(ctx, CARD_W - 156, 164, 42, snap.moonPhase);
-  }
-
-  ctx.textAlign = 'center';
-
-  ctx.font = `400 28px ${FONT_DISPLAY}`;
-  ctx.fillStyle = COLORS.muted;
-  ctx.fillText(s.canvasPersonal, CARD_W / 2, 130);
-
-  ctx.font = `300 52px ${FONT_DISPLAY}`;
-  ctx.fillStyle = COLORS.gold;
-  ctx.fillText('✦  COSMIC ID  ✦', CARD_W / 2, 200);
-
-  ctx.font = `500 64px ${FONT_SERIF}`;
-  ctx.fillStyle = COLORS.cream;
-  const displayName = snap.name + (s.nameSuffix || '');
-  const nameLines = wrapText(ctx, displayName, CARD_W - 160, 64);
-  nameLines.forEach((line, i) => {
-    ctx.fillText(line, CARD_W / 2, 300 + i * 72);
-  });
-
-  const nameOffset = nameLines.length * 72;
-  ctx.font = `300 30px ${FONT_SERIF}`;
-  ctx.fillStyle = COLORS.muted;
-  ctx.fillText(s.bornLine(snap.birth, snap.age), CARD_W / 2, 320 + nameOffset);
-
-  // ライフパス・メダリオン
-  const medY = 428 + nameOffset;
-  drawLifePathMedallion(ctx, CARD_W / 2, medY, 58, snap.lp, snap.lpLabel);
-
-  const gridY = medY + 128;
-  const colW = 440;
-  const rowH = 156;
-  const gap = 22;
-  const left = 80;
-  const stats = [
-    [s.stats.sun, snap.sun, s.statPersonalYear(snap.year, snap.personalYear)],
-    [s.stats.zodiac, snap.zodiac, ''],
-    [s.stats.kyusei, snap.kyusei, ''],
-    [s.stats.animal, `${snap.animalEmoji ?? ''} ${snap.animal}`.trim(), ''],
-    [s.stats.tarot, snap.tarot, s.statBirthCard],
-    [s.stats.moon, snap.moon, '']
-  ];
-
-  stats.forEach((item, i) => {
-    const col = i % 2;
-    const row = Math.floor(i / 2);
-    drawStatBox(
-      ctx,
-      left + col * (colW + gap),
-      gridY + row * (rowH + gap),
-      colW,
-      rowH,
-      item[0],
-      item[1],
-      item[2]
-    );
-  });
-
-  const footerY = CARD_H - 120;
-  ctx.font = `300 26px ${FONT_SERIF}`;
-  ctx.fillStyle = COLORS.muted;
-  ctx.fillText(s.canvasFooter, CARD_W / 2, footerY);
-
-  ctx.font = `400 22px ${FONT_DISPLAY}`;
-  ctx.fillStyle = COLORS.goldDim;
-  let host = 'COSMIC ID';
   try {
-    if (snap.url) host = new URL(snap.url).host;
-  } catch { /* noop */ }
-  ctx.fillText(host, CARD_W / 2, footerY + 40);
+    const img = await loadBaseImage();
+    ctx.drawImage(img, 0, 0, CARD_W, CARD_H);
+  } catch {
+    drawProceduralFallback(ctx);
+  }
+
+  const { numeral, name } = LAYOUT;
+  paintCover(ctx, numeral.cx, numeral.cy, numeral.coverRx, numeral.coverRy);
+  paintCover(ctx, name.cx, name.cy, name.coverRx, name.coverRy);
+
+  drawNumeralCrown(ctx, numeral.cx, numeral.cy, snap.lp);
+  drawShareName(ctx, name.cx, name.cy, snap.name);
 
   return canvas;
 }
@@ -448,7 +299,6 @@ export async function nativeShareImage(canvas, snap) {
 }
 
 /**
- * 結果表示後にシェア UI をマウント
  * @param {object} ctx — render() の currentContext
  * @param {{ narrativePromise?: Promise<import('./narrative.js').NarrativeResult> }} [opts]
  */
@@ -472,9 +322,9 @@ export async function mountSharePanel(ctx, opts = {}) {
     </div>
     <div class="share-panel-block">
       <h3 class="share-block-title">${escapeHtml(s.cardSectionTitle ?? s.panelTitle)}</h3>
-      <button type="button" class="share-preview-btn" id="share-preview-btn" aria-label="${s.previewAria}">
+      <button type="button" class="share-preview-btn share-preview-btn--tall" id="share-preview-btn" aria-label="${s.previewAria}">
         <div class="share-preview-loading" id="share-preview-loading" aria-hidden="true">${s.loading}</div>
-        <img id="share-preview-img" alt="${escapeHtml(s.previewAlt(ctx.name))}" width="270" height="338" loading="lazy" hidden>
+        <img id="share-preview-img" alt="${escapeHtml(s.previewAlt(ctx.name))}" width="216" height="384" loading="lazy" hidden>
         <span class="share-preview-hint">${s.previewHint}</span>
       </button>
       <div class="share-actions">

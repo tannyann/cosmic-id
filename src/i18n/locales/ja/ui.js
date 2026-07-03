@@ -631,7 +631,7 @@ export const ui = {
     panelTitle: 'シェア',
     panelDesc: '十九の物語カードと、統合ナラティブの Instagram 用画像をここから共有できます',
     panelSteps: '① 画像を保存 → ② X・LINE・Instagram に投稿',
-    cardSectionTitle: '十九の物語カード',
+    cardSectionTitle: 'Tree of Life カード',
     previewHint: 'タップで拡大',
     previewAria: 'シェアカードを拡大表示',
     previewAlt: (name) => `${name}さんの COSMIC ID シェアカード`,

@@ -624,7 +624,7 @@ export const ui = {
     panelTitle: 'Share',
     panelDesc: 'Share your nineteen-stories card and Instagram narrative image from here',
     panelSteps: '① Save image → ② Post on X, LINE, or Instagram',
-    cardSectionTitle: 'Nineteen-stories card',
+    cardSectionTitle: 'Tree of Life card',
     previewHint: 'Tap to enlarge',
     previewAria: 'Enlarge share card',
     previewAlt: (name) => `${name}'s COSMIC ID share card`,
