@@ -121,7 +121,28 @@ CTA や深掘りコンテンツで「ライフパス8だから株を買おう」
 
 ## テストとデバッグ
 
-現状ユニットテストは未整備。手動チェックリスト:
+ユニットテストは `npm test`(Vitest)。`src/__tests__/calculations.test.js` が
+計算ロジックの回帰テスト。テストは日本語ロケール前提のため、`setup-locale.js`
+(localStorage スタブ)を **calculations.js より先に import** する規約
+(理由は `docs/learnings/vitest-locale-stub.md`)。「今日」依存の関数は
+`vi.setSystemTime` で固定する。期待値には出どころを明記する:
+[既知値](本ファイル由来)/[外部照合](一般事実)/[回帰ピン](現状実装の固定)。
+
+追加の検証済み既知値(2026-07 監査時に導出):
+
+- 1990-05-15 → 九星 一白水星、六十干支 庚午(金・陽)、タロット 3 女帝
+- 1984 → 甲子(六十干支の起点)、2024 → 甲辰
+- マヤ暦は実装の定義上 2013-07-26 = KIN 33(※公式ドリームスペルとズレの疑いあり。`docs/audit/fortune-accuracy.md` 参照)
+
+既知バグ(方針判断待ちのため未修正。現状挙動をテストで固定済み):
+
+- `tarotBirthCard`: 合計がちょうど 22 のとき name が undefined(`docs/learnings/tarot-birthcard-22-undefined.md`)
+- `cyclesDayPlan`: moonPhase / moonName が常に undefined(`docs/learnings/cyclesdayplan-moonphase-undefined.md`)
+
+占術計算の流派差・正確性の棚卸しは `docs/audit/fortune-accuracy.md`(全体)と
+`docs/audit/parts/others.md`(出典付き詳細)。残作業は `docs/HANDOFF.md`。
+
+手動チェックリスト:
 
 1. **計算検証**:既知の値で確認
    - 1990-05-15 → ライフパス 3、午年
