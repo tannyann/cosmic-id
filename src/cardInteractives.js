@@ -760,7 +760,8 @@ function renderTarotSuits(ctx) {
 
 function renderTarotShadowNum(ctx) {
   const { TAROT_BY_NUM } = getContent();
-  const shadow = (ctx.tb.num + 11) % 22 || 22;
+  // TAROT_BY_NUM は index 0..21。剰余の結果 0(愚者)は有効なので 22 に読み替えない。
+  const shadow = (ctx.tb.num + 11) % 22;
   const d = getUI().deep?.tarot ?? {};
   return `<p>${esc(d.shadowText(TAROT_BY_NUM[shadow] ?? ctx.tb.name))}</p>`;
 }
