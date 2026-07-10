@@ -1,0 +1,38 @@
+---
+description: content.js / deeper.js / i18n 辞書を編集するときのトーン・構成規約
+globs: src/content.js,src/deeper.js,src/i18n/**
+alwaysApply: false
+---
+
+# 文言・辞書ファイルの編集規約
+
+## 責務
+
+- `content.js`: 静的辞書(意味・説明文・データテーブル)。計算や DOM を持ち込まない。
+- `deeper.js`: モーダル詳細コンテンツの構築(`buildDeep()` の free/premium)。計算ロジックは書かない。
+- `src/i18n/locales/{ja,en}/`: 言語ごとの辞書実体。**キー構造を ja/en で必ず一致させる**。
+
+## トーン規約(占い・スピリチュアル系)
+
+- 断定的な予言をしない: ✗「あなたは必ず35歳で結婚します」→ ○「35歳前後に出会いの波が訪れることが多いとされます」。
+  ユーザーが自分で意味を見出すための「触媒」として書く。
+- 「絶望」「終わり」「孤独で死ぬ」等の断定的ネガティブ表現は禁止。死神カード等の伝統的に重い象徴も
+  「変容」「再生」の方向で記述する。
+- 占い結果に基づく医療・法律・財務の助言(「ライフパス8だから株を買おう」等の誘導)を書かない。
+
+## 新しい体系を追加する手順(順序を守る)
+
+1. `content.js` に辞書(`export const`)
+2. `calculations.js` に純粋関数(`export function`)
+3. `ui.js` の `render()` に `card('newKey', ...)` を追加
+4. `deeper.js` の `buildDeep()` switch に `case 'newKey'` を追加(free と premium の両方)
+5. `README.md` の体系一覧に追記
+
+## 命名規約
+
+- 静的辞書: `SCREAMING_SNAKE_CASE`(`LIFE_PATH_MEANINGS`)
+- 関数: `camelCase`(`lifePath`、`sunSign`)
+
+## 変更後の検証
+
+文言を変えたら `src/i18n/locales/` の **en/ja 両方**を同期する。片方だけ変えて終わらせない。

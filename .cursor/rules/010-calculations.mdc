@@ -1,0 +1,47 @@
+---
+description: calculations.js とそのテストを編集するときの規約・既知値・既知バグ
+globs: src/calculations.js,src/__tests__/**
+alwaysApply: false
+---
+
+# calculations.js の編集規約
+
+## 純粋関数の原則
+
+同じ入力に対して常に同じ出力を返すこと。`Date.now()`・`localStorage` 等の副作用禁止。
+唯一の例外は今日の日付を使う `biorhythm()` / `moonPhaseToday()` / `dailyTarot()` / `lifeStage()`
+(これらは「今日を入力に含む」関数として扱う)。
+
+`content.js` の辞書のキー(`MAYA_SEALS` のインデックス等)は計算式を直すときも変えない。
+
+## テストの実行と作法
+
+- `npm test`(Vitest)。`src/__tests__/calculations.test.js` が回帰テスト。
+- テストは日本語ロケール前提。`setup-locale.js`(localStorage スタブ)を
+  **calculations.js より先に import** する規約(理由は `docs/learnings/vitest-locale-stub.md`)。
+- 「今日」依存の関数は `vi.setSystemTime` で固定してテストする。
+- 期待値には出どころを明記する: `[既知値]`(AGENTS.md 由来)/ `[外部照合]`(一般事実)/
+  `[回帰ピン]`(現状実装の固定・正しさの保証ではない)。
+
+## 検証済み既知値(2026-07 監査時に導出。テストの種)
+
+- `1990-05-15` → ライフパス 3、午年、九星 一白水星、六十干支 庚午(金・陽)、タロット 3 女帝
+- `2024` 年 → 九星気学 三碧木星、辰年、六十干支 甲辰
+- `2000-01-01` → ライフパス 4、九星は立春補正で一白水星(暦年のみなら九紫火星)
+- `1984` → 六十干支 甲子(起点)
+- 立春前(2月1日)生まれの九星気学は前年扱いになる
+- 12月31日・24日 → 山羊座(冬至期間の境界)
+- マヤ暦は実装の定義上 `2013-07-26` = KIN 33(※公式ドリームスペルとズレの疑いあり。`docs/audit/fortune-accuracy.md` 参照。マヤ暦の式を触る前に必ず読むこと)
+
+## 既知バグ(方針判断待ちのため未修正・勝手に直さない)
+
+- `tarotBirthCard`: 合計がちょうど 22 のとき `name` が `undefined`
+  (`docs/learnings/tarot-birthcard-22-undefined.md`)
+- `cyclesDayPlan`: `moonPhase` / `moonName` が常に `undefined`
+  (`docs/learnings/cyclesdayplan-moonphase-undefined.md`)
+
+上記2件は「現状挙動を固定したテスト」が既にある。修正するときは、まず依頼主に方針を確認し、
+承認後にそのテストの期待値を正しい値へ書き換えること(直しただけでテストを放置しない)。
+
+占術計算の流派差・正確性の全体像は `docs/audit/fortune-accuracy.md` と `docs/audit/parts/others.md`。
+新しい体系を追加する/式を変える前に目を通す。
