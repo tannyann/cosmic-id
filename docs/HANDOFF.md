@@ -3,6 +3,10 @@
 3つの委任タスク(.claude/commands/ の test-calc / audit-fortune / mobile-audit)の進捗と残作業。
 判断が重い部分(検証値の導出・流派差の知識整理・バグ特定)は完了済み。残りは実行系の作業。
 
+**2026-07-08 追記**: 残作業は Issue 化した。全体の分担・レビューフローは `docs/ORG.md`、
+Issue 一覧と受け入れ基準は `docs/ISSUES.md`、Cursor への委任は `docs/CURSOR-BRIEFS.md` を正とする。
+本ファイルの ②③ は ISSUES の I-2〜I-4 / I-12〜I-13 に対応。
+
 ## 状態サマリー
 
 | タスク | 状態 | 残作業 |
