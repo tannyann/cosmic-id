@@ -1,23 +1,36 @@
 /**
- * SNS シェア用カード — Tree of Life ビジュアル。
- * ベース画像の上にライフパス番号と名前を重ねる。
+ * SNS シェア用カード — Star Map × Tree of Life ビジュアル。
+ * ベース画像の上に診断結果（LP・星座・名前・生年月日等）を重ねる。
  */
 
-import { getContent, getUI } from './i18n/index.js';
-import { escapeHtml, copyToClipboard, showToast } from './util.js';
+import { getContent, getUI, isJapaneseLocale } from './i18n/index.js';
+import { escapeHtml, showToast } from './util.js';
 
-/** ベース画像と同じ 9:16 */
+/** ベース画像と同じ 9:16（576×1024 → 1080×1920） */
 const CARD_W = 1080;
 const CARD_H = 1920;
 
 const FONT_SERIF = '"Hiragino Mincho ProN", "Yu Mincho", "Noto Serif JP", serif';
-const FONT_DISPLAY = '"Hiragino Mincho ProN", "Yu Mincho", serif';
+const FONT_DISPLAY = '"Cormorant Garamond", "Hiragino Mincho ProN", "Yu Mincho", serif';
+const FONT_SANS = '"Hiragino Sans", "Helvetica Neue", sans-serif';
 
-/** 576×1024 基準 → 1080×1920 へのレイアウト定数 */
+const GOLD = '#e8c96a';
+const GOLD_BRIGHT = '#f5e6b8';
+const CREAM = 'rgba(245, 243, 238, 0.94)';
+const MUTED = 'rgba(180, 170, 200, 0.85)';
+
+/** 576×1024 基準の正規化座標 → 1080×1920 */
 const LAYOUT = {
-  numeral: { cx: 540, cy: 598, coverRx: 210, coverRy: 195 },
-  name: { cx: 540, cy: 1788, coverRx: 500, coverRy: 72 }
+  lifePath: { cx: 0.5, cy: 0.278, w: 0.42, h: 0.16 },
+  sunSign: { cx: 0.5, cy: 0.335, w: 0.28, h: 0.05 },
+  leftBadge: { cx: 0.135, cy: 0.195, w: 0.14, h: 0.1 },
+  rightBadge: { cx: 0.865, cy: 0.195, w: 0.14, h: 0.1 },
+  name: { cx: 0.5, cy: 0.838, w: 0.88, h: 0.07 },
+  date: { cx: 0.5, cy: 0.878, w: 0.65, h: 0.04 }
 };
+
+/** スター・マップ周辺の塗りつぶし色 */
+const COVER_BG = '#12091f';
 
 let baseImagePromise = null;
 
@@ -38,31 +51,58 @@ function loadBaseImage() {
   return baseImagePromise;
 }
 
+function layoutRect(key) {
+  const r = LAYOUT[key];
+  return {
+    cx: r.cx * CARD_W,
+    cy: r.cy * CARD_H,
+    w: r.w * CARD_W,
+    h: r.h * CARD_H
+  };
+}
+
 /**
  * @param {object} ctx — render() の currentContext
  */
 export function buildShareSnapshot(ctx) {
   const { LIFE_PATH_MEANINGS } = getContent();
   const lpInfo = LIFE_PATH_MEANINGS[ctx.lp];
+  const roman = ctx.nameRoman?.trim();
+  const displayName = (roman && /^[\x00-\x7F\s'.-]+$/.test(roman)) ? roman : ctx.name;
+  const animalIdx = ((ctx.an?.num ?? 1) - 1) % 12;
+  const mayaTone = ((ctx.my?.kin ?? 1) - 1) % 13 + 1;
+  const tarotGlyph = firstGlyph(ctx.tb?.name ?? '');
+  const animalGlyph = firstGlyph(ctx.an?.name ?? '');
+
   return {
-    name: ctx.name,
+    name: displayName,
     lp: ctx.lp,
     lpLabel: lpInfo?.label ?? '',
+    sunName: ctx.sun?.name ?? '',
+    y: ctx.y,
+    m: ctx.m,
+    d: ctx.d,
+    leftGlyph: tarotGlyph,
+    leftNum: mayaTone,
+    rightGlyph: animalGlyph,
+    rightNum: animalIdx,
     url: typeof window !== 'undefined' ? window.location.href.split('#')[0] : ''
   };
 }
 
-export function getShareTweetText(snap) {
-  const s = getUI().share;
-  const lines = [
-    s.tweetStories(snap.name),
-    s.tweetLifePath(snap.lp, snap.lpLabel),
-    '',
-    s.tweetFooter,
-    '#COSMICID'
-  ];
-  if (snap.url) lines.push(snap.url);
-  return lines.join('\n');
+function firstGlyph(str) {
+  const trimmed = String(str).trim();
+  if (!trimmed) return '';
+  if (/^[\x00-\x7F]/.test(trimmed)) return trimmed[0].toUpperCase();
+  return [...trimmed][0] ?? '';
+}
+
+function formatShareDate(snap) {
+  const pad = n => String(n).padStart(2, '0');
+  if (isJapaneseLocale()) {
+    return `${snap.y} · ${pad(snap.m)} · ${pad(snap.d)}`;
+  }
+  return `${snap.y} · ${pad(snap.m)} · ${pad(snap.d)}`;
 }
 
 function waitForFonts(timeoutMs = 2500) {
@@ -71,56 +111,6 @@ function waitForFonts(timeoutMs = 2500) {
     return Promise.race([document.fonts.ready.catch(() => undefined), timeout]);
   }
   return timeout;
-}
-
-/** テンプレートの数字・名前を隠すソフトマスク */
-function paintCover(ctx, cx, cy, rx, ry) {
-  const g = ctx.createRadialGradient(cx, cy, 0, cx, cy, Math.max(rx, ry));
-  g.addColorStop(0, 'rgba(7, 10, 20, 0.97)');
-  g.addColorStop(0.55, 'rgba(7, 10, 20, 0.88)');
-  g.addColorStop(1, 'rgba(7, 10, 20, 0)');
-  ctx.fillStyle = g;
-  ctx.beginPath();
-  ctx.ellipse(cx, cy, rx, ry, 0, 0, Math.PI * 2);
-  ctx.fill();
-}
-
-/** 参照画像の「7」スタイルに近い単一数字 */
-function drawStylizedSeven(ctx, cx, cy) {
-  const scale = 1.15;
-  ctx.save();
-  ctx.translate(cx, cy);
-  ctx.scale(scale, scale);
-
-  // 上の横棒（白）
-  ctx.fillStyle = '#f5f3ee';
-  roundRectPath(ctx, -52, -78, 104, 18, 4);
-  ctx.fill();
-
-  // 縦の細い軸
-  ctx.strokeStyle = '#f5f3ee';
-  ctx.lineWidth = 2.2;
-  ctx.lineCap = 'round';
-  ctx.beginPath();
-  ctx.moveTo(38, -68);
-  ctx.quadraticCurveTo(18, 10, 0, 62);
-  ctx.stroke();
-
-  // 先端の金色の滴
-  ctx.beginPath();
-  ctx.moveTo(0, 62);
-  ctx.bezierCurveTo(-10, 78, 10, 78, 0, 62);
-  ctx.fillStyle = '#d4af5a';
-  ctx.fill();
-  ctx.beginPath();
-  ctx.arc(0, 72, 7, 0, Math.PI * 2);
-  const drop = ctx.createRadialGradient(0, 68, 0, 0, 72, 10);
-  drop.addColorStop(0, '#f0d878');
-  drop.addColorStop(1, '#b8922e');
-  ctx.fillStyle = drop;
-  ctx.fill();
-
-  ctx.restore();
 }
 
 function roundRectPath(ctx, x, y, w, h, r) {
@@ -134,89 +124,118 @@ function roundRectPath(ctx, x, y, w, h, r) {
   ctx.closePath();
 }
 
-/** 円形ハロー + ライフパス数字 */
-function drawNumeralCrown(ctx, cx, cy, lp) {
-  const lpStr = String(lp);
-  const r = 112;
+/** テンプレートの固定テキストを消す */
+function paintRegionCover(ctx, cx, cy, w, h, feather = 40) {
+  const x = cx - w / 2;
+  const y = cy - h / 2;
 
-  const halo = ctx.createRadialGradient(cx, cy, r * 0.15, cx, cy, r * 1.25);
-  halo.addColorStop(0, 'rgba(28, 24, 48, 0.55)');
-  halo.addColorStop(0.6, 'rgba(12, 16, 32, 0.35)');
-  halo.addColorStop(1, 'rgba(8, 12, 24, 0)');
-  ctx.fillStyle = halo;
-  ctx.beginPath();
-  ctx.arc(cx, cy, r * 1.2, 0, Math.PI * 2);
+  ctx.save();
+  ctx.fillStyle = COVER_BG;
+  ctx.shadowColor = COVER_BG;
+  ctx.shadowBlur = feather;
+  roundRectPath(ctx, x, y, w, h, 12);
   ctx.fill();
+  ctx.shadowBlur = 0;
+  roundRectPath(ctx, x + 6, y + 6, w - 12, h - 12, 8);
+  ctx.fill();
+  ctx.restore();
 
-  ctx.strokeStyle = 'rgba(255, 255, 255, 0.14)';
-  ctx.lineWidth = 1;
+  const g = ctx.createRadialGradient(cx, cy, Math.min(w, h) * 0.2, cx, cy, Math.max(w, h) * 0.55);
+  g.addColorStop(0, 'rgba(18, 9, 31, 0)');
+  g.addColorStop(0.8, 'rgba(18, 9, 31, 0.5)');
+  g.addColorStop(1, 'rgba(18, 9, 31, 0)');
+  ctx.fillStyle = g;
   ctx.beginPath();
-  ctx.arc(cx, cy, r, 0, Math.PI * 2);
-  ctx.stroke();
-  ctx.beginPath();
-  ctx.arc(cx, cy, r - 10, 0, Math.PI * 2);
-  ctx.stroke();
-
-  if (lpStr === '7') {
-    drawStylizedSeven(ctx, cx, cy + 6);
-    return;
-  }
-
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
-  const size = lpStr.length > 1 ? 86 : 118;
-  ctx.font = `300 ${size}px ${FONT_DISPLAY}`;
-  ctx.fillStyle = '#f5f3ee';
-  ctx.fillText(lpStr, cx, cy + 6);
-
-  ctx.beginPath();
-  ctx.arc(cx, cy + (lpStr.length > 1 ? 52 : 58), 5, 0, Math.PI * 2);
-  const dot = ctx.createRadialGradient(cx, cy + 54, 0, cx, cy + 56, 8);
-  dot.addColorStop(0, '#f0d878');
-  dot.addColorStop(1, '#b8922e');
-  ctx.fillStyle = dot;
+  ctx.ellipse(cx, cy, w * 0.5, h * 0.5, 0, 0, Math.PI * 2);
   ctx.fill();
 }
 
-/** 底部の名前 — ラテンは字間広げ、CJK はそのまま */
-function drawShareName(ctx, cx, y, name) {
-  const trimmed = String(name).trim();
+function drawGoldText(ctx, text, cx, cy, size, weight = '300') {
+  ctx.save();
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.font = `${weight} ${size}px ${FONT_DISPLAY}`;
+  ctx.shadowColor = 'rgba(232, 201, 106, 0.55)';
+  ctx.shadowBlur = size * 0.12;
+  const grad = ctx.createLinearGradient(cx, cy - size * 0.5, cx, cy + size * 0.5);
+  grad.addColorStop(0, GOLD_BRIGHT);
+  grad.addColorStop(1, GOLD);
+  ctx.fillStyle = grad;
+  ctx.fillText(text, cx, cy);
+  ctx.restore();
+}
+
+function drawLifePath(ctx, snap) {
+  const { cx, cy } = layoutRect('lifePath');
+  const lpStr = String(snap.lp);
+  const size = lpStr.length > 1 ? 148 : 196;
+  drawGoldText(ctx, lpStr, cx, cy, size);
+}
+
+function drawSunSign(ctx, snap) {
+  const { cx, cy } = layoutRect('sunSign');
+  ctx.save();
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.font = `500 34px ${FONT_SERIF}`;
+  ctx.shadowColor = 'rgba(232, 201, 106, 0.45)';
+  ctx.shadowBlur = 12;
+  ctx.fillStyle = GOLD_BRIGHT;
+  ctx.fillText(snap.sunName, cx, cy);
+  ctx.restore();
+}
+
+function drawSideBadge(ctx, cx, cy, glyph, num) {
+  paintRegionCover(ctx, cx, cy, 130, 110, 28);
+
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+
+  ctx.font = `400 36px ${FONT_SERIF}`;
+  ctx.fillStyle = CREAM;
+  ctx.fillText(glyph, cx, cy - 16);
+
+  ctx.font = `300 28px ${FONT_DISPLAY}`;
+  ctx.fillStyle = MUTED;
+  ctx.fillText(String(num), cx, cy + 22);
+}
+
+function drawShareName(ctx, snap) {
+  const { cx, cy } = layoutRect('name');
+  const trimmed = String(snap.name).trim();
   const isLatin = /^[\x00-\x7F\s'.-]+$/.test(trimmed);
 
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
 
   if (isLatin) {
-    const spaced = trimmed.toUpperCase().split('').join('  ');
-    ctx.font = `300 46px ${FONT_DISPLAY}`;
-    ctx.fillStyle = 'rgba(245, 243, 238, 0.94)';
-    ctx.fillText(spaced, cx, y);
+    ctx.font = `300 44px ${FONT_DISPLAY}`;
+    ctx.fillStyle = CREAM;
+    ctx.fillText(trimmed.toUpperCase(), cx, cy);
     return;
   }
 
-  ctx.font = `400 54px ${FONT_SERIF}`;
-  ctx.fillStyle = 'rgba(245, 243, 238, 0.94)';
-  ctx.fillText(trimmed, cx, y);
+  ctx.font = `400 52px ${FONT_SERIF}`;
+  ctx.fillStyle = CREAM;
+  ctx.fillText(trimmed, cx, cy);
+}
+
+function drawShareDate(ctx, snap) {
+  const { cx, cy } = layoutRect('date');
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.font = `300 26px ${FONT_SANS}`;
+  ctx.fillStyle = MUTED;
+  ctx.fillText(formatShareDate(snap), cx, cy);
 }
 
 function drawProceduralFallback(ctx) {
   const g = ctx.createLinearGradient(0, 0, 0, CARD_H);
-  g.addColorStop(0, '#060a14');
-  g.addColorStop(0.5, '#0c1224');
-  g.addColorStop(1, '#080c18');
+  g.addColorStop(0, '#0a0614');
+  g.addColorStop(0.45, '#140a22');
+  g.addColorStop(1, '#080510');
   ctx.fillStyle = g;
   ctx.fillRect(0, 0, CARD_W, CARD_H);
-
-  const stars = [
-    [0.12, 0.08], [0.34, 0.15], [0.55, 0.06], [0.78, 0.12],
-    [0.88, 0.22], [0.22, 0.28], [0.48, 0.18], [0.65, 0.1]
-  ];
-  stars.forEach(([sx, sy], i) => {
-    ctx.beginPath();
-    ctx.arc(sx * CARD_W, sy * CARD_H, i % 2 ? 1.5 : 2.2, 0, Math.PI * 2);
-    ctx.fillStyle = i % 3 === 0 ? 'rgba(240, 216, 120, 0.8)' : 'rgba(255,255,255,0.6)';
-    ctx.fill();
-  });
 }
 
 /**
@@ -238,12 +257,26 @@ export async function renderShareCardCanvas(snap) {
     drawProceduralFallback(ctx);
   }
 
-  const { numeral, name } = LAYOUT;
-  paintCover(ctx, numeral.cx, numeral.cy, numeral.coverRx, numeral.coverRy);
-  paintCover(ctx, name.cx, name.cy, name.coverRx, name.coverRy);
+  const lpR = layoutRect('lifePath');
+  const sunR = layoutRect('sunSign');
+  const nameR = layoutRect('name');
+  const dateR = layoutRect('date');
+  const leftR = layoutRect('leftBadge');
+  const rightR = layoutRect('rightBadge');
 
-  drawNumeralCrown(ctx, numeral.cx, numeral.cy, snap.lp);
-  drawShareName(ctx, name.cx, name.cy, snap.name);
+  paintRegionCover(ctx, lpR.cx, lpR.cy, lpR.w, lpR.h);
+  paintRegionCover(ctx, sunR.cx, sunR.cy, sunR.w, sunR.h, 24);
+  paintRegionCover(ctx, leftR.cx, leftR.cy, leftR.w, leftR.h, 20);
+  paintRegionCover(ctx, rightR.cx, rightR.cy, rightR.w, rightR.h, 20);
+  paintRegionCover(ctx, nameR.cx, nameR.cy, nameR.w, nameR.h, 28);
+  paintRegionCover(ctx, dateR.cx, dateR.cy, dateR.w, dateR.h, 20);
+
+  drawLifePath(ctx, snap);
+  drawSunSign(ctx, snap);
+  drawSideBadge(ctx, leftR.cx, leftR.cy, snap.leftGlyph, snap.leftNum);
+  drawSideBadge(ctx, rightR.cx, rightR.cy, snap.rightGlyph, snap.rightNum);
+  drawShareName(ctx, snap);
+  drawShareDate(ctx, snap);
 
   return canvas;
 }
@@ -258,41 +291,18 @@ export function canvasToBlob(canvas) {
 export function downloadShareImage(canvas, name) {
   const safe = name.replace(/[^\w\u3040-\u30ff\u4e00-\u9faf]/g, '') || 'cosmic';
   const a = document.createElement('a');
-  a.download = `cosmic-id-${safe}.png`;
+  a.download = `cosmic-id-star-map-${safe}.png`;
   a.href = canvas.toDataURL('image/png');
   a.click();
 }
 
-export function openTwitterShare(text) {
-  const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`;
-  window.open(url, '_blank', 'noopener,noreferrer,width=550,height=420');
-}
-
-export function openLineShare(pageUrl) {
-  const url = `https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(pageUrl)}`;
-  window.open(url, '_blank', 'noopener,noreferrer');
-}
-
-export async function copyShareText(text) {
-  const ok = await copyToClipboard(text);
-  if (!ok) throw new Error(getUI().share.copyFail);
-}
-
-export async function nativeShareImage(canvas, snap) {
+/** Instagram 等へ画像ファイルを共有（Web Share API） */
+export async function shareImageToInstagram(canvas) {
   const blob = await canvasToBlob(canvas);
-  const file = new File([blob], 'cosmic-id-share.png', { type: 'image/png' });
-  const payload = {
-    title: 'COSMIC ID',
-    text: getShareTweetText(snap),
-    files: [file]
-  };
+  const file = new File([blob], 'cosmic-id-star-map.png', { type: 'image/png' });
+  const payload = { files: [file] };
   if (navigator.canShare?.(payload)) {
     await navigator.share(payload);
-    return true;
-  }
-  const textOnly = { title: 'COSMIC ID', text: getShareTweetText(snap), url: snap.url };
-  if (navigator.canShare?.(textOnly)) {
-    await navigator.share(textOnly);
     return true;
   }
   return false;
@@ -300,15 +310,13 @@ export async function nativeShareImage(canvas, snap) {
 
 /**
  * @param {object} ctx — render() の currentContext
- * @param {{ narrativePromise?: Promise<import('./narrative.js').NarrativeResult> }} [opts]
  */
-export async function mountSharePanel(ctx, opts = {}) {
+export async function mountSharePanel(ctx) {
   const prev = document.getElementById('share-panel');
   if (prev) prev.remove();
 
   const s = getUI().share;
   const snap = buildShareSnapshot(ctx);
-  const tweetText = getShareTweetText(snap);
 
   const panel = document.createElement('section');
   panel.id = 'share-panel';
@@ -321,25 +329,20 @@ export async function mountSharePanel(ctx, opts = {}) {
       ${s.panelSteps ? `<p class="share-panel-steps">${s.panelSteps}</p>` : ''}
     </div>
     <div class="share-panel-block">
-      <h3 class="share-block-title">${escapeHtml(s.cardSectionTitle ?? s.panelTitle)}</h3>
       <button type="button" class="share-preview-btn share-preview-btn--tall" id="share-preview-btn" aria-label="${s.previewAria}">
         <div class="share-preview-loading" id="share-preview-loading" aria-hidden="true">${s.loading}</div>
         <img id="share-preview-img" alt="${escapeHtml(s.previewAlt(ctx.name))}" width="216" height="384" loading="lazy" hidden>
         <span class="share-preview-hint">${s.previewHint}</span>
       </button>
-      <div class="share-actions">
-        <button type="button" class="share-btn share-btn-primary" data-share="save">
+      <div class="share-actions share-actions--instagram">
+        <button type="button" class="share-btn share-btn-primary share-btn-instagram" data-share="instagram" id="share-instagram-btn">
+          <span class="share-btn-icon" aria-hidden="true">◎</span>${s.shareInstagram}
+        </button>
+        <button type="button" class="share-btn" data-share="save">
           <span class="share-btn-icon" aria-hidden="true">↓</span>${s.save}
         </button>
-        <button type="button" class="share-btn" data-share="native" id="share-native-btn" hidden>
-          ${s.shareNative}
-        </button>
-        <button type="button" class="share-btn" data-share="x">X</button>
-        <button type="button" class="share-btn" data-share="line">LINE</button>
-        <button type="button" class="share-btn" data-share="copy">${s.copy}</button>
       </div>
     </div>
-    <div id="share-panel-instagram-mount"></div>
   `;
 
   const hero = document.querySelector('.hero-card');
@@ -374,13 +377,9 @@ export async function mountSharePanel(ctx, opts = {}) {
 
   await refreshPreview();
 
-  const canNative = typeof navigator.share === 'function';
-  const nativeBtn = panel.querySelector('#share-native-btn');
-  if (canNative) nativeBtn.hidden = false;
-
   panel.querySelector('#share-preview-btn').addEventListener('click', async () => {
     const canvas = await ensureCanvas();
-    openShareModal(canvas, snap, tweetText);
+    openShareModal(canvas, ctx.name);
   });
 
   panel.querySelectorAll('[data-share]').forEach(btn => {
@@ -391,40 +390,20 @@ export async function mountSharePanel(ctx, opts = {}) {
         if (action === 'save') {
           downloadShareImage(canvas, ctx.name);
           showToast(s.saved);
-        } else if (action === 'x') {
-          openTwitterShare(tweetText);
-        } else if (action === 'line') {
-          openLineShare(snap.url || window.location.href);
-        } else if (action === 'copy') {
-          await copyShareText(tweetText);
-          showToast(s.copied);
-        } else if (action === 'native') {
-          const ok = await nativeShareImage(canvas, snap);
-          if (!ok) showToast(s.nativeUnsupported);
+        } else if (action === 'instagram') {
+          const ok = await shareImageToInstagram(canvas);
+          if (!ok) showToast(s.instagramUnsupported);
         }
       } catch (err) {
         showToast(err.message || s.shareFail);
       }
     });
   });
-
-  const igMount = panel.querySelector('#share-panel-instagram-mount');
-  if (igMount && opts.narrativePromise) {
-    const { renderNarrativeShareHtml, mountNarrativeShareSection } = await import('./narrativeShare.js');
-    igMount.innerHTML = renderNarrativeShareHtml();
-    opts.narrativePromise
-      .then(narrative => mountNarrativeShareSection(panel, ctx, narrative))
-      .catch(err => {
-        console.error('Instagram share section:', err);
-        const loading = panel.querySelector('#narrative-share-loading');
-        if (loading) loading.textContent = getUI().narrativeShare.loadFail;
-      });
-  }
 }
 
 let shareModalTrigger = null;
 
-function openShareModal(canvas, snap, tweetText) {
+function openShareModal(canvas, name) {
   const s = getUI().share;
   const modal = document.getElementById('share-modal');
   const img = document.getElementById('share-modal-img');
@@ -436,25 +415,16 @@ function openShareModal(canvas, snap, tweetText) {
   document.body.style.overflow = 'hidden';
   document.querySelector('.container')?.setAttribute('inert', '');
 
-  const nativeModal = document.getElementById('share-modal-native');
-  if (nativeModal) nativeModal.hidden = typeof navigator.share !== 'function';
-
   modal.querySelectorAll('[data-share-modal]').forEach(btn => {
     btn.onclick = async () => {
       const action = btn.dataset.shareModal;
       try {
         if (action === 'save') {
-          downloadShareImage(canvas, snap.name);
+          downloadShareImage(canvas, name);
           showToast(s.saved);
-        } else if (action === 'x') {
-          openTwitterShare(tweetText);
-        } else if (action === 'line') {
-          openLineShare(snap.url || window.location.href);
-        } else if (action === 'copy') {
-          await copyShareText(tweetText);
-          showToast(s.copied);
-        } else if (action === 'native') {
-          await nativeShareImage(canvas, snap);
+        } else if (action === 'instagram') {
+          const ok = await shareImageToInstagram(canvas);
+          if (!ok) showToast(s.instagramUnsupported);
         }
       } catch (err) {
         showToast(err.message || s.shareFail);
@@ -487,8 +457,4 @@ export function bindShareModalEvents() {
   modal.addEventListener('click', e => {
     if (e.target.id === 'share-modal') closeShareModal();
   });
-  const nativeModal = document.getElementById('share-modal-native');
-  if (nativeModal && typeof navigator.share !== 'function') {
-    nativeModal.hidden = true;
-  }
 }
