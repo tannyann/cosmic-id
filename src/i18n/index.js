@@ -201,8 +201,9 @@ export function applyStaticPageCopy() {
   if (shareModalImg) shareModalImg.alt = u.share.modalAlt;
 
   document.querySelectorAll('[data-share-modal="save"]').forEach(el => { el.textContent = u.share.save; });
-  const igBtn = document.getElementById('share-modal-instagram');
-  if (igBtn) igBtn.textContent = u.share.shareInstagram;
+  document.querySelectorAll('[data-share-modal="copy"]').forEach(el => { el.textContent = u.share.copy; });
+  const nativeBtn = document.getElementById('share-modal-native');
+  if (nativeBtn) nativeBtn.textContent = u.share.shareNative;
 
   const langToggle = document.getElementById('lang-toggle');
   if (langToggle) langToggle.setAttribute('aria-label', u.lang.label);

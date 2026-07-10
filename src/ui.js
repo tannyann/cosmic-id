@@ -390,7 +390,7 @@ export function render(name, nameRoman, y, m, d) {
   bindCyclesPlanner(r, currentContext);
   const narrativePromise = generateNarrative(currentContext);
   mountNarrativePanel(currentContext, narrativePromise).catch(err => console.error('Narrative panel:', err));
-  mountSharePanel(currentContext).catch(err => console.error('Share panel:', err));
+  mountSharePanel(currentContext, { narrativePromise }).catch(err => console.error('Share panel:', err));
   bindLoveMode();
   bindCompatMode();
   bindStarMap();
