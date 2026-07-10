@@ -44,8 +44,18 @@
 - それ以外(CSS・文言・PWA・注記): **Opus**(Sonnet の自己レビュー + 品質ゲートで可)
 - Cursor の成果物: 変更が styles.css / index.html に閉じていることを **Sonnet** が確認し、375px スクリーンショットで判定
 
+## GitHub Issues 運用(2026-07-10〜)
+
+16件を https://github.com/tannyann/cosmic-id/issues に作成済み(#1〜#16、`docs/ISSUES.md` に対応表)。
+ラベル: `agent:{human,fable,opus,sonnet,cursor}`(担当)/ `phase:{0-decision,1-research,2-fix,3-ui,4-ops}`(段階)。
+
+- ブランチ名は `issue/I-<番号>-<slug>`(例: `issue/I-5-tarot-fix`)
+- PR本文に **`Closes #5`** と書く(GitHubのIssue番号。ISSUES.mdのI-番号ではない)→ マージで自動クローズ
+- エスカレーションで担当を変えたら、Issue自体のラベルを付け替える(`agent:sonnet`→`agent:opus`)。理由をIssueにコメントで残す
+- `docs/ISSUES.md` の状態列は都度手動同期(GitHub側のOpen/Closedが正)
+
 ## 運用の約束
 
-- Issue の状態は `docs/ISSUES.md` のチェックボックスで管理(GitHub Issues 化した場合はそちらを正とする)
+- Issue の状態は GitHub Issues(#1〜#16)を正とする。`docs/ISSUES.md` は設計書として都度反映
 - 学びは `docs/learnings/` に1件1ファイル。誤りだったものは消す
 - サブエージェント並列時は書き込み先を分け、成果物は途中でもファイルに書かせる(途中死対策)

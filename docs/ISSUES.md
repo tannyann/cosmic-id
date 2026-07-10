@@ -1,28 +1,29 @@
 # ISSUES.md — cosmic_id 実装タスクの設計と割り当て
 
 設計: 2026-07-08(Fable)。運用ルールとエスカレーションは `docs/ORG.md`。
-各 Issue は GitHub Issue にそのままコピペできる形式。**依存**に従い、Phase 0 → 1 → 2 → 3 の順で着手する。
+**2026-07-10 に GitHub Issues 化済み**(下表の GH# 列。リンク先が正式なチケット、本ファイルは設計書として残す)。
+状態(☐/✅)は GitHub 側の Open/Closed を正とし、本ファイルは更新を都度反映する。
 
 進行表(担当 / 状態):
 
-| # | タイトル | 担当 | 依存 | 状態 |
-|---|---|---|---|---|
-| I-1 | 流派・方式の採否決定(5論点) | **人間** | なし(材料は揃っている) | ☐ |
-| I-2 | マヤ暦KIN起点のWeb照合 | **Opus** | なし | ☐ |
-| I-3 | 立春日テーブル(1900–2100)の作成と検証 | **Opus** | なし | ☐ |
-| I-4 | 動物占い公式照合(起点・60→12対応) | **Opus** | なし | ☐ |
-| I-5 | タロット22→愚者バグ修正 | **Sonnet** | I-1 | ☐ |
-| I-6 | cyclesDayPlan 月相バグ修正 | **Sonnet** | なし | ☐ |
-| I-7 | マヤ暦KIN修正(起点+うるう日+関連KIN) | **Opus**(レビュー: Fable) | I-1, I-2 | ☐ |
-| I-8 | 年切替の立春統一(干支・五行・九星サイクル) | **Opus** | I-1, I-3 | ☐ |
-| I-9 | 月星座の本実装(astronomy-engine) | **Opus** | I-1 | ☐ |
-| I-10 | lifePath 方式の変更 or 併記 | **Sonnet** | I-1 | ☐ |
-| I-11 | 注記・文言一式(独自指標の明示ほか) | **Sonnet** | I-1(一部は先行可) | ☐ |
-| I-12 | 375px 監査と修正 | **Cursor**(検収: Sonnet) | なし | ☐ |
-| I-13 | PWA 化(manifest + Service Worker) | **Sonnet** | I-12 | ☐ |
-| I-14 | サイトデザイン改善 | **Cursor**(検収: Sonnet) | I-12 | ☐ |
-| I-15 | 作業ツリーの未コミット変更の整理 | **人間** | なし | ☐ |
-| I-16 | 決済(Stripe)の設計 | **人間**(補佐: Opus) | Premium方針確定後 | ☐ |
+| # | GH# | タイトル | 担当 | 依存 | 状態 |
+|---|---|---|---|---|---|
+| I-1 | [#1](https://github.com/tannyann/cosmic-id/issues/1) | 流派・方式の採否決定(5論点) | **人間** | なし(材料は揃っている) | ☐ |
+| I-2 | [#2](https://github.com/tannyann/cosmic-id/issues/2) | マヤ暦KIN起点のWeb照合 | **Opus** | なし | ☐ |
+| I-3 | [#3](https://github.com/tannyann/cosmic-id/issues/3) | 立春日テーブル(1900–2100)の作成と検証 | **Opus** | なし | ☐ |
+| I-4 | [#4](https://github.com/tannyann/cosmic-id/issues/4) | 動物占い公式照合(起点・60→12対応) | **Opus** | なし | ☐ |
+| I-5 | [#5](https://github.com/tannyann/cosmic-id/issues/5) | タロット22→愚者バグ修正 | **Sonnet** | I-1 | ☐ |
+| I-6 | [#6](https://github.com/tannyann/cosmic-id/issues/6) | cyclesDayPlan 月相バグ修正 | **Sonnet** | なし | ☐ |
+| I-7 | [#7](https://github.com/tannyann/cosmic-id/issues/7) | マヤ暦KIN修正(起点+うるう日+関連KIN) | **Opus**(レビュー: Fable) | I-1, I-2 | ☐ |
+| I-8 | [#8](https://github.com/tannyann/cosmic-id/issues/8) | 年切替の立春統一(干支・五行・九星サイクル) | **Opus** | I-1, I-3 | ☐ |
+| I-9 | [#9](https://github.com/tannyann/cosmic-id/issues/9) | 月星座の本実装(astronomy-engine) | **Opus** | I-1 | ☐ |
+| I-10 | [#10](https://github.com/tannyann/cosmic-id/issues/10) | lifePath 方式の変更 or 併記 | **Sonnet** | I-1 | ☐ |
+| I-11 | [#11](https://github.com/tannyann/cosmic-id/issues/11) | 注記・文言一式(独自指標の明示ほか) | **Sonnet** | I-1(一部は先行可) | ☐ |
+| I-12 | [#12](https://github.com/tannyann/cosmic-id/issues/12) | 375px 監査と修正 | **Cursor**(検収: Sonnet) | なし | ☐ |
+| I-13 | [#13](https://github.com/tannyann/cosmic-id/issues/13) | PWA 化(manifest + Service Worker) | **Sonnet** | I-12 | ☐ |
+| I-14 | [#14](https://github.com/tannyann/cosmic-id/issues/14) | サイトデザイン改善 | **Cursor**(検収: Sonnet) | I-12 | ☐ |
+| I-15 | [#15](https://github.com/tannyann/cosmic-id/issues/15) | 作業ツリーの未コミット変更の整理 | **人間** | なし | ☐ |
+| I-16 | [#16](https://github.com/tannyann/cosmic-id/issues/16) | 決済(Stripe)の設計 | **人間**(補佐: Opus) | Premium方針確定後 | ☐ |
 
 ---
 
