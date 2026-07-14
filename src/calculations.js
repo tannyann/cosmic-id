@@ -6,8 +6,28 @@
 import { getContent } from './i18n/index.js';
 import { hasKana, kanaToHepburn } from './kanaHepburn.js';
 import { normalizeElementKey } from './util.js';
+import { RISSHUN } from './data/risshun.js';
 
 export { normalizeElementKey };
+
+/**
+ * 立春切替での「暦年(effective year)」を返す純粋関数。
+ * 干支・五行・九星など東洋占術の年切替を、西暦1月1日ではなく立春に統一するための共通ヘルパー。
+ * その年の立春(RISSHUN テーブルの [月, 日])より前の生まれは前年扱いにする。
+ *
+ * month/day を省略した場合は年をそのまま返す(＝立春補正なし)。
+ * テーブル範囲外(1900未満・2100超)は立春日を [2, 4] にフォールバックし、例外は投げない。
+ *
+ * @param {number} year 西暦
+ * @param {number} [month] 月(1–12)
+ * @param {number} [day] 日
+ * @returns {number} 立春切替での暦年
+ */
+export function risshunEffectiveYear(year, month, day) {
+  const [rm, rd] = RISSHUN[year] ?? [2, 4];
+  if (month < rm || (month === rm && day < rd)) return year - 1;
+  return year;
+}
 
 // ============ ユーティリティ ============
 /** 桁数を1桁まで詰める。keepMasterがtrueなら11/22/33は止める。 */
@@ -230,14 +250,16 @@ export function moonTrait(y, m, d) {
 }
 
 // ============ 東洋占術 ============
-export function chineseZodiac(year) {
+export function chineseZodiac(year, month, day) {
   const { CHINESE_ZODIAC } = getContent();
-  return CHINESE_ZODIAC[((year - 4) % 12 + 12) % 12];
+  const y = risshunEffectiveYear(year, month, day);
+  return CHINESE_ZODIAC[((y - 4) % 12 + 12) % 12];
 }
 
-export function sixtyJikkan(year) {
+export function sixtyJikkan(year, month, day) {
   const { HEAVENLY_STEMS, EARTHLY_BRANCHES, FIVE_ELEMENTS, YIN_YANG } = getContent();
-  const idx = ((year - 4) % 60 + 60) % 60;
+  const y = risshunEffectiveYear(year, month, day);
+  const idx = ((y - 4) % 60 + 60) % 60;
   const stem = HEAVENLY_STEMS[idx % 10];
   const branch = EARTHLY_BRANCHES[idx % 12];
   const glue = (stem.length > 1 || branch.length > 1) ? ' ' : '';
@@ -250,8 +272,7 @@ export function sixtyJikkan(year) {
 
 export function kyuseiHonmei(year, month, day) {
   const { KYUSEI_STARS } = getContent();
-  let y = year;
-  if (month === 1 || (month === 2 && day < 4)) y = year - 1;
+  const y = risshunEffectiveYear(year, month, day);
   const sum = reduceDigit(digitSum(y));
   let star = 11 - sum;
   if (star > 9) star -= 9;
@@ -259,9 +280,10 @@ export function kyuseiHonmei(year, month, day) {
   return KYUSEI_STARS[star];
 }
 
-export function gogyou(year) {
+export function gogyou(year, month, day) {
   const { FIVE_ELEMENTS, GOGYOU_DESCS } = getContent();
-  const idx = (((year - 4) % 10) + 10) % 10;
+  const y = risshunEffectiveYear(year, month, day);
+  const idx = (((y - 4) % 10) + 10) % 10;
   const element = FIVE_ELEMENTS[Math.floor(idx / 2)];
   return { element, desc: GOGYOU_DESCS[element] };
 }
@@ -543,9 +565,10 @@ export function luckyCompass(lp, sunElement, kyuseiElement, gogyouElement) {
   };
 }
 
-/** 六十干支のサイクル位置（0–59） */
-export function sixtyCycleIndex(year) {
-  return ((year - 4) % 60 + 60) % 60;
+/** 六十干支のサイクル位置（0–59）。month/day を渡すと立春切替で年を補正する。 */
+export function sixtyCycleIndex(year, month, day) {
+  const y = risshunEffectiveYear(year, month, day);
+  return ((y - 4) % 60 + 60) % 60;
 }
 
 /** マヤ暦の関連 KIN（ガイド・アンチポッド・オカルト）
