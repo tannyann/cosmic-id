@@ -4,7 +4,7 @@
  */
 import {
   personalYearMonthCalendar, kyuseiCycleYear, normalizeElementKey, luckyCompass,
-  sixtyCycleIndex, mayaRelatedKin, kyuseiMonthStar, kyuseiDayStar,
+  sixtyCycleIndex, mayaRelatedKin, mayaDayKin, kyuseiMonthStar, kyuseiDayStar,
   zodiacRelation, gogyouRelation, animalGroupIndex, dailyTarotWeek,
   lifeMilestonesAround, biorhythmCriticalDays, biorhythmForecast,
   lunarEventsAhead, birthMoonPhaseIndex, reduceDigit
@@ -703,7 +703,8 @@ function renderMayaDailyKin(ctx) {
   const today = new Date();
   const { MAYA_SEALS } = getContent();
   const u = getUI().deep?.maya ?? {};
-  const todayKin = ((Math.floor((today - new Date(Date.UTC(2013, 6, 26))) / 86400000) + 33 - 1) % 260 + 260) % 260 + 1;
+  // ドリームスペル公式(起点 KIN164・2/29 スキップ)の共通関数を使う(calculations.js)。
+  const todayKin = mayaDayKin(today.getFullYear(), today.getMonth() + 1, today.getDate());
   return `<p>${esc(u.dailyBody?.(ctx.my.kin, todayKin) ?? `Your KIN ${ctx.my.kin} · Today KIN ${todayKin}`)}</p>
     <p class="deep-hint">${esc(MAYA_SEALS[(todayKin - 1) % 20])}</p>`;
 }

@@ -240,12 +240,42 @@ export function animalUranai(year, month, day) {
   return { num, name: ANIMAL_NAMES[idx] };
 }
 
+const MAYA_EPOCH = Date.UTC(2013, 6, 26); // 2013-07-26 = KIN 164「銀河の黄色い種」(ドリームスペル公式)
+const MAYA_EPOCH_KIN = 164;
+
+// 半開区間 (a, b]（a < b, UTC ミリ秒）に含まれる 2/29 の個数。
+function countLeapDays(a, b) {
+  let count = 0;
+  const ya = new Date(a).getUTCFullYear();
+  const yb = new Date(b).getUTCFullYear();
+  for (let y = ya; y <= yb; y++) {
+    const feb29 = Date.UTC(y, 1, 29);
+    if (new Date(feb29).getUTCDate() === 29 && feb29 > a && feb29 <= b) count++;
+  }
+  return count;
+}
+
+/**
+ * 任意日のマヤ暦 KIN(1–260)を返す共通関数。
+ * ドリームスペル公式(2/29 は KIN を持たない日としてスキップ)に従う。
+ * 起点 2013-07-26 = KIN 164 を基準に、起点と対象日の間にある 2/29 を日数から除外して 260 剰余する。
+ * 過去方向(起点より前)も正しく動く。
+ * ※ 2/29 生まれ自体は公式では「KIN なし(0.0 Hunab Ku)」だが、UI 破壊を避けるため
+ *   2/28 と同じ KIN を返す暫定仕様(docs/learnings/maya-feb29-no-kin.md 参照)。
+ */
+export function mayaDayKin(year, month, day) {
+  if (month === 2 && day === 29) day = 28; // 2/29 は 2/28 と同じ KIN(暫定)
+  const target = Date.UTC(year, month - 1, day);
+  const raw = Math.round((target - MAYA_EPOCH) / 86400000);
+  const net = target >= MAYA_EPOCH
+    ? raw - countLeapDays(MAYA_EPOCH, target)
+    : raw + countLeapDays(target, MAYA_EPOCH);
+  return (((net + MAYA_EPOCH_KIN - 1) % 260) + 260) % 260 + 1;
+}
+
 export function mayaKin(year, month, day) {
   const { MAYA_SEALS, MAYA_TONES } = getContent();
-  const ref = new Date(Date.UTC(2013, 6, 26));
-  const birth = new Date(Date.UTC(year, month - 1, day));
-  const days = Math.floor((birth - ref) / 86400000);
-  const kin = (((days + 33 - 1) % 260) + 260) % 260 + 1;
+  const kin = mayaDayKin(year, month, day);
   return {
     kin,
     seal: MAYA_SEALS[(kin - 1) % 20],
@@ -482,10 +512,32 @@ export function sixtyCycleIndex(year) {
   return ((year - 4) % 60 + 60) % 60;
 }
 
-/** マヤ暦の関連 KIN（ガイド・アンチポッド・オカルト） */
+/** マヤ暦の関連 KIN（ガイド・アンチポッド・オカルト）
+ * ドリームスペル公式(広く流通する定説。一次照合は未確認)に従う:
+ * - オカルト(神秘) = 261 − kin(2つの KIN の合計が 261 になる相手)
+ * - アンチポッド(反対) = kin + 130(同じ音・対極の紋章)
+ * - ガイド(導き) = 自分と同じ音を持ち、紋章が音で決まるオフセット分ずれた KIN。
+ *   音1/6/11=同紋章, 音2/7/12=紋章+12, 音3/8/13=紋章−4, 音4/9=紋章+4, 音5/10=紋章+8。
+ *   紋章と音から KIN を求めるのは「kin ≡ sealIdx (mod 20) かつ kin ≡ toneIdx (mod 13)」を満たす
+ *   1..260 の探索でよい(音は自分と同じなので guide の音は必ず一致する)。
+ */
 export function mayaRelatedKin(kin) {
   const mod = (n) => (((n - 1) % 260) + 260) % 260 + 1;
-  return { guide: mod(kin + 19), antipode: mod(kin + 130), occult: mod(kin + 65) };
+  const sealIdx = (kin - 1) % 20;
+  const toneIdx = (kin - 1) % 13;
+  const tone = toneIdx + 1;
+  let off;
+  if (tone === 1 || tone === 6 || tone === 11) off = 0;
+  else if (tone === 2 || tone === 7 || tone === 12) off = 12;
+  else if (tone === 3 || tone === 8 || tone === 13) off = -4;
+  else if (tone === 4 || tone === 9) off = 4;
+  else off = 8; // 音 5・10
+  const guideSeal = (((sealIdx + off) % 20) + 20) % 20;
+  let guide = kin;
+  for (let g = 1; g <= 260; g++) {
+    if ((g - 1) % 20 === guideSeal && (g - 1) % 13 === toneIdx) { guide = g; break; }
+  }
+  return { guide, antipode: mod(kin + 130), occult: 261 - kin };
 }
 
 /** 九星気学の月命星（簡易式） */
