@@ -24,8 +24,17 @@ function digitSum(n) {
 }
 
 // ============ 数秘術 ============
+/**
+ * 個別還元方式(Numerology.com / Decoz 系)に従う。
+ * 年・月・日をそれぞれ個別に還元(11/22/33は保持)してから合計し、
+ * その合計をさらに還元(11/22/33は保持)する。
+ * 全桁合計方式(旧実装)から2026-07変更(Issue #10)。
+ */
 export function lifePath(y, m, d) {
-  return reduceDigit(digitSum(y) + digitSum(m) + digitSum(d), true);
+  const yr = reduceDigit(digitSum(y), true);
+  const mo = reduceDigit(m, true);
+  const dy = reduceDigit(d, true);
+  return reduceDigit(yr + mo + dy, true);
 }
 
 export function personalYear(m, d, currentYear) {
