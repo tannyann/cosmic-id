@@ -262,13 +262,12 @@ describe('tarotBirthCard', () => {
   it('[回帰ピン] 2000-01-01 → 4 皇帝', () => {
     expect(tarotBirthCard(2000, 1, 1)).toEqual({ num: 4, name: '皇帝' });
   });
-  it('【バグ報告】sum がちょうど 22 のとき name が undefined になる', () => {
-    // 1930+6+12=1948 → 桁和 22 で停止するが、TAROT_BY_NUM は index 0–21(22=世界は21)。
-    // 一般的な流派では 22 → 愚者(0) に読み替える。修正方針は依頼主判断のため、
-    // ここでは現状の挙動を固定して「直したらこのテストを更新する」目印にする。
-    const t = tarotBirthCard(1930, 6, 12);
-    expect(t.num).toBe(22);
-    expect(t.name).toBeUndefined(); // ← バグ。修正時はこの行を期待値に置き換える
+  it('[既知値] 還元結果 22 は愚者(0)に写る(Greer 方式 / I-5 修正)', () => {
+    // 1930+6+12=1948 → 桁和 22。TAROT_BY_NUM は index 0=愚者 … 21=世界 なので
+    // 22 は index 0(愚者)へ写す。旧実装では name が undefined になっていた。
+    expect(tarotBirthCard(1930, 6, 12)).toEqual({ num: 0, name: '愚者' });
+    // 監査 parts/others.md §3 の実例: 1949-12-14 → 1975 → 桁和 22 → 愚者
+    expect(tarotBirthCard(1949, 12, 14)).toEqual({ num: 0, name: '愚者' });
   });
 });
 

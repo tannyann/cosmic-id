@@ -257,6 +257,9 @@ export function tarotBirthCard(y, m, d) {
   const { TAROT_BY_NUM } = getContent();
   let sum = y + m + d;
   while (sum > 22) sum = digitSum(sum);
+  // Mary K. Greer 方式に従う: 還元結果 22 は愚者(0)に対応する。
+  // TAROT_BY_NUM は index 0=愚者 … 21=世界 なので 22 を 0 に写す。
+  if (sum === 22) sum = 0;
   return { num: sum, name: TAROT_BY_NUM[sum] };
 }
 
