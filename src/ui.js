@@ -7,7 +7,8 @@ import {
   lifePath, personalYear, expressionProfile, sunSign, moonTrait,
   chineseZodiac, sixtyJikkan, kyuseiHonmei, gogyou, animalUranai,
   mayaKin, tarotBirthCard, dailyTarot, celticTree,
-  birthstone, birthflower, biorhythm, moonPhaseToday, lifeStage, lifeTimeline
+  birthstone, birthflower, biorhythm, moonPhaseToday, lifeStage, lifeTimeline,
+  isSunSignCusp
 } from './calculations.js';
 
 import { getContent, getUI, getDeeper, getLocale, isJapaneseLocale } from './i18n/index.js';
@@ -257,6 +258,7 @@ export function render(name, nameRoman, y, m, d) {
   const expr = expressionProfile(name, roman);
   const en = expr.native;
   const sun = sunSign(m, d);
+  const sunCusp = isSunSignCusp(m, d);
   const mt  = moonTrait(y, m, d);
   const cz  = chineseZodiac(y);
   const sj  = sixtyJikkan(y);
@@ -312,7 +314,7 @@ export function render(name, nameRoman, y, m, d) {
 
     ${sectionHeading(...u.sections.western)}
     <div class="grid">
-      ${card('sun', u.cards.sun, `${sun.symbol} ${sun.name}`, u.fmt.elementOf(sun.element), sun.desc, sun.symbol)}
+      ${card('sun', u.cards.sun, `${sun.symbol} ${sun.name}`, u.fmt.elementOf(sun.element), sun.desc + (sunCusp ? `<div class="note">${u.cards.sunCuspNote}</div>` : ''), sun.symbol)}
       ${card('moonTrait', u.cards.moonTrait, mt.name, u.cards.moonTraitLabel, mt.desc + `<div class="note">${u.cards.moonTraitNote}</div>`, '☾')}
     </div>
 
@@ -320,14 +322,14 @@ export function render(name, nameRoman, y, m, d) {
     <div class="grid">
       ${card('zodiac', u.cards.zodiac, cz.name, u.fmt.bornYearZodiac(cz.char), cz.desc, cz.char)}
       ${card('sixty', u.cards.sixty, sj.name, `${sj.yinyang}${(sj.yinyang.length > 1 || sj.element.length > 1) ? ' ' : ''}${sj.element}`, u.fmt.sixtyDesc(sj.element), ELEMENT_GLYPHS[normalizeElementKey(sj.element)])}
-      ${card('kyusei', u.cards.kyusei, ks.name, u.fmt.kyuseiStar(ks.element), ks.desc, ELEMENT_GLYPHS[normalizeElementKey(ks.element)])}
+      ${card('kyusei', u.cards.kyusei, ks.name, u.fmt.kyuseiStar(ks.element), ks.desc + `<div class="note">${u.cards.kyuseiNote}</div>`, ELEMENT_GLYPHS[normalizeElementKey(ks.element)])}
       ${card('gogyou', u.cards.gogyou, gy.element, u.cards.gogyouLabel || u.fmt.gogyouLabel, gy.desc, ELEMENT_GLYPHS[normalizeElementKey(gy.element)])}
     </div>
 
     ${sectionHeading(...u.sections.characters)}
     <div class="grid">
-      ${card('animal', u.cards.animal, an.name, u.fmt.animalNum(an.num), ANIMAL_DESC[an.name] || u.fmt.animalFallback, ANIMAL_EMOJI[(an.num - 1) % 12])}
-      ${card('celtic', u.cards.celtic, ct.name, u.fmt.celticLabel, ct.desc, '❧')}
+      ${card('animal', u.cards.animal, an.name, u.fmt.animalNum(an.num), (ANIMAL_DESC[an.name] || u.fmt.animalFallback) + `<div class="note">${u.cards.animalNote}</div>`, ANIMAL_EMOJI[(an.num - 1) % 12])}
+      ${card('celtic', u.cards.celtic, ct.name, u.fmt.celticLabel, ct.desc + `<div class="note">${u.cards.celticNote}</div>`, '❧')}
     </div>
 
     ${sectionHeading(...u.sections.sacred)}

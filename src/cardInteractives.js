@@ -563,7 +563,8 @@ function renderKyuseiStarsExtra(ctx) {
       aria-pressed="${r.key === 'honmei'}">
       <span>${esc(r.label)}</span><strong>${r.n}</strong>
     </button>`).join('')}
-    <div class="ky-trio-detail" id="ky-trio-detail">${esc(KYUSEI_STARS[honmei]?.desc ?? '')}</div></div>`;
+    <div class="ky-trio-detail" id="ky-trio-detail">${esc(KYUSEI_STARS[honmei]?.desc ?? '')}</div>
+    <p class="deep-hint">${esc(u.monthDayNote ?? '')}</p></div>`;
 }
 
 function renderKyuseiCompat(ctx) {
@@ -712,7 +713,9 @@ function renderTarotYearCard(ctx) {
   const { TAROT_BY_NUM, TAROT_MEANINGS } = getContent();
   const num = reduceDigit(ctx.py + ctx.lp);
   const name = TAROT_BY_NUM[num] ?? TAROT_BY_NUM[1];
-  return `<div class="tarot-highlight"><strong>${esc(name)}</strong><p>${esc(TAROT_MEANINGS[name] ?? '')}</p></div>`;
+  const u = getUI().deep?.tarot ?? {};
+  return `<div class="tarot-highlight"><strong>${esc(name)}</strong><p>${esc(TAROT_MEANINGS[name] ?? '')}</p>
+    <p class="deep-hint">${esc(u.yearCardNote ?? '')}</p></div>`;
 }
 
 function renderKyuseiDirections(ctx) {

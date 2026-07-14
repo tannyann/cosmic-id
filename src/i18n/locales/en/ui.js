@@ -50,15 +50,19 @@ export const ui = {
     expression: 'Name Number',
     expressionLabel: 'Vibration of your name',
     sun: 'Sun Sign',
+    sunCuspNote: 'Born near a sign boundary (cusp) — depending on your exact birth year and time, you may fall in the neighboring sign.',
     moonTrait: 'Moon Tendency',
     moonTraitLabel: 'From your birth moon phase',
     moonTraitNote: 'Exact moon sign requires birth time',
     zodiac: 'Chinese Zodiac',
     sixty: 'Year Pillar (60 Stem-Branch)',
     kyusei: 'Kyusei Life Star',
+    kyuseiNote: 'Your life star uses a simplified rule: birth year switches at Risshun (around Feb 4).',
     gogyou: 'Five Elements',
     animal: 'Animal Archetype',
+    animalNote: "This app's own 12-type grouping — distinct from the official 60-type system of the trademarked animal fortune method.",
     celtic: 'Celtic Tree',
+    celticNote: 'Based on the 13-tree Ogham calendar system — a separate lineage from the 21-tree system.',
     maya: 'Maya Calendar KIN',
     tarotBirth: 'Tarot Birth Card',
     tarotDaily: "Today's Card",
@@ -131,7 +135,7 @@ export const ui = {
       `<p class="expression-line"><strong>${l}</strong> (Pythagorean A–Z) — ${latinDesc}</p>` +
       '<div class="note">Glyph counting is not classical Western numerology. Roman letters follow the usual A–Z chart (master numbers 11, 22, 33 may appear).</div>',
     expressionDescNative: (desc, hint) =>
-      `${desc}<div class="note">Non-Latin scripts use a simple Unicode glyph sum — exploratory, not traditional. ${hint}</div>`,
+      `${desc}<div class="note">Non-Latin scripts use a simple Unicode glyph sum — this app's own metric, not a traditional numerology system. ${hint}</div>`,
     expressionHintAddRoman: 'Add a Roman or Latin spelling to also see the international name number.',
     expressionLatinInvalid: 'No A–Z letters were found in the Roman field, so the international number was not shown.'
   },
@@ -346,6 +350,7 @@ export const ui = {
            <div class="lucky-row"><span class="lucky-label">Days</span>
              ${days.map(d => `<span class="lucky-chip">${d}</span>`).join('')}</div>
            <p class="lucky-hint">${hint}</p>
+           <p class="note">The lucky compass is this app's own simplified metric, blending numerology, sun sign, Kyusei, and Five Elements.</p>
          </div>`
     }
   },
@@ -491,6 +496,7 @@ export const ui = {
       honmeiLabel: 'Honmei star',
       monthLabel: 'Month star',
       dayLabel: 'Day star',
+      monthDayNote: "This app's own simplified metric for month star and day star.",
       directionLabel: 'Lucky tones'
     },
     tarot: {
@@ -498,6 +504,7 @@ export const ui = {
       shadow: 'Shadow face',
       lightText: (name) => `${name} upright: your soul's gift in its clearest form — courage to embody the card's highest expression.`,
       shadowText: (name) => `${name} reversed: not punishment — the card asking for integration. Where does its lesson feel heavy? That weight may be transformation knocking.`,
+      yearCardNote: "The year card is this app's own simplified metric.",
       suits: [
         { id: 'wands', label: 'Wands', text: 'Fire · action · will — how you move and initiate.' },
         { id: 'cups', label: 'Cups', text: 'Water · feeling · bonds — how you love and receive.' },
