@@ -189,6 +189,33 @@ export function sunSign(month, day) {
   return SUN_SIGNS[0];
 }
 
+const NON_LEAP_MONTH_DAYS = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+
+/** うるう年を無視した通算日(1〜365)。月境界の前後比較専用の内部ヘルパー。 */
+function dayOfYearApprox(month, day) {
+  let doy = day;
+  for (let i = 0; i < month - 1; i++) doy += NON_LEAP_MONTH_DAYS[i];
+  return doy;
+}
+
+/**
+ * 太陽星座の境界日(カスプ)から±1日以内かどうか。
+ * 実際の入座(トロピカル黄経の切替)は年により前後1日程度ずれるため、
+ * 固定表の境界付近の生まれは隣の星座になる場合がある(docs/audit/parts/others.md §2)。
+ */
+export function isSunSignCusp(month, day) {
+  const { SUN_SIGNS } = getContent();
+  const target = dayOfYearApprox(month, day);
+  for (const s of SUN_SIGNS) {
+    for (const [bm, bd] of [s.from, s.to]) {
+      const b = dayOfYearApprox(bm, bd);
+      const diff = Math.min(Math.abs(target - b), 365 - Math.abs(target - b));
+      if (diff <= 1) return true;
+    }
+  }
+  return false;
+}
+
 export function moonTrait(y, m, d) {
   const { MOON_TRAITS } = getContent();
   const birth = new Date(Date.UTC(y, m - 1, d));

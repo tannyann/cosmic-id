@@ -54,15 +54,19 @@ export const ui = {
     expression: 'お名前の数字',
     expressionLabel: '名前から響く波動',
     sun: '太陽星座',
+    sunCuspNote: '境界日(カスプ)生まれのため、出生年・時刻によって隣の星座になる場合があります。',
     moonTrait: '月の傾向',
     moonTraitLabel: '誕生時の月の位相から',
     moonTraitNote: '正確な月星座は出生時刻が必要です',
     zodiac: '十二支',
     sixty: '年柱(六十干支)',
     kyusei: '本命星(九星気学)',
+    kyuseiNote: '本命星は立春(2月4日ごろ)を境に前年扱いとする簡易式を採用しています。',
     gogyou: '五行',
     animal: '動物占い',
+    animalNote: '個性心理學(動物占い®)の公式60分類とは異なる、本アプリ独自の12分類です。',
     celtic: 'ケルト樹木占い',
+    celticNote: 'オガム暦(13樹木)系の日付表を採用しています。21樹木系とは別系統です。',
     maya: 'マヤ暦 KIN',
     tarotBirth: 'タロット バースカード',
     tarotDaily: '今日のカード',
@@ -133,7 +137,7 @@ export const ui = {
       `<p class="expression-line"><strong>${l}</strong>（ピタゴラス式 A–Z）— ${latinDesc}</p>` +
       '<div class="note">字形換算は古典数秘の公式とは別系統です。ローマ字は一般的な英字名数秘に近い読み方です。</div>',
     expressionDescNative: (desc, hint) =>
-      `${desc}<div class="note">日本語・漢字は Unicode の字形から簡易換算しています。${hint}</div>`,
+      `${desc}<div class="note">日本語・漢字は Unicode の字形から簡易換算した、本アプリ独自の指標です。${hint}</div>`,
     expressionHintAddRoman: 'ローマ字欄にヘボン式などを入れると、国際式の名前数も並べて読めます。',
     expressionLatinInvalid: 'ローマ字欄に A–Z の英字がないため、国際式は表示されませんでした。',
     expressionLabelInferred: '日本表記 / かなから推定',
@@ -353,6 +357,7 @@ export const ui = {
            <div class="lucky-row"><span class="lucky-label">曜日</span>
              ${days.map(d => `<span class="lucky-chip">${d}</span>`).join('')}</div>
            <p class="lucky-hint">${hint}</p>
+           <p class="note">ラッキーコンパスは数秘・太陽星座・九星・五行を組み合わせた、本アプリ独自の簡易指標です。</p>
          </div>`
     }
   },
@@ -498,6 +503,7 @@ export const ui = {
       honmeiLabel: '本命星',
       monthLabel: '月命星',
       dayLabel: '日命星',
+      monthDayNote: '月命星・日命星は本アプリ独自の簡易指標です。',
       directionLabel: 'ラッキーカラー'
     },
     tarot: {
@@ -505,6 +511,7 @@ export const ui = {
       shadow: '影の顔',
       lightText: (name) => `${name} の正位置：魂のギフトがいちばん澄んで現れる向き——カードの最高の表現を体現する勇気。`,
       shadowText: (name) => `${name} の逆位置：罰ではなく統合の依頼——どこで重く感じますか？その重さは、変容がノックしているサインかもしれません。`,
+      yearCardNote: 'イヤーカードは本アプリ独自の簡易指標です。',
       suits: [
         { id: 'wands', label: 'ワンド', text: '火 · 行動 · 意志' },
         { id: 'cups', label: 'カップ', text: '水 · 感情 · 絆' },
