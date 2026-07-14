@@ -244,25 +244,64 @@ describe('animalUranai (12分類・簡易60日サイクル)', () => {
   });
 });
 
-describe('mayaKin (ドリームスペル起点 2013-07-26 = KIN33)', () => {
-  it('起点日は KIN 33', () => {
+describe('mayaKin (ドリームスペル公式: 起点 2013-07-26 = KIN164・2/29スキップ)', () => {
+  it('[外部照合] 起点日 2013-07-26 → KIN 164 銀河の黄色い種', () => {
     const k = mayaKin(2013, 7, 26);
-    expect(k.kin).toBe(33);
-    expect(k.seal).toBe('赤い空歩く人'); // (33-1) % 20 = 12
-    expect(k.tone).toBe('共振の');       // (33-1) % 13 = 6
+    expect(k.kin).toBe(164);
+    expect(k.seal).toBe('黄色い種');   // (164-1) % 20 = 3
+    expect(k.tone).toBe('銀河の');     // (164-1) % 13 = 7
   });
-  it('260日で一周する(2014-04-12 = KIN33)', () => {
-    expect(mayaKin(2014, 4, 12).kin).toBe(33);
+  it('[外部照合] 検証アンカー 1987-07-26 → KIN 34 銀河の白い魔法使い', () => {
+    const k = mayaKin(1987, 7, 26);
+    expect(k.kin).toBe(34);
+    expect(k.seal).toBe('白い魔法使い');
+    expect(k.tone).toBe('銀河の');
   });
-  it('[回帰ピン] 1990-05-15 → KIN140(現実装はうるう日もカウントする連続日数方式)', () => {
+  it('[外部照合] 2019-07-26 → KIN 14 磁気の白い魔法使い', () => {
+    const k = mayaKin(2019, 7, 26);
+    expect(k.kin).toBe(14);
+    expect(k.seal).toBe('白い魔法使い');
+    expect(k.tone).toBe('磁気の');
+  });
+  it('[外部照合] 1990-05-15 → KIN 17 自己存在の赤い地球', () => {
     const k = mayaKin(1990, 5, 15);
-    expect(k.kin).toBe(140);
-    expect(k.seal).toBe('黄色い太陽');
-    expect(k.tone).toBe('惑星の');
+    expect(k.kin).toBe(17);
+    expect(k.seal).toBe('赤い地球');
+    expect(k.tone).toBe('自己存在の');
   });
-  it('mayaRelatedKin は 1–260 に折り返す', () => {
-    expect(mayaRelatedKin(33)).toEqual({ guide: 52, antipode: 163, occult: 98 });
-    expect(mayaRelatedKin(260)).toEqual({ guide: 19, antipode: 130, occult: 65 });
+  it('[外部照合] 2/29 を跨いでも KIN は +1 で連続する(2020-02-28=231 → 2020-03-01=232)', () => {
+    expect(mayaKin(2020, 2, 28).kin).toBe(231);
+    expect(mayaKin(2020, 3, 1).kin).toBe(232);
+  });
+  it('2/29 生まれは 2/28 と同じ KIN を返す(暫定仕様)', () => {
+    expect(mayaKin(2020, 2, 29).kin).toBe(mayaKin(2020, 2, 28).kin);
+  });
+});
+
+describe('mayaRelatedKin (ドリームスペル公式: オカルト=261−kin・ガイド=音依存・アンチポッド+130)', () => {
+  it('[外部照合] オカルトは 261 − kin(kin1→260, kin164→97)', () => {
+    expect(mayaRelatedKin(1).occult).toBe(260);
+    expect(mayaRelatedKin(164).occult).toBe(97);
+  });
+  it('[外部照合] アンチポッドは kin+130(260循環)', () => {
+    expect(mayaRelatedKin(1).antipode).toBe(131);
+    expect(mayaRelatedKin(164).antipode).toBe(34);
+    expect(mayaRelatedKin(260).antipode).toBe(130);
+  });
+  it('[外部照合] ガイドは自分と同じ音を持つ', () => {
+    for (const kin of [1, 17, 164, 231, 260]) {
+      const g = mayaRelatedKin(kin).guide;
+      expect((g - 1) % 13).toBe((kin - 1) % 13);
+    }
+  });
+  it('関連 KIN はすべて 1–260 に収まる', () => {
+    for (const kin of [1, 33, 164, 260]) {
+      const r = mayaRelatedKin(kin);
+      for (const v of [r.guide, r.antipode, r.occult]) {
+        expect(v).toBeGreaterThanOrEqual(1);
+        expect(v).toBeLessThanOrEqual(260);
+      }
+    }
   });
 });
 
