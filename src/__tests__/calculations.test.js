@@ -492,13 +492,15 @@ describe('cyclesDayPlan(日付固定)', () => {
     expect(rows[0].pm).toBe(personalMonth(rows[0].py, 1));
     expect(rows[0].ksIdx).toBe(kyuseiDayStar(1));
   });
-  it('【バグ報告】moonPhase / moonName が常に undefined になる', () => {
-    // moonPhaseAt() は数値(0–1)を返すが、cyclesDayPlan 内では moon.phase / moon.name と
-    // オブジェクトとして参照しているため、月相列が全て undefined になり lunar も常に null。
-    // 修正方針は依頼主判断のため、現状の挙動を固定して目印にする。
+  it('月相(moonPhase / moonName / lunar)が実際に埋まる(I-6 修正)', () => {
+    // 旧実装は moonPhaseAt() の戻り値(数値)を moon.phase/moon.name と参照して全て undefined だった。
+    const { MOON_PHASE_NAMES } = getContent();
     const rows = cyclesDayPlan(1990, 5, 15, 40);
-    expect(rows.every(r => r.moonPhase === undefined)).toBe(true);
-    expect(rows.every(r => r.moonName === undefined)).toBe(true);
-    expect(rows.every(r => r.lunar === null)).toBe(true); // 40日間に新月・満月ゼロはあり得ない
+    expect(rows.every(r => typeof r.moonPhase === 'number' && r.moonPhase >= 0 && r.moonPhase < 1)).toBe(true);
+    expect(rows.every(r => MOON_PHASE_NAMES.includes(r.moonName))).toBe(true);
+    expect(rows.every(r => r.lunar === 'new' || r.lunar === 'full' || r.lunar === null)).toBe(true);
+    // 40日間(朔望月 ~29.5日超)には新月・満月が最低1回ずつ現れるはず
+    expect(rows.some(r => r.lunar === 'new')).toBe(true);
+    expect(rows.some(r => r.lunar === 'full')).toBe(true);
   });
 });

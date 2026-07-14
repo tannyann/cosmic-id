@@ -300,13 +300,9 @@ export function biorhythm(y, m, d) {
   };
 }
 
-export function moonPhaseToday() {
+/** 月相位相 0–1 を8分類の月相名に写す（MOON_PHASE_NAMES を引く）。 */
+export function moonPhaseName(phase) {
   const { MOON_PHASE_NAMES } = getContent();
-  const ref = new Date(Date.UTC(2000, 0, 6, 18, 14));
-  const now = new Date();
-  const days = (now - ref) / 86400000;
-  const cycle = 29.530588;
-  const phase = (((days % cycle) + cycle) % cycle) / cycle;
   let idx;
   if (phase < 0.03 || phase > 0.97)      idx = 0;
   else if (phase < 0.22)                  idx = 1;
@@ -316,7 +312,16 @@ export function moonPhaseToday() {
   else if (phase < 0.72)                  idx = 5;
   else if (phase < 0.78)                  idx = 6;
   else                                    idx = 7;
-  return { phase, name: MOON_PHASE_NAMES[idx] };
+  return MOON_PHASE_NAMES[idx];
+}
+
+export function moonPhaseToday() {
+  const ref = new Date(Date.UTC(2000, 0, 6, 18, 14));
+  const now = new Date();
+  const days = (now - ref) / 86400000;
+  const cycle = 29.530588;
+  const phase = (((days % cycle) + cycle) % cycle) / cycle;
+  return { phase, name: moonPhaseName(phase) };
 }
 
 export function lifeStage(y, m, d) {
@@ -578,14 +583,16 @@ export function cyclesDayPlan(y, m, d, days = 30, startOffset = 0) {
   return bioRows.map(bio => {
     const py = personalYear(m, d, bio.y);
     const pm = personalMonth(py, bio.mo);
-    const moon = moonPhaseAt(bio.date);
+    // moonPhaseAt は位相の数値(0–1)を返す。名前・新満は位相から導く
+    // （旧実装は moon.phase/moon.name とオブジェクト参照して常に undefined になっていた）。
+    const moonPhase = moonPhaseAt(bio.date);
     return {
       ...bio,
       py,
       pm,
-      moonPhase: moon.phase,
-      moonName: moon.name,
-      lunar: lunarMilestoneType(moon.phase),
+      moonPhase,
+      moonName: moonPhaseName(moonPhase),
+      lunar: lunarMilestoneType(moonPhase),
       ksIdx: kyuseiDayStar(bio.day)
     };
   });
