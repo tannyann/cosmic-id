@@ -24,7 +24,7 @@ import {
   luckyCompass, sixtyCycleIndex, mayaRelatedKin, kyuseiMonthStar, kyuseiDayStar,
   zodiacRelation, gogyouRelation, animalGroupIndex, dailyTarotForDate,
   dailyTarotWeek, lifeMilestonesAround, biorhythmCriticalDays, lunarMilestoneType,
-  cyclesDayPlan, normalizeElementKey, risshunEffectiveYear
+  cyclesDayPlan, normalizeElementKey, moonSign, risshunEffectiveYear
 } from '../calculations.js';
 
 // ============ ユーティリティ ============
@@ -150,6 +150,52 @@ describe('moonTrait / birthMoonPhaseIndex', () => {
   it('birthMoonPhaseIndex は 0–3 を返す', () => {
     const idx = birthMoonPhaseIndex(1990, 5, 15);
     expect([0, 1, 2, 3]).toContain(idx);
+  });
+});
+
+describe('moonSign (astronomy-engine による本実装・I-9)', () => {
+  const { SUN_SIGNS } = getContent();
+
+  it('太陽の春分・冬至と同じ黄経→星座インデックス変換を使うため、SUN_SIGNS の並びと整合する', () => {
+    // 春分(黄経0度=牡羊座)・冬至(黄経270度=山羊座)は sunSign() の境界日と一致する既知の天文事実。
+    // moonSign 内部の eclipticLongitudeToSignIndex は同じ変換式を使うため、
+    // 太陽で成立するこの整合性が月にも及ぶことの間接的な保証になる(このセッションでの外部照合は未実施)。
+    expect(sunSign(3, 21).name).toBe('牡羊座');
+    expect(sunSign(12, 22).name).toBe('山羊座');
+  });
+
+  it('[回帰ピン] 1990-05-15 → 山羊座、2000-01-01 → 蠍座、1985-03-03 → 蟹座(外部照合は未確認)', () => {
+    // astronomy-engine の計算結果をそのまま固定。無料の月星座計算サイト等での
+    // 外部照合はこのセッションでは未実施([未確認])。ずれが判明した場合は
+    // eclipticLongitudeToSignIndex のオフセット(+3)を疑うこと。
+    expect(moonSign(1990, 5, 15).sign.name).toBe('山羊座');
+    expect(moonSign(2000, 1, 1).sign.name).toBe('蠍座');
+    expect(moonSign(1985, 3, 3).sign.name).toBe('蟹座');
+  });
+
+  it('常に SUN_SIGNS のいずれかを sign として返す', () => {
+    const r = moonSign(1990, 5, 15);
+    expect(SUN_SIGNS).toContain(r.sign);
+  });
+
+  it('[回帰ピン] 2024-12-25 は境界日(天秤座生まれ→蠍座candidateあり)', () => {
+    const r = moonSign(2024, 12, 25);
+    expect(r.sign.name).toBe('天秤座');
+    expect(r.cuspSign?.name).toBe('蠍座');
+  });
+
+  it('境界日ではその日 sign と cuspSign が異なる星座になる(重複しない)', () => {
+    // 2026年7月は31日中14日が境界日になることを確認済み(実装検証時)。
+    // ここでは境界日が実在し、sign と cuspSign が常に別の星座であることだけ機械的に検証する。
+    let boundaryCount = 0;
+    for (let d = 1; d <= 31; d++) {
+      const r = moonSign(2026, 7, d);
+      if (r.cuspSign) {
+        boundaryCount++;
+        expect(r.cuspSign.name).not.toBe(r.sign.name);
+      }
+    }
+    expect(boundaryCount).toBeGreaterThan(0);
   });
 });
 

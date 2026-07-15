@@ -93,7 +93,7 @@ export function premiumGeneric(systemLabel, valueLabel) {
 }
 
 export function buildDeep(cardKey, ctx) {
-  const { lp, py, en, expr, nameRoman, sun, mt, cz, sj, ks, gy, an, ct, my, tb, dt, bs, bf, bio, mp, ls } = ctx;
+  const { lp, py, en, expr, nameRoman, sun, mt, ms, cz, sj, ks, gy, an, ct, my, tb, dt, bs, bf, bio, mp, ls } = ctx;
 
   switch (cardKey) {
     case 'lifepath': return {
@@ -193,6 +193,19 @@ export function buildDeep(cardKey, ctx) {
         { t: 'この星座の核心', d: `${sun.name}は、${sun.element}のエレメントに属し、独特の世界観を持ちます。${sun.desc}` },
         { t: '輝く瞬間', d: `${sun.name}が最も輝くのは、自分のエレメントに合った環境にいるとき。${sun.element}の性質を生かせる場を選びましょう。` },
         { t: '影との付き合い方', d: 'どの星座にも光と影があります。光を選び続けるための日々の習慣が、人生の質を変えます。' }
+      ],
+      premium: []
+    };
+
+    case 'moonSign': return {
+      title: '月星座',
+      value: `${ms.sign.symbol} ${ms.sign.name}`,
+      label: '感情・内面のあり方',
+      intro: `月星座は、あなたの感情の動き方や、安心できる環境を示すとされます。${ms.sign.name}を月に持つあなたは、${ms.sign.desc}出生時刻が不明なため正午基準で算出しており、境界日生まれの方は隣の星座の可能性もあります。`,
+      free: [
+        { t: 'この星座の感情の質', d: `月が${ms.sign.name}にあるとき、${ms.sign.element}のエレメントの感情の動き方をするとされます。${ms.sign.desc}` },
+        { t: '安心を感じる場面', d: '月星座は「くつろげる環境」を示すとされます。日常の中で心が緩む瞬間を意識してみましょう。' },
+        { t: '太陽星座との違い', d: '太陽星座が「表に出る自分」なら、月星座は「内側で感じている自分」とされます。両方を知ると、自分への理解が深まります。' }
       ],
       premium: []
     };
