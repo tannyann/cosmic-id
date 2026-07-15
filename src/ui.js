@@ -261,10 +261,10 @@ export function render(name, nameRoman, y, m, d) {
   const sunCusp = isSunSignCusp(m, d);
   const mt  = moonTrait(y, m, d);
   const ms  = moonSign(y, m, d);
-  const cz  = chineseZodiac(y);
-  const sj  = sixtyJikkan(y);
+  const cz  = chineseZodiac(y, m, d);
+  const sj  = sixtyJikkan(y, m, d);
   const ks  = kyuseiHonmei(y, m, d);
-  const gy  = gogyou(y);
+  const gy  = gogyou(y, m, d);
   const an  = animalUranai(y, m, d);
   const my  = mayaKin(y, m, d);
   const tb  = tarotBirthCard(y, m, d);
