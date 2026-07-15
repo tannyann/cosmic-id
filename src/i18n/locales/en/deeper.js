@@ -93,7 +93,7 @@ export function premiumGeneric(systemLabel, valueLabel) {
 }
 
 export function buildDeep(cardKey, ctx) {
-  const { lp, py, en, expr, nameRoman, sun, mt, cz, sj, ks, gy, an, ct, my, tb, dt, bs, bf, bio, mp, ls } = ctx;
+  const { lp, py, en, expr, nameRoman, sun, mt, ms, cz, sj, ks, gy, an, ct, my, tb, dt, bs, bf, bio, mp, ls } = ctx;
 
   switch (cardKey) {
     case 'lifepath': return {
@@ -184,6 +184,19 @@ export function buildDeep(cardKey, ctx) {
         { t: 'Core of this sign', d: `${sun.name} belongs to the ${sun.element} element and may hold a distinct worldview. ${sun.desc}` },
         { t: 'Moments of radiance', d: `${sun.name} may shine brightest in environments aligned with its element. Choose places where ${sun.element} qualities can be expressed.` },
         { t: 'Living with shadow', d: 'Every sign has light and shadow. Daily habits that keep choosing the light may change the quality of your life.' }
+      ],
+      premium: []
+    };
+
+    case 'moonSign': return {
+      title: 'Moon Sign',
+      value: `${ms.sign.symbol} ${ms.sign.name}`,
+      label: 'Your inner emotional world',
+      intro: `Your Moon sign may point to how your feelings move and where you feel safe. With the Moon in ${ms.sign.name}, you ${ms.sign.desc} Calculated at local noon since exact birth time is unknown — cusp-day births may fall in the neighboring sign.`,
+      free: [
+        { t: 'The emotional quality of this sign', d: `With the Moon in ${ms.sign.name}, feelings may move in ways associated with the ${ms.sign.element} element. ${ms.sign.desc}` },
+        { t: 'Where you may feel at ease', d: 'Your Moon sign is said to point to the kind of environment where you can relax. Notice the moments in daily life when your mind softens.' },
+        { t: 'How it differs from your Sun sign', d: 'If the Sun sign is the self you show, the Moon sign may be the self you feel inside. Knowing both may deepen self-understanding.' }
       ],
       premium: []
     };

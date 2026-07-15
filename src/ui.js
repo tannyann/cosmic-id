@@ -4,7 +4,7 @@
  */
 
 import {
-  lifePath, personalYear, expressionProfile, sunSign, moonTrait,
+  lifePath, personalYear, expressionProfile, sunSign, moonTrait, moonSign,
   chineseZodiac, sixtyJikkan, kyuseiHonmei, gogyou, animalUranai,
   mayaKin, tarotBirthCard, dailyTarot, celticTree,
   birthstone, birthflower, biorhythm, moonPhaseToday, lifeStage, lifeTimeline,
@@ -260,6 +260,7 @@ export function render(name, nameRoman, y, m, d) {
   const sun = sunSign(m, d);
   const sunCusp = isSunSignCusp(m, d);
   const mt  = moonTrait(y, m, d);
+  const ms  = moonSign(y, m, d);
   const cz  = chineseZodiac(y);
   const sj  = sixtyJikkan(y);
   const ks  = kyuseiHonmei(y, m, d);
@@ -278,7 +279,7 @@ export function render(name, nameRoman, y, m, d) {
 
   currentContext = {
     name, nameRoman: roman.trim(), y, m, d, currentYear,
-    lp, py, en, expr, sun, mt, cz, sj, ks, gy, an, my, tb, ct, dt, bs, bf, bio, mp, ls
+    lp, py, en, expr, sun, mt, ms, cz, sj, ks, gy, an, my, tb, ct, dt, bs, bf, bio, mp, ls
   };
 
   const summaryHtml = generateSummary(name, currentContext);
@@ -315,6 +316,7 @@ export function render(name, nameRoman, y, m, d) {
     ${sectionHeading(...u.sections.western)}
     <div class="grid">
       ${card('sun', u.cards.sun, `${sun.symbol} ${sun.name}`, u.fmt.elementOf(sun.element), sun.desc + (sunCusp ? `<div class="note">${u.cards.sunCuspNote}</div>` : ''), sun.symbol)}
+      ${card('moonSign', u.cards.moonSign, `${ms.sign.symbol} ${ms.sign.name}`, u.cards.moonSignLabel, ms.sign.desc + `<div class="note">${u.cards.moonSignNote}</div>`, ms.sign.symbol)}
       ${card('moonTrait', u.cards.moonTrait, mt.name, u.cards.moonTraitLabel, mt.desc + `<div class="note">${u.cards.moonTraitNote}</div>`, '☾')}
     </div>
 

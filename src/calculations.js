@@ -3,6 +3,7 @@
  * 表示名・辞書は getContent() からロケールに応じて取得する。
  */
 
+import * as Astronomy from 'astronomy-engine';
 import { getContent } from './i18n/index.js';
 import { hasKana, kanaToHepburn } from './kanaHepburn.js';
 import { normalizeElementKey } from './util.js';
@@ -227,6 +228,52 @@ export function moonTrait(y, m, d) {
   if (phase < 0.5)  return MOON_TRAITS[1];
   if (phase < 0.75) return MOON_TRAITS[2];
   return MOON_TRAITS[3];
+}
+
+/**
+ * 月の地心黄経(トロピカル)を astronomy-engine で計算する。
+ * @returns {number} 0–360度
+ */
+function moonEclipticLongitude(y, m, d, hourUTC) {
+  const time = Astronomy.MakeTime(new Date(Date.UTC(y, m - 1, d, hourUTC, 0, 0)));
+  return Astronomy.EclipticGeoMoon(time).lon;
+}
+
+/**
+ * トロピカル黄経(0–360度)を SUN_SIGNS の index(0=山羊座…)に変換する。
+ * 黄経0度=牡羊座(SUN_SIGNS[3])を基準に、SUN_SIGNS の並び順(山羊座始まり)へオフセットする。
+ * 太陽の春分点(黄経0度≒3/20 牡羊座入り)・冬至点(黄経270度≒12/22 山羊座入り)と
+ * SUN_SIGNS の日付境界が一致することで検証済み。
+ */
+function eclipticLongitudeToSignIndex(lon) {
+  const tropicalIdx = Math.floor(lon / 30); // 0=牡羊座 … 11=魚座
+  return (tropicalIdx + 3) % 12;
+}
+
+/**
+ * 月星座(西洋占星術)。出生時刻不明のため正午JST(UTC 03:00)で計算する。
+ * astronomy-engine の地心黄経を SUN_SIGNS の星座名にマップする(太陽星座と同じ辞書を流用。
+ * 月と太陽で星座名自体は共通のため新規辞書は不要)。
+ * 月は約2.2〜2.5日で星座を移動するため、当日の始まり(00:00 JST)と終わり(23:59 JST)で
+ * 星座が変わる場合は「境界日」とみなし、両方の星座名を返す。
+ * @returns {{ sign: object, cuspSign: object|null }}
+ */
+export function moonSign(y, m, d) {
+  const { SUN_SIGNS } = getContent();
+  const noonLon = moonEclipticLongitude(y, m, d, 3); // 正午JST = UTC 03:00
+  const noonIdx = eclipticLongitudeToSignIndex(noonLon);
+  const sign = SUN_SIGNS[noonIdx];
+
+  // JST の日の始まり(UTC前日15:00)と終わり(UTC当日14:59)で星座が変わるかを見て境界日を判定する。
+  // 正午の星座と異なる方(遷移前 or 遷移後)を cuspSign として返す。
+  const startIdx = eclipticLongitudeToSignIndex(moonEclipticLongitude(y, m, d - 1, 15));
+  const endIdx = eclipticLongitudeToSignIndex(moonEclipticLongitude(y, m, d, 14));
+  let cuspIdx = null;
+  if (startIdx !== noonIdx) cuspIdx = startIdx;
+  else if (endIdx !== noonIdx) cuspIdx = endIdx;
+  const cuspSign = cuspIdx !== null ? SUN_SIGNS[cuspIdx] : null;
+
+  return { sign, cuspSign };
 }
 
 // ============ 東洋占術 ============
