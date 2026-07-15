@@ -95,7 +95,7 @@ export function buildYearlyWrap(ctx, targetYear, todayForNextYear = new Date()) 
       next:    nextPY
     },
     sun: sunSign(ctx.m, ctx.d),
-    zodiac: chineseZodiac(ctx.y),
+    zodiac: chineseZodiac(ctx.y, ctx.m, ctx.d),
     kyusei: kyuseiHonmei(ctx.y, ctx.m, ctx.d),
     biorhythm: bio,
     milestones,

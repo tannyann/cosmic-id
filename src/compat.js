@@ -210,10 +210,10 @@ export function computeCompat(p1, p2) {
   const lp2 = lifePath(p2.y, p2.m, p2.d);
   const sun1 = sunSign(p1.m, p1.d);
   const sun2 = sunSign(p2.m, p2.d);
-  const cz1  = chineseZodiac(p1.y);
-  const cz2  = chineseZodiac(p2.y);
-  const gg1  = gogyou(p1.y);
-  const gg2  = gogyou(p2.y);
+  const cz1  = chineseZodiac(p1.y, p1.m, p1.d);
+  const cz2  = chineseZodiac(p2.y, p2.m, p2.d);
+  const gg1  = gogyou(p1.y, p1.m, p1.d);
+  const gg2  = gogyou(p2.y, p2.m, p2.d);
   const ks1  = kyuseiHonmei(p1.y, p1.m, p1.d);
   const ks2  = kyuseiHonmei(p2.y, p2.m, p2.d);
 

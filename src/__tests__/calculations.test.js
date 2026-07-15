@@ -24,7 +24,7 @@ import {
   luckyCompass, sixtyCycleIndex, mayaRelatedKin, kyuseiMonthStar, kyuseiDayStar,
   zodiacRelation, gogyouRelation, animalGroupIndex, dailyTarotForDate,
   dailyTarotWeek, lifeMilestonesAround, biorhythmCriticalDays, lunarMilestoneType,
-  cyclesDayPlan, normalizeElementKey
+  cyclesDayPlan, normalizeElementKey, risshunEffectiveYear
 } from '../calculations.js';
 
 // ============ ユーティリティ ============
@@ -156,26 +156,37 @@ describe('moonTrait / birthMoonPhaseIndex', () => {
 // ============ 東洋占術 ============
 describe('chineseZodiac', () => {
   it('[既知値] 1990 → 午年', () => {
-    expect(chineseZodiac(1990).name).toContain('午');
+    expect(chineseZodiac(1990, 6, 1).name).toContain('午');
   });
   it('[既知値] 2024 → 辰年', () => {
-    expect(chineseZodiac(2024).name).toContain('辰');
+    expect(chineseZodiac(2024, 6, 1).name).toContain('辰');
   });
   it('[外部照合] 1984 → 子年(六十干支の起点)', () => {
-    expect(chineseZodiac(1984).name).toContain('子');
+    expect(chineseZodiac(1984, 6, 1).name).toContain('子');
+  });
+  it('month/day 省略時は立春補正なし(後方互換)', () => {
+    expect(chineseZodiac(1990).name).toContain('午');
+  });
+  it('[既知値] 立春統一(I-8): 1985-01-15 は立春前なので前年(1984=子年)扱い', () => {
+    // others.md §1 の実例。旧実装(1/1切替)では乙丑(丑年)だったが、
+    // 立春系に統一したため九星と同じく前年扱いになる。
+    expect(chineseZodiac(1985, 1, 15).name).toContain('子');
+  });
+  it('[既知値] 立春統一(I-8): 1990-02-01 は立春(2/4)前なので前年(1989=巳年)扱い', () => {
+    expect(chineseZodiac(1990, 2, 1).name).toContain('巳');
   });
 });
 
 describe('sixtyJikkan / sixtyCycleIndex', () => {
   it('[外部照合] 1984 → 甲子(木・陽)', () => {
-    const s = sixtyJikkan(1984);
+    const s = sixtyJikkan(1984, 6, 1);
     expect(s.name).toBe('甲子');
     expect(s.element).toBe('木');
     expect(s.yinyang).toBe('陽');
   });
   it('[外部照合] 2024 → 甲辰、1990 → 庚午(金・陽)', () => {
-    expect(sixtyJikkan(2024).name).toBe('甲辰');
-    const s = sixtyJikkan(1990);
+    expect(sixtyJikkan(2024, 6, 1).name).toBe('甲辰');
+    const s = sixtyJikkan(1990, 6, 1);
     expect(s.name).toBe('庚午');
     expect(s.element).toBe('金');
   });
@@ -183,6 +194,25 @@ describe('sixtyJikkan / sixtyCycleIndex', () => {
     expect(sixtyCycleIndex(1984)).toBe(0);
     expect(sixtyCycleIndex(2024)).toBe(40);
     expect(sixtyCycleIndex(1900)).toBe(36);
+  });
+  it('[既知値] 立春統一(I-8): 1985-01-15 は前年(1984=甲子)扱い', () => {
+    expect(sixtyJikkan(1985, 1, 15).name).toBe('甲子');
+  });
+});
+
+describe('立春統一(I-8): 九星・干支・五行の暦年一致', () => {
+  it('同じ生年月日なら kyuseiHonmei と chineseZodiac/sixtyJikkan/gogyou が同じ暦年を使う', () => {
+    // アプリ内不整合(others.md §1)の再発防止テスト。
+    const cases = [[1985, 1, 15], [1990, 2, 1], [2000, 2, 3], [2000, 2, 4], [2024, 6, 1]];
+    for (const [y, m, d] of cases) {
+      const ksYear = risshunEffectiveYear(y, m, d);
+      // kyuseiHonmei 自体は星名しか返さないため、九星が使う暦年と
+      // chineseZodiac/sixtyJikkan/gogyou が使う暦年が同一であることを
+      // risshunEffectiveYear 経由で直接比較する。
+      expect(chineseZodiac(y, m, d)).toEqual(chineseZodiac(ksYear, 6, 1));
+      expect(sixtyJikkan(y, m, d)).toEqual(sixtyJikkan(ksYear, 6, 1));
+      expect(gogyou(y, m, d)).toEqual(gogyou(ksYear, 6, 1));
+    }
   });
 });
 
@@ -219,9 +249,12 @@ describe('kyuseiCycleYear / kyuseiMonthStar / kyuseiDayStar (簡易式)', () => 
 
 describe('gogyou', () => {
   it('[外部照合] 1990(庚) → 金、2024(甲) → 木', () => {
+    expect(gogyou(1990, 6, 1).element).toBe('金');
+    expect(gogyou(2024, 6, 1).element).toBe('木');
+    expect(gogyou(1990, 6, 1).desc).toBeTruthy();
+  });
+  it('month/day 省略時は立春補正なし(後方互換)', () => {
     expect(gogyou(1990).element).toBe('金');
-    expect(gogyou(2024).element).toBe('木');
-    expect(gogyou(1990).desc).toBeTruthy();
   });
 });
 
