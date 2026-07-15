@@ -6,3 +6,12 @@ dist
 .env.local
 .vite
 vite.config.js.timestamp-*.mjs
+
+# エージェントの一時worktree(セッション毎に生成される)
+.claude/worktrees/
+
+# 過去セッションの作業用一時ディレクトリ
+.*-tmp/
+
+# シェアカード等の元素材(数MBの画像はリポジトリに入れない。加工済みは public/ へ)
+_ Star Map _ Tree of Life.png

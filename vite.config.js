@@ -13,5 +13,10 @@ export default defineConfig({
   build: {
     outDir: 'dist',
     sourcemap: true
+  },
+  test: {
+    // .claude/worktrees(エージェントの一時作業ツリー)内のテスト複製を拾わない。
+    // 拾うとテスト数が水増しされ、実行時間とレポートの信頼性を損なう。
+    exclude: ['**/node_modules/**', '**/dist/**', '.claude/**']
   }
 });
