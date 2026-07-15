@@ -53,3 +53,12 @@ document.addEventListener('keydown', e => {
     closeModal();
   }
 });
+
+// PWA: 本番ビルドでのみ Service Worker を登録する(開発時の HMR を妨げないため)。
+if (import.meta.env.PROD && 'serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker
+      .register(`${import.meta.env.BASE_URL}sw.js`)
+      .catch(err => console.warn('[sw] registration failed', err));
+  });
+}
