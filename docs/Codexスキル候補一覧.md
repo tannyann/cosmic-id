@@ -4,6 +4,20 @@
 分析の5観点: ①毎回同じ手順 ②判断基準が暗黙的 ③引き継ぎで失敗しやすい ④自動化可能 ⑤テンプレート化可能。
 各スキルの末尾タグ〔①〜⑤〕はどの観点から抽出されたかを示す。
 
+## 実装状況（2026-07-19）
+
+共通のGit引き継ぎスキルと重複しないCOSMIC ID固有の反復作業を、以下の4スキルに整理・実装した。保存先はユーザー環境の `~/.codex/skills/`。
+
+| Codexスキル | 対応候補 | 状態 |
+|---|---|---|
+| `cosmic-id-issue-workflow` | S1/S2/S3/S4/S5/S10 | 実装済み |
+| `cosmic-id-browser-verify` | S6 | 実装済み |
+| `cosmic-id-fortune-audit` | S7 | 実装済み |
+| `cosmic-id-calc-i18n-test` | S8/S9 | 実装済み |
+| `repo-housekeeping` | S11 | 次段階 |
+
+流派・課金・Premium解放範囲の決定は、スキル化せず人間の判断として残す。`repo-housekeeping`は削除事故を避けるため、次段階で実際の不要ファイルの由来を確認してから作成する。
+
 ---
 
 ## S1. issue-to-pr(Issue実装の1サイクル)〔①④⑤〕
