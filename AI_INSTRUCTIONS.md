@@ -36,19 +36,18 @@ Claude / Codex / ChatGPT / Cursor いずれも、まずこの順で読んでく�
 | Cursor | `.cursor/rules/*.mdc` | 常時適用+ファイル別自動アタッチの規約 |
 | Codex | `.codex/skills/cosmic-id-*/` | プロジェクト専用スキル4本(下記の同期に注意) |
 
-### Codexスキルの同期について
+### Codexスキルの実体はリポジトリ内(シンボリックリンク運用)
 
-Codex は実行時に `~/.codex/skills/`(ユーザーのローカル)を読みます。リポジトリ内の `.codex/skills/` は
-**他のAIからも見えるようにするための共有コピー**です。片方を編集したらもう片方へ反映してください。
+Codex は実行時に `~/.codex/skills/` を読みますが、cosmic-id 専用の4スキルは
+**`~/.codex/skills/cosmic-id-*` → `<リポジトリ>/.codex/skills/cosmic-id-*` のシンボリックリンク**にしてあります
+(2026-07-26 設定)。**実体はリポジトリ側の1つだけ**なので、どちらを編集しても同じファイルで、コピー同期は不要です。
 
-```bash
-# リポジトリ → ローカル(他AIの更新を取り込む)
-cp -R .codex/skills/cosmic-id-* ~/.codex/skills/
-# ローカル → リポジトリ(自分の更新を共有する)
-cp -R ~/.codex/skills/cosmic-id-* .codex/skills/
-```
+- スキルを直したら**通常のファイル変更としてcommit/pushする**(他のAIにもそのまま伝わる)
+- 注意: リポジトリを別の場所へ移動・削除するとリンクが切れます。その場合は `ln -sfn <新パス>/.codex/skills/<skill> ~/.codex/skills/<skill>` で貼り直し
+- 注意: スキルを削除・改名するブランチに切り替えると、その間 Codex から見えなくなります(main に戻せば復帰)
 
-プロジェクト横断のスキル(`claude-codex-git-handoff` 等)は個人環境のみに置き、このリポジトリには含めません。
+プロジェクト横断のスキル(`claude-codex-git-handoff` 等)や他プロジェクト用は、個人環境 `~/.codex/skills/` に
+実体として残してあり、このリポジトリには含めません。
 
 ## 4. 作業の型(詳細は docs/ORG.md)
 
