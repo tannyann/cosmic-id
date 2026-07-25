@@ -90,6 +90,10 @@
 
 ## 運用の約束
 
-- Issue の状態は GitHub Issues(#1〜#16)を正とする。`docs/ISSUES.md` は設計書として都度反映
+- **GitHub が Claude / Codex / ChatGPT / Cursor の共通正本**。**作業を終えたら必ず push する**
+  (未push のまま終えると他のAIからは存在しないのと同じで、正本がズレる)。着手時は必ず `git fetch origin` から
+- **タスクの正本は GitHub Issues**(#1〜)。`TASKS.md` 等のファイルは作らない(二重管理は腐る)。
+  `docs/ISSUES.md` は設計書であり進捗の正本ではない
+- **確定した意思決定はルートの `DECISIONS.md`** に集約(蒸し返さないための記録)。AIの入口索引は `AI_INSTRUCTIONS.md`
 - 学びは `docs/learnings/` に1件1ファイル。誤りだったものは消す
 - サブエージェント並列時は書き込み先を分け、成果物は途中でもファイルに書かせる(途中死対策)

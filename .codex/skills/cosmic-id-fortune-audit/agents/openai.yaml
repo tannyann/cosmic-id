@@ -1,0 +1,4 @@
+interface:
+  display_name: "COSMIC ID占術監査"
+  short_description: "COSMIC IDの占術の流派差を出典付きで整理します"
+  default_prompt: "Use $cosmic-id-fortune-audit to audit one COSMIC ID calculation against cited sources without choosing a school for the user."

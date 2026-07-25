@@ -1,0 +1,4 @@
+interface:
+  display_name: "COSMIC ID Issueワークフロー"
+  short_description: "IssueからPRまでの開発手順を安全に標準化します"
+  default_prompt: "Use $cosmic-id-issue-workflow to implement one COSMIC ID issue with scoped commits, tests, and a review-ready PR."

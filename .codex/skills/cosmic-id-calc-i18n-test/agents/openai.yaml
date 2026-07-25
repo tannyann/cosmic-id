@@ -1,0 +1,4 @@
+interface:
+  display_name: "COSMIC ID計算・i18n検証"
+  short_description: "COSMIC IDの計算回帰と日本語英語同期を検証します"
+  default_prompt: "Use $cosmic-id-calc-i18n-test to add tagged regression tests and verify ja/en locale synchronization."

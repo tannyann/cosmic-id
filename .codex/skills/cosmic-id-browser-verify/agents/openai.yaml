@@ -1,0 +1,4 @@
+interface:
+  display_name: "COSMIC IDブラウザ検証"
+  short_description: "COSMIC IDのUIとPWAを実機相当の手順で検証します"
+  default_prompt: "Use $cosmic-id-browser-verify to build and verify a COSMIC ID UI change at mobile width and offline."
